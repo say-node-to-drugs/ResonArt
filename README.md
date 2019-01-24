@@ -5,7 +5,6 @@
 Creating music from paint canvases for all ages!
 
 Wireframes - https://www.figma.com/file/Qx9jR7DqmswYhJ3B5xPYeVJf/ResonArt?node-id=0%3A1
-Schema Design - 
 
 
 **MVP**
