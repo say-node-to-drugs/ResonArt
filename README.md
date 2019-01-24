@@ -1,5 +1,8 @@
 ## Welcome to ResonArt
 
+**Description**
+
+Creating music from paint canvases for all ages!
 
 
 
