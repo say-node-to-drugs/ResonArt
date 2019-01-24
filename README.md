@@ -1,4 +1,32 @@
-## Welcome to GitHub Pages
+## Welcome to ResonArt
+
+
+
+
+**MVP**
+ 
+* Save File
+* Create Canvas
+* Produce Audio from the Created Canvas
+* Preset Files / Examples
+* Drum Machine
+* User login / Signup
+* Users can view saved canvases
+
+**Full Features**
+
+* Social media features
+* Social Media games and competitions
+* Social Media collaborative canvases and Projects
+* Social media games, like a "Words With Friends" implementation where each person adds a chunk to the canvas
+* Users can purchase saved drawings from other users with the site's virtual currency.
+* Able to extend the length of the canvas
+* BPM control
+* Public canvases are open to all users
+* Produce songs by sampling mutliple canvases
+
+
+________________________________________________________________________________________________________________________
 
 You can use the [editor on GitHub](https://github.com/say-node-to-drugs/ResonArt/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
