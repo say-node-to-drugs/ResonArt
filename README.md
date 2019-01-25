@@ -40,3 +40,4 @@ Schema Design - https://bit.ly/2S0p1OP
 * Firebase (back-end)
 * Material.ui (css styling)
 * three.js / paper.js (optional visualizer)
+* React Native (optional if we have time)
