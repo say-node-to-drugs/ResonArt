@@ -29,3 +29,14 @@ Wireframes - https://www.figma.com/file/Qx9jR7DqmswYhJ3B5xPYeVJf/ResonArt?node-i
 * Public canvases are open to all users.
 * Produce songs by sampling mutliple canvases.
 * Users can share their own canvases and make them public.
+
+
+**TECH STACK**
+
+* React.js
+* Redux.js
+* P5.js (audio)
+* Tone.js (audio)
+* Firebase (back-end)
+* Material.ui (css styling)
+* three.js / paper.js (optional visualizer)
