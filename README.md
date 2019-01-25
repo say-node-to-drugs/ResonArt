@@ -4,8 +4,8 @@
 
 Creating music from paint canvases for all ages!
 
-Wireframes - https://bit.ly/2S4XUlA
-Schema Design - https://bit.ly/2S0p1OP
+Wireframes - https://bit.ly/2S4XUlA.
+Schema Design - https://bit.ly/2S0p1OP.
 
 **MVP**
 
