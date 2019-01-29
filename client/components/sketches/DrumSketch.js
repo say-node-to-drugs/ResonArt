@@ -18,7 +18,7 @@ const DrumSketch = p => {
   let myDiv
 
   // make library globally available
-  // window.p5 = p5
+  window.p5 = p5
 
   p.preload = () => {
     hh = p.loadSound('drumSamples/hh_sample.mp3', () => {})
@@ -28,8 +28,7 @@ const DrumSketch = p => {
 
   // Setup function
   p.setup = () => {
-    myDiv = p.createDiv('click to start audio')
-    myDiv.position(0, 0)
+    p.userStartAudio()
 
     canvas = p.createCanvas(canvasWidth, canvasHeight)
     canvas.mousePressed(p.canvasPressed)
@@ -76,10 +75,6 @@ const DrumSketch = p => {
     drums.setBPM('80')
 
     p.drawMatrix()
-
-    p.userStartAudio().then(function() {
-      myDiv.remove()
-    })
   }
 
   p.keyPressed = () => {
