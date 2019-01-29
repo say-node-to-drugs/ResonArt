@@ -1,8 +1,8 @@
 const DrumSketch = p => {
   // Set height and width of canvas
 
-  let canvasWidth = p.windowWidth / 1.25
-  let canvasHeight = p.windowHeight / 3
+  let canvasWidth = p.windowWidth / 3
+  let canvasHeight = p.windowHeight / 6
 
   let beatLength = 16
   let cellWidth = canvasWidth / beatLength

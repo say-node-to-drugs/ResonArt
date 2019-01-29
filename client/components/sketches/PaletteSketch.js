@@ -1,6 +1,6 @@
 console.log('WE IN THE COMPONENT')
 
-const CanvasSketch = p => {
+const PaletteSketch = p => {
   let recorder, soundFile, canvas
   let prevX, prevY
   let state = 0 // mousePress will increment from Record, to Stop, to Play
@@ -15,7 +15,9 @@ const CanvasSketch = p => {
   let recordArrayBlack = []
 
   p.setup = () => {
-    canvas = p.createCanvas(800, 800)
+    p.userStartAudio()
+
+    canvas = p.createCanvas(500, 500)
     p.background(255)
     p.fill(0)
     p.strokeWeight(50)
@@ -231,7 +233,7 @@ const CanvasSketch = p => {
       for (let i = 0; i < playbackArray.length - 4; i = i + 2) {
         synth.amp(2)
         // Gives us a value between 30 and  80 (good audible frequencies)
-        synth.freq(midiToFreq(60 * (800 - playbackArray[i + 1]) / 500 + 30))
+        synth.freq(p.midiToFreq(60 * (800 - playbackArray[i + 1]) / 500 + 30))
         // Start black stroke
         p.stroke(0)
         console.log(color)
@@ -245,7 +247,7 @@ const CanvasSketch = p => {
         sleep(17)
       }
 
-      mouseReleased()
+      canvas.mouseReleased()
       state = 0
       console.log('DONE')
       replay = false
@@ -288,4 +290,4 @@ const CanvasSketch = p => {
   //   console.log('LZ - DECOMP. ARRAY: ', dearray.length, dearray);
   // }
 }
-export default CanvasSketch
+export default PaletteSketch
