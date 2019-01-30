@@ -48,10 +48,11 @@ const PaletteSketch = p => {
     recorder.setInput(synth)
     soundFile = new p5.SoundFile()
 
-    // Set input of recorder to instruments
-    // create an empty sound file that we will use to playback the recording
-
-    /*         BUTTONS         */
+    /*                 
+  ----------------------------------------------------------
+                    Buttons 
+  ----------------------------------------------------------
+  */
     // Button to begin recording audio
     let startRecording = document.createElement('button')
     startRecording.innerText = 'Start Recording'
@@ -118,7 +119,11 @@ const PaletteSketch = p => {
     document.body.appendChild(playback)
   }
 
-  /*       MOUSE EVENT HANDLERS        */
+  /*                 
+  ----------------------------------------------------------
+                    Mouse Event Handlers 
+  ----------------------------------------------------------
+  */
   p.canvasPressed = () => {
     // If nothing is being played and the mouse is clicked on the canvas
     if (state === 0 && p.mouseX <= 800 && p.mouseY <= 800) {
@@ -151,7 +156,11 @@ const PaletteSketch = p => {
     state = 0
   }
 
-  /*       DRAW FUNCTION       */
+  /*                 
+  ----------------------------------------------------------
+                     Draw Function 
+  ----------------------------------------------------------
+  */
   let blackPixels = []
   let redPixels = []
   let pixels
@@ -191,19 +200,6 @@ const PaletteSketch = p => {
     }
   }
 
-  // p.keyPressed = () => {
-  //   console.log("space was pressed !!!!")
-  //   if (p.key === ' ') {
-  //     if (!instruments.isPlaying) {
-  //       instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
-  //       playingCanvas()
-  //       instruments.loop()
-  //     } else {
-  //       instruments.stop()
-  //     }
-  //   }
-  // }
-
   document.addEventListener(
     'keydown',
     function(event) {
@@ -227,7 +223,11 @@ const PaletteSketch = p => {
     false
   )
 
-  /*       Playing Music Function        */
+  /*                 
+  ----------------------------------------------------------
+                     Playing Music Function 
+  ----------------------------------------------------------
+  */
   const playingCanvas = () => {
     // Loop for the amount of slices we take of the canvas
     for (let i = 0; i < 16; i++) {
@@ -369,8 +369,8 @@ function sleep(milliseconds) {
 function getSum(total, num) {
   return total + num
 }
-//_______________________________________________________
-
+//_______________WILL BE USED LATER________________________________________
+//
 // function LZcompressed(array) {
 //   var string = String.fromCharCode.apply(null, array);
 //   var compressed = LZString.compress(string);
