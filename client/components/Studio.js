@@ -1,13 +1,33 @@
 import React from 'react'
 import DrumSketch from './sketches/DrumSketch'
 import PaletteSketch from './sketches/PaletteSketch'
+import PropTypes from 'prop-types'
+import {withStyles} from '@material-ui/core'
+
+let imgUrl = 'blurredBackdrop.jpg'
+
+let styles = {
+  root: {
+    backgroundImage: 'url(' + imgUrl + ')',
+    backgroundSize: 'cover',
+    overflow: 'hidden',
+    flexGrow: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    textAlign: 'center',
+    margin: 'auto',
+    padding: '30px',
+    flexDirection: 'column'
+  },
+  grow: {
+    flexGrow: 1
+  }
+}
 
 class Studio extends React.Component {
   constructor(props) {
     super(props)
     this.state = {}
-    this.drumP5Wrapper = React.createRef()
-    this.paletteP5Wrapper = React.createRef()
   }
   componentDidMount() {
     this.canvas = new window.p5(DrumSketch, 'drumP5Wrapper')
@@ -15,16 +35,21 @@ class Studio extends React.Component {
   }
 
   render() {
+    const {classes} = this.props
     return (
-      <div className="center">
-        <div
-          ref={this.paletteP5Wrapper}
-          className="palette"
-          id="paletteP5Wrapper"
-        />
-        <div ref={this.drumP5Wrapper} className="drums" id="drumP5Wrapper" />
+      <div className={classes.root}>
+        <div className="palette" id="paletteP5Wrapper" />
+        <div className="drums" id="drumP5Wrapper">
+          <div className="drumMachine" id="drumMachine" />
+          <div className="bpmCTRL" id="bpmCTRL" />
+        </div>
       </div>
     )
   }
 }
-export default Studio
+
+Studio.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(Studio)

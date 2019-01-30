@@ -1,8 +1,8 @@
 const DrumSketch = p => {
   // Set height and width of canvas
 
-  let canvasWidth = p.windowWidth / 2.5
-  let canvasHeight = p.windowHeight / 8
+  let canvasWidth = p.windowWidth * (1 / 2)
+  let canvasHeight = p.windowWidth / 8
 
   let beatLength = 16
   let cellWidth = canvasWidth / beatLength
@@ -15,7 +15,6 @@ const DrumSketch = p => {
   let hPhrase, cPhrase, bPhrase
   let drums
   let bpmCTRL
-  let myDiv
 
   // make library globally available
   window.p5 = p5
@@ -31,8 +30,7 @@ const DrumSketch = p => {
     p.userStartAudio()
 
     canvas = p.createCanvas(canvasWidth, canvasHeight)
-    canvas.parent('drumP5Wrapper')
-    canvas.style('display', 'block')
+    canvas.parent('drumMachine')
     canvas.mousePressed(p.canvasPressed)
 
     hPat = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
@@ -74,7 +72,7 @@ const DrumSketch = p => {
       drums.setBPM(bpmCTRL.value())
     })
     drums.setBPM('80')
-    bpmCTRL.parent('drumP5Wrapper')
+    bpmCTRL.parent('bpmCTRL')
     bpmCTRL.class('bpmCTRL')
 
     p.drawMatrix()
