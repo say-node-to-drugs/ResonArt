@@ -24,6 +24,9 @@ const PaletteSketch = p => {
     p.userStartAudio()
 
     canvas = p.createCanvas(800, 800)
+    canvas.parent('paletteP5Wrapper')
+    canvas.style('display', 'block')
+
     p.background(255)
     p.fill(0)
     p.strokeWeight(50)

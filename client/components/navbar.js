@@ -52,24 +52,39 @@ const styles = {
     marginRight: 20
   },
   avatar: {
-    margin: 5
-  }
+    margin: 'auto'
+  },
+  buttonDiv: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  button: {
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  toolbar: {
+    display: 'flex',
+    justifyContent: 'space-between'
+  },
+  logo: {}
 }
 
 function Navbar(props) {
   const {classes, handleClick, isLoggedIn} = props
   return (
-    <div className={classes.root}>
+    <div id="navbar" className={classes.root}>
       <MuiThemeProvider theme={theme}>
         <AppBar position="static">
-          <Toolbar>
-            <IconButton component={Link} to="/home">
-              <Avatar
-                alt="Dylan"
-                src="Dylan_at_Bishops.jpg"
-                className={classes.avatar}
-              />
-            </IconButton>
+          <Toolbar className={classes.toolbar}>
+            <div>
+              <IconButton component={Link} to="/home">
+                <Avatar
+                  alt="ResonArt Logo"
+                  src="audioWave.png"
+                  className={classes.avatar}
+                />
+              </IconButton>
+            </div>
             {isLoggedIn ? (
               <Typography
                 component={Link}
@@ -81,26 +96,13 @@ function Navbar(props) {
                 Logout
               </Typography>
             ) : (
-              <div className={classes.root}>
-                <Typography
-                  component={Link}
-                  to="/login"
-                  variant="h6"
-                  color="secondary"
-                  className={classes.grow}
-                >
-                  Login
-                </Typography>
-                <Typography
-                  component={Link}
-                  to="/signup"
-                  variant="h6"
-                  color="secondary"
-                  className={classes.grow}
-                >
-                  Signup
-                </Typography>
-                <Button color="secondary">Login</Button>
+              <div className={classes.buttonDiv}>
+                <div className={classes.button}>
+                  <Button color="secondary">Login</Button>
+                </div>
+                <div className={classes.button}>
+                  <Button color="secondary">Signup</Button>
+                </div>
               </div>
             )}
           </Toolbar>
