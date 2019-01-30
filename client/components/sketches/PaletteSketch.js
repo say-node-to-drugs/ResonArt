@@ -1,11 +1,13 @@
 const PaletteSketch = p => {
   let recorder, soundFile, canvas, startTime, currentTime
-  let playing = false
   let prevX, prevY
   let state = 0 // mousePress will increment from Record, to Stop, to Play
   let synth, synth2
   let replay = false
   let color = 'black'
+  let synth1Sound, synth2Sound, synth1Phrase, synth2Phrase, instruments
+  let synth1Pattern = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  let synth2Pattern = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
   const notes = [48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71]
   let recordArray = []
@@ -13,12 +15,18 @@ const PaletteSketch = p => {
   let recordArrayRed = []
   let recordArrayBlack = []
 
+  p.preload = () => {
+    synth1Sound = new p5.SoundFile()
+    synth2Sound = new p5.SoundFile()
+  }
+
   p.setup = () => {
     p.userStartAudio()
 
-    canvas = p.createCanvas(500, 500)
+    canvas = p.createCanvas(800, 800)
     canvas.parent('paletteP5Wrapper')
     canvas.style('display', 'block')
+
     p.background(255)
     p.fill(0)
     p.strokeWeight(50)
@@ -27,20 +35,17 @@ const PaletteSketch = p => {
     canvas.mousePressed(p.canvasPressed)
     canvas.mouseReleased(p.canvasReleased)
 
-    // create a sound recorder
-    recorder = new p5.SoundRecorder()
-    let producedAudio = new p5.AudioIn()
-    producedAudio.setSource(0)
-
-    // Create instruments
     synth = new p5.SinOsc()
     synth2 = new p5.Oscillator()
     synth2.setType('sawtooth')
 
-    // Set input of recorder to instruments
+    // create a sound recorder
+    recorder = new p5.SoundRecorder()
     recorder.setInput(synth)
-    // create an empty sound file that we will use to playback the recording
     soundFile = new p5.SoundFile()
+
+    // Set input of recorder to instruments
+    // create an empty sound file that we will use to playback the recording
 
     /*         BUTTONS         */
     // Button to begin recording audio
@@ -75,10 +80,19 @@ const PaletteSketch = p => {
     let play = document.createElement('button')
     play.innerText = 'Play'
     play.onclick = () => {
-      playing = true
-      window.requestAnimationFrame(playingCanvas)
+      playingCanvas()
+      instruments.loop()
     }
     document.body.appendChild(play)
+
+    let stop = document.createElement('button')
+    stop.innerText = 'Stop'
+    stop.onclick = () => {
+      synth.stop()
+      synth2.stop()
+      instruments.stop()
+    }
+    document.body.appendChild(stop)
     // Button to download the currently recorded audio
 
     let download = document.createElement('button')
@@ -131,6 +145,7 @@ const PaletteSketch = p => {
     state = 0
   }
 
+  /*       DRAW FUNCTION       */
   let blackPixels = []
   let redPixels = []
   let pixels
@@ -170,71 +185,86 @@ const PaletteSketch = p => {
     }
   }
 
-  /* Playing Music Function */
+  /*       Playing Music Function        */
   const playingCanvas = () => {
-    if (playing) {
-      // On first loop start the synths and get the starting time
-      if (!loopNum) {
-        synth.start()
-        synth2.start()
-        synth.amp(0)
-        synth2.amp(0)
-        startTime = new Date().getTime()
-      }
-
-      if (loopNum < 200) {
-        currentTime = new Date().getTime()
-        // If enough time has passed
-        console.log('currentTime - startTime = ' + (currentTime - startTime))
-        if (currentTime - startTime > loopNum * 20) {
-          loopNum++
-          // Get all pixel data from current slice
-          pixels = canvas.drawingContext.getImageData(loopNum * 4, 0, 50, 800)
-          let j = 0
-          // Loop throught all pixel data and add all colored pixels' y-values to appropriate arrays
-          while (j < pixels.data.length) {
-            if (pixels.data[j] === 0 && pixels.data[j + 1] === 0) {
-              blackPixels.push(j / 200)
-            } else if (pixels.data[j] === 255 && pixels.data[j + 1] === 0) {
-              redPixels.push(j / 200)
-            }
-            j += 4
-          }
-          // Finds the average y-value for black pixels and plays the note closest to that frequency
-          if (blackPixels.length) {
-            let averageBlack = blackPixels.reduce(getSum) / blackPixels.length
-
-            let frequency = 60 * averageBlack / 500
-            let index = Math.floor(14 - 14 * frequency / 125)
-
-            synth.freq(p.midiToFreq(notes[index]))
-            synth.amp(2)
-          } else {
-            synth.freq(0)
-          }
-          // Finds the average y-value for red pixels and plays the note closest to that frequency
-          if (redPixels.length) {
-            let averageRed = redPixels.reduce(getSum) / redPixels.length
-
-            let frequency = 60 * averageRed / 500
-            let index = Math.floor(14 - 14 * frequency / 125)
-
-            synth2.freq(p.midiToFreq(notes[index]))
-            synth2.amp(2)
-          } else {
-            synth2.freq(0)
-          }
-          // Reset the colored pixels arrays
-          blackPixels = []
-          redPixels = []
+    // Loop for the amount of slices we take of the canvas
+    for (let i = 0; i < 16; i++) {
+      // Get all pixel data from current slice
+      pixels = canvas.drawingContext.getImageData(i * 50, 0, 50, 800)
+      let j = 0
+      // Loop throught all pixel data and add all colored pixels' y-values to appropriate arrays
+      while (j < pixels.data.length) {
+        if (pixels.data[j] === 0 && pixels.data[j + 1] === 0) {
+          blackPixels.push(j / 50)
+        } else if (pixels.data[j] === 255 && pixels.data[j + 1] === 0) {
+          redPixels.push(j / 50)
         }
-        window.requestAnimationFrame(playingCanvas)
-      } else {
-        synth.stop()
-        synth2.stop()
-        loopNum = 0
-        playing = false
+        j += 4
       }
+
+      // Finds the average y-value for black pixels and adds the note closest to that frequency to the synth pattern
+      if (blackPixels.length) {
+        let averageBlack = blackPixels.reduce(getSum) / blackPixels.length
+
+        let frequency = 90 * (averageBlack / 500)
+        let index = Math.floor(14 - 14 * (frequency / 600))
+        synth1Pattern[i] = notes[index]
+      } else {
+        synth1Pattern[i] = 1
+      }
+      // Finds the average y-value for red pixels and adds the note closest to that frequency to the synth pattern
+      if (redPixels.length) {
+        let averageRed = redPixels.reduce(getSum) / redPixels.length
+
+        let frequency = 90 * (averageRed / 500)
+        let index = Math.floor(14 - 14 * (frequency / 600))
+        synth2Pattern[i] = notes[index]
+      } else {
+        synth2Pattern[i] = 1
+      }
+      // Reset the colored pixels arrays
+      blackPixels = []
+      redPixels = []
+
+      console.log('synth1Pattern is ')
+      console.log(synth1Pattern)
+      synth.start()
+      synth2.start()
+      // Setup phrases to loop
+      synth1Phrase = new p5.Phrase(
+        'synth1Sound',
+        (time, value) => {
+          if (value > 1) {
+            synth.freq(p.midiToFreq(value))
+            synth.amp(0.5)
+          } else {
+            synth.amp(0)
+            synth.freq(p.midiToFreq(value))
+          }
+        },
+        synth1Pattern
+      )
+      synth2Phrase = new p5.Phrase(
+        'synth2Sound',
+        (time, value) => {
+          console.log('current value is ' + value)
+          if (value > 1) {
+            synth2.freq(p.midiToFreq(value))
+            synth2.amp(0.5)
+          } else {
+            synth2.amp(0)
+            synth2.freq(p.midiToFreq(value))
+          }
+        },
+        synth2Pattern
+      )
+
+      instruments = new p5.Part()
+
+      instruments.addPhrase(synth1Phrase)
+      instruments.addPhrase(synth2Phrase)
+
+      instruments.setBPM('80')
     }
   }
 
