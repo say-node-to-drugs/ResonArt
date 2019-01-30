@@ -13,13 +13,20 @@ import {
   Avatar
 } from '@material-ui/core'
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles'
-import {purple, red, white, blueGrey} from '@material-ui/core/colors'
+import {
+  purple,
+  red,
+  white,
+  blueGrey,
+  yellow,
+  blue
+} from '@material-ui/core/colors'
 import MenuIcon from '@material-ui/icons/Menu'
 
 const theme = createMuiTheme({
   palette: {
-    primary: {main: blueGrey[700]}, // Purple and green play nicely together.
-    secondary: {main: red[50]} // This is just green.A700 as hex.
+    primary: {main: blue[900]}, // Purple and green play nicely together.
+    secondary: {main: purple[500]} // This is just green.A700 as hex.
   },
   overrides: {
     // Name of the component ⚛️ / style sheet
@@ -27,10 +34,12 @@ const theme = createMuiTheme({
       // Name of the rule
       text: {
         // Some CSS
-        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+        background: `linear-gradient(45deg, ${yellow[200]} 30%, ${
+          red[200]
+        } 90%)`,
         borderRadius: 3,
         border: 0,
-        color: 'white',
+        color: 'black',
         height: 48,
         padding: '0 30px',
         boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)'
@@ -42,6 +51,9 @@ const theme = createMuiTheme({
 
 const styles = {
   root: {
+    backgroundImage: 'newWaveAudio.jpg',
+    backgroundSize: 'cover',
+    overflow: 'hidden',
     flexGrow: 1
   },
   grow: {
@@ -65,8 +77,7 @@ const styles = {
   toolbar: {
     display: 'flex',
     justifyContent: 'space-between'
-  },
-  logo: {}
+  }
 }
 
 function Navbar(props) {
@@ -80,7 +91,7 @@ function Navbar(props) {
               <IconButton component={Link} to="/home">
                 <Avatar
                   alt="ResonArt Logo"
-                  src="audioWave.png"
+                  src="soundWave.jpg"
                   className={classes.avatar}
                 />
               </IconButton>

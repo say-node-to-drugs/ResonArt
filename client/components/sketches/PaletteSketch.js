@@ -13,15 +13,19 @@ const PaletteSketch = p => {
   let recordArrayRed = []
   let recordArrayBlack = []
 
+  let width = p.windowWidth * (1 / 2)
+  let height = p.windowWidth / 4
+
   p.setup = () => {
     p.userStartAudio()
 
-    canvas = p.createCanvas(500, 500)
+    canvas = p.createCanvas(width, height)
     canvas.parent('paletteP5Wrapper')
     canvas.style('display', 'block')
     p.background(255)
     p.fill(0)
     p.strokeWeight(50)
+    canvas.class('paletteP5')
 
     // Link mouse press functions
     canvas.mousePressed(p.canvasPressed)
