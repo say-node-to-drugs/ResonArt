@@ -1,14 +1,12 @@
 import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
 import {compose} from 'recompose'
-import {FirebaseContext, withFirebase} from '../../firebase/FirebaseContext.js'
+import {withFirebase} from '../../firebase/FirebaseContext.js'
 
 export const SignUpPage = () => (
   <div>
     <h1>SignUp</h1>
-    <FirebaseContext.Consumer>
-      {Firebase => <SignUpForm firebase={Firebase} />}
-    </FirebaseContext.Consumer>
+    <SignUpForm />
   </div>
 )
 
