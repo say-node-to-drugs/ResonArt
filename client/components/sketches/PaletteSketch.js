@@ -5,7 +5,8 @@ const PaletteSketch = p => {
   let synth, synth2
   let replay = false
   let color = 'black'
-  let synth1Sound, synth2Sound, synth1Phrase, synth2Phrase, instruments
+  let synth1Sound, synth2Sound, synth1Phrase, synth2Phrase
+  let instruments = new p5.Part()
   let synth1Pattern = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   let synth2Pattern = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
@@ -35,22 +36,26 @@ const PaletteSketch = p => {
     canvas.class('paletteP5')
 
     // Link mouse press functions
-    canvas.mousePressed(p.canvasPressed)
-    canvas.mouseReleased(p.canvasReleased)
 
     synth = new p5.SinOsc()
+    synth.freq(0)
     synth2 = new p5.Oscillator()
     synth2.setType('sawtooth')
+    synth2.freq(0)
+
+    canvas.mousePressed(p.canvasPressed)
+    canvas.mouseReleased(p.canvasReleased)
 
     // create a sound recorder
     recorder = new p5.SoundRecorder()
     recorder.setInput(synth)
     soundFile = new p5.SoundFile()
 
-    // Set input of recorder to instruments
-    // create an empty sound file that we will use to playback the recording
-
-    /*         BUTTONS         */
+    /*                 
+  ----------------------------------------------------------
+                    Buttons 
+  ----------------------------------------------------------
+  */
     // Button to begin recording audio
     let startRecording = document.createElement('button')
     startRecording.innerText = 'Start Recording'
@@ -117,7 +122,11 @@ const PaletteSketch = p => {
     document.body.appendChild(playback)
   }
 
-  /*       MOUSE EVENT HANDLERS        */
+  /*                 
+  ----------------------------------------------------------
+                    Mouse Event Handlers 
+  ----------------------------------------------------------
+  */
   p.canvasPressed = () => {
     // If nothing is being played and the mouse is clicked on the canvas
     if (state === 0 && p.mouseX <= 800 && p.mouseY <= 800) {
@@ -140,15 +149,21 @@ const PaletteSketch = p => {
     // Stop playing synth
     if (color === 'black') {
       synth.fade(0, 0.5)
+      synth.amp(0)
       synth.stop()
     } else if (color === 'red') {
       synth2.fade(0, 0.5)
+      synth2.amp(0)
       synth2.stop()
     }
     state = 0
   }
 
-  /*       DRAW FUNCTION       */
+  /*                 
+  ----------------------------------------------------------
+                     Draw Function 
+  ----------------------------------------------------------
+  */
   let blackPixels = []
   let redPixels = []
   let pixels
@@ -188,7 +203,34 @@ const PaletteSketch = p => {
     }
   }
 
-  /*       Playing Music Function        */
+  document.addEventListener(
+    'keydown',
+    function(event) {
+      console.log('space was pressed !!!!')
+      if (event.key === ' ') {
+        if (!instruments.isPlaying) {
+          instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
+          playingCanvas()
+          instruments.loop()
+        } else {
+          synth.fade(0, 0.5)
+          synth.amp(0)
+          synth.stop()
+          synth2.fade(0, 0.5)
+          synth2.amp(0)
+          synth2.stop()
+          instruments.stop()
+        }
+      }
+    },
+    false
+  )
+
+  /*                 
+  ----------------------------------------------------------
+                     Playing Music Function 
+  ----------------------------------------------------------
+  */
   const playingCanvas = () => {
     // Loop for the amount of slices we take of the canvas
     for (let i = 0; i < 16; i++) {
@@ -212,6 +254,7 @@ const PaletteSketch = p => {
         let frequency = 90 * (averageBlack / 500)
         let index = Math.floor(14 - 14 * (frequency / 600))
         synth1Pattern[i] = notes[index]
+        synth.start()
       } else {
         synth1Pattern[i] = 1
       }
@@ -222,6 +265,7 @@ const PaletteSketch = p => {
         let frequency = 90 * (averageRed / 500)
         let index = Math.floor(14 - 14 * (frequency / 600))
         synth2Pattern[i] = notes[index]
+        synth2.start()
       } else {
         synth2Pattern[i] = 1
       }
@@ -231,13 +275,12 @@ const PaletteSketch = p => {
 
       console.log('synth1Pattern is ')
       console.log(synth1Pattern)
-      synth.start()
-      synth2.start()
       // Setup phrases to loop
       synth1Phrase = new p5.Phrase(
         'synth1Sound',
         (time, value) => {
           if (value > 1) {
+            console.log('current value is ' + value)
             synth.freq(p.midiToFreq(value))
             synth.amp(0.5)
           } else {
@@ -250,7 +293,6 @@ const PaletteSketch = p => {
       synth2Phrase = new p5.Phrase(
         'synth2Sound',
         (time, value) => {
-          console.log('current value is ' + value)
           if (value > 1) {
             synth2.freq(p.midiToFreq(value))
             synth2.amp(0.5)
@@ -330,8 +372,8 @@ function sleep(milliseconds) {
 function getSum(total, num) {
   return total + num
 }
-//_______________________________________________________
-
+//_______________WILL BE USED LATER________________________________________
+//
 // function LZcompressed(array) {
 //   var string = String.fromCharCode.apply(null, array);
 //   var compressed = LZString.compress(string);
