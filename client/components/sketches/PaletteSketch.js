@@ -5,7 +5,8 @@ const PaletteSketch = p => {
   let synth, synth2
   let replay = false
   let color = 'black'
-  let synth1Sound, synth2Sound, synth1Phrase, synth2Phrase, instruments
+  let synth1Sound, synth2Sound, synth1Phrase, synth2Phrase
+  let instruments = new p5.Part()
   let synth1Pattern = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   let synth2Pattern = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
@@ -32,12 +33,15 @@ const PaletteSketch = p => {
     p.strokeWeight(50)
 
     // Link mouse press functions
-    canvas.mousePressed(p.canvasPressed)
-    canvas.mouseReleased(p.canvasReleased)
 
     synth = new p5.SinOsc()
+    synth.freq(0)
     synth2 = new p5.Oscillator()
     synth2.setType('sawtooth')
+    synth2.freq(0)
+
+    canvas.mousePressed(p.canvasPressed)
+    canvas.mouseReleased(p.canvasReleased)
 
     // create a sound recorder
     recorder = new p5.SoundRecorder()
@@ -137,9 +141,11 @@ const PaletteSketch = p => {
     // Stop playing synth
     if (color === 'black') {
       synth.fade(0, 0.5)
+      synth.amp(0)
       synth.stop()
     } else if (color === 'red') {
       synth2.fade(0, 0.5)
+      synth2.amp(0)
       synth2.stop()
     }
     state = 0
@@ -185,6 +191,42 @@ const PaletteSketch = p => {
     }
   }
 
+  // p.keyPressed = () => {
+  //   console.log("space was pressed !!!!")
+  //   if (p.key === ' ') {
+  //     if (!instruments.isPlaying) {
+  //       instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
+  //       playingCanvas()
+  //       instruments.loop()
+  //     } else {
+  //       instruments.stop()
+  //     }
+  //   }
+  // }
+
+  document.addEventListener(
+    'keydown',
+    function(event) {
+      console.log('space was pressed !!!!')
+      if (event.key === ' ') {
+        if (!instruments.isPlaying) {
+          instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
+          playingCanvas()
+          instruments.loop()
+        } else {
+          synth.fade(0, 0.5)
+          synth.amp(0)
+          synth.stop()
+          synth2.fade(0, 0.5)
+          synth2.amp(0)
+          synth2.stop()
+          instruments.stop()
+        }
+      }
+    },
+    false
+  )
+
   /*       Playing Music Function        */
   const playingCanvas = () => {
     // Loop for the amount of slices we take of the canvas
@@ -209,6 +251,7 @@ const PaletteSketch = p => {
         let frequency = 90 * (averageBlack / 500)
         let index = Math.floor(14 - 14 * (frequency / 600))
         synth1Pattern[i] = notes[index]
+        synth.start()
       } else {
         synth1Pattern[i] = 1
       }
@@ -219,6 +262,7 @@ const PaletteSketch = p => {
         let frequency = 90 * (averageRed / 500)
         let index = Math.floor(14 - 14 * (frequency / 600))
         synth2Pattern[i] = notes[index]
+        synth2.start()
       } else {
         synth2Pattern[i] = 1
       }
@@ -228,13 +272,12 @@ const PaletteSketch = p => {
 
       console.log('synth1Pattern is ')
       console.log(synth1Pattern)
-      synth.start()
-      synth2.start()
       // Setup phrases to loop
       synth1Phrase = new p5.Phrase(
         'synth1Sound',
         (time, value) => {
           if (value > 1) {
+            console.log('current value is ' + value)
             synth.freq(p.midiToFreq(value))
             synth.amp(0.5)
           } else {
@@ -247,7 +290,6 @@ const PaletteSketch = p => {
       synth2Phrase = new p5.Phrase(
         'synth2Sound',
         (time, value) => {
-          console.log('current value is ' + value)
           if (value > 1) {
             synth2.freq(p.midiToFreq(value))
             synth2.amp(0.5)
