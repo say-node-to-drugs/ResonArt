@@ -8,6 +8,7 @@ import {
   SignUpLink,
   SignUpPage
 } from './components/login-signup/SignUpIndex'
+import SignInPage from './components/login-signup/SignInIndex'
 import {me} from './store'
 
 /**
@@ -26,6 +27,7 @@ class Routes extends Component {
         {/* Routes placed here are available to all visitors */}
         <Route path="/login" component={Login} />
         <Route path="/signup" component={SignUpPage} />
+        <Route path="/signin" component={SignInPage} />
         <Route path="/studio" component={Studio} />
         {/* <Route path="/canvas" component={Canvas} /> */}
         {isLoggedIn && (

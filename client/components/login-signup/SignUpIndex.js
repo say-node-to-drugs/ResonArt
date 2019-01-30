@@ -108,4 +108,4 @@ const SignUpLink = () => (
 
 export const SignUpForm = compose(withRouter, withFirebase)(SignUpFormBase)
 
-// export {SignUpForm, SignUpLink}
+export {SignUpLink}

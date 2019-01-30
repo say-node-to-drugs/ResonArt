@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {logout} from '../store'
+import {SignOutButton} from './login-signup/SignOutIndex'
 import {
   withStyles,
   AppBar,
@@ -87,7 +88,7 @@ function Navbar(props) {
             </div>
             {isLoggedIn ? (
               <Typography
-                component={Link}
+                component={SignOutButton}
                 to="/home"
                 variant="h6"
                 color="secondary"
