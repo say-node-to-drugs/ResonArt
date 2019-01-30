@@ -1,17 +1,18 @@
 import React, {Component} from 'react'
-import {withRouter} from 'react-router-dom'
+import {Link, withRouter} from 'react-router-dom'
 import {compose} from 'recompose'
-
 import {SignUpLink} from './SignUpIndex'
 import {withFirebase} from '../../firebase/FirebaseContext.js'
 
-const SignInPage = () => (
+export const SignInPage = () => (
   <div>
     <h1>SignIn</h1>
     <SignInForm />
     <SignUpLink />
   </div>
 )
+
+console.log('INIT 2 ', withFirebase)
 
 const INITIAL_STATE = {
   email: '',
@@ -33,7 +34,7 @@ class SignInFormBase extends Component {
       .doSignInWithEmailAndPassword(email, password)
       .then(() => {
         this.setState({...INITIAL_STATE})
-        this.props.history.push('/studio')
+        this.props.history.push('/home')
       })
       .catch(error => {
         this.setState({error})
@@ -48,6 +49,8 @@ class SignInFormBase extends Component {
 
   render() {
     const {email, password, error} = this.state
+
+    console.log('RENDER 1')
 
     const isInvalid = password === '' || email === ''
 
@@ -79,8 +82,4 @@ class SignInFormBase extends Component {
   }
 }
 
-const SignInForm = compose(withRouter, withFirebase)(SignInFormBase)
-
-export default SignInPage
-
-export {SignInForm}
+export const SignInForm = compose(withRouter, withFirebase)(SignInFormBase)

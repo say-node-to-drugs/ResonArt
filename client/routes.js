@@ -8,7 +8,7 @@ import {
   SignUpLink,
   SignUpPage
 } from './components/login-signup/SignUpIndex'
-import SignInPage from './components/login-signup/SignInIndex'
+import {SignInPage} from './components/login-signup/SignInIndex'
 import {me} from './store'
 
 /**

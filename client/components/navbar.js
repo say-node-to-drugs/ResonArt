@@ -4,6 +4,8 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {logout} from '../store'
 import {SignOutButton} from './login-signup/SignOutIndex'
+import {SignUpPage} from './login-signup/SignUpIndex'
+import {SignInPage} from './login-signup/SignInIndex'
 import {
   withStyles,
   AppBar,
@@ -110,10 +112,14 @@ function Navbar(props) {
             ) : (
               <div className={classes.buttonDiv}>
                 <div className={classes.button}>
-                  <Button color="secondary">Login</Button>
+                  <Button component={Link} to="/signin" color="secondary">
+                    Login
+                  </Button>
                 </div>
                 <div className={classes.button}>
-                  <Button color="secondary">Signup</Button>
+                  <Button component={Link} to="/signup" color="secondary">
+                    Signup
+                  </Button>
                 </div>
               </div>
             )}
