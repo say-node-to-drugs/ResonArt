@@ -1,5 +1,3 @@
-console.log('WE IN THE COMPONENT')
-
 const PaletteSketch = p => {
   let recorder, soundFile, canvas
   let prevX, prevY
@@ -18,6 +16,8 @@ const PaletteSketch = p => {
     p.userStartAudio()
 
     canvas = p.createCanvas(500, 500)
+    canvas.parent('paletteP5Wrapper')
+    canvas.style('display', 'block')
     p.background(255)
     p.fill(0)
     p.strokeWeight(50)
