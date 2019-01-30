@@ -1,13 +1,13 @@
 import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
 import {compose} from 'recompose'
-import {FirebaseContext, withFirebase} from '../../index'
+import {FirebaseContext, withFirebase} from '../../firebase/FirebaseContext.js'
 
 export const SignUpPage = () => (
   <div>
     <h1>SignUp</h1>
     <FirebaseContext.Consumer>
-      {firebase => <SignUpForm firebase={firebase} />}
+      {Firebase => <SignUpForm firebase={Firebase} />}
     </FirebaseContext.Consumer>
   </div>
 )
@@ -108,10 +108,6 @@ const SignUpLink = () => (
   </p>
 )
 
-console.log('WITHFIREBASE? ', withFirebase)
-
-export const SignUpForm = withRouter(SignUpFormBase)
-
-// export const SignUpForm = compose(withRouter, withFirebase)(SignUpFormBase)
+export const SignUpForm = compose(withRouter, withFirebase)(SignUpFormBase)
 
 // export {SignUpForm, SignUpLink}

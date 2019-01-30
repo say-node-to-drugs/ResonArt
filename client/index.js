@@ -7,16 +7,7 @@ import App from './app'
 
 import Firebase from './firebase/Firebase.js'
 
-const FirebaseContext = React.createContext(null)
-
-console.log('CONTEXT: ', FirebaseContext)
-
-const withFirebase = Component => props => (
-  <FirebaseContext.Consumer>
-    {firebase => <Component {...props} firebase={firebase} />}
-  </FirebaseContext.Consumer>
-)
-console.log('WITH CONTEXT: ', withFirebase)
+import {FirebaseContext} from './firebase/FirebaseContext.js'
 
 ReactDOM.render(
   <FirebaseContext.Provider value={new Firebase()}>
@@ -28,5 +19,3 @@ ReactDOM.render(
   </FirebaseContext.Provider>,
   document.getElementById('app')
 )
-
-export {FirebaseContext, withFirebase}
