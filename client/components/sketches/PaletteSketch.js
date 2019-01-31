@@ -11,6 +11,8 @@ const PaletteSketch = p => {
   let synth1Sound;
   let synth2Sound;
   const notes = [48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71]
+  let allBlackGrid = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+  let allRedGrid = []
   let recordArrayRed = []
   let recordArrayBlack = []
 
@@ -139,29 +141,30 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
   p.mouseDragged = () => {
-    console.log(color)
-    let rowClicked = 14- p.floor(14 * (p.mouseY / p.height))
-    let indexClicked = p.floor(16 * p.mouseX / p.width)
-    console.log(`${indexClicked},${rowClicked}`)
+    if (p.mouseX >= 0 && p.mouseX <= width && p.mouseY >= 0 && p.mouseY <= height) {
+      console.log(color)
+      let rowClicked = 14- p.floor(14 * (p.mouseY / p.height))
+      let indexClicked = p.floor(16 * p.mouseX / p.width)
+      console.log(`${indexClicked},${rowClicked}`)
 
-    if(color === 'black'){
-      if(synth1Pattern[indexClicked]!== notes[rowClicked]){
-      synth1Pattern[indexClicked] = notes[rowClicked]
+      if(color === 'black'){
+        allBlackGrid[indexClicked].push(rowClicked)
+        console.log(synth1Pattern)
       }
-      console.log(synth1Pattern)
-    }
-    if(color === 'red'){
-      if(synth2Pattern[indexClicked]!== notes[rowClicked]){
-      synth2Pattern[indexClicked] = notes[rowClicked]
+      if(color === 'red'){
+        allRedGrid[indexClicked].push(rowClicked)
+        console.log(synth2Pattern)
       }
-      console.log(synth2Pattern)
+      p.draw()
+    } else {
+      synth.amp(0);
+      synth2.amp(0);
     }
-    p.draw()
   }
 
   p.mousePressed = () => {
     // If nothing is being played and the mouse is clicked on the canvas
-    if (state === 0 && p.mouseX <= 800 && p.mouseY <= 800) {
+    if (state === 0 && p.mouseX >= 0 && p.mouseX <= width && p.mouseY >= 0 && p.mouseY <= height) {
       // Begin playing the correct synth
       if (color === 'black') {
         synth.start()
@@ -174,7 +177,9 @@ const PaletteSketch = p => {
       prevX = 0
       prevY = 0
     } else {
-      state = 0
+      state = 0;
+      synth.amp(0);
+      synth2.amp(0);
     }
   }
   p.mouseReleased = () => {
@@ -206,7 +211,7 @@ const PaletteSketch = p => {
 
     if (state) {
       // Gives us a value between 30 and  80 (good audible frequencies)
-      if (p.mouseX <= 800 && p.mouseY <= 800) {
+      if (p.mouseX >= 0 && p.mouseX <= width && p.mouseY >= 0 && p.mouseY <= height) {
         // Start stroke and play audio based on color
         if (color === 'black') {
           synth.amp(2)
@@ -224,6 +229,9 @@ const PaletteSketch = p => {
           //LZcompressed(recordArrayRed);
         }
         p.line(prevX, prevY, p.mouseX, p.mouseY)
+      } else {
+        synth.amp(0);
+        synth2.amp(0);
       }
       // Save previous mouse position for next line() call
       prevX = p.mouseX
@@ -259,6 +267,18 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
   const playingCanvas = () => {
+    // Get average grid y-value for each color
+    console.log("all black grids colored - ")
+    console.log(allBlackGrid)
+    for(let i = 0; i < allBlackGrid.length; i++) {
+      synth1Pattern[i] = allBlackGrid[i].reduce((a,b) => a + b, 0) / allBlackGrid[i].length;
+      synth1Pattern[i] = notes[Math.floor(synth1Pattern[i])];
+    }
+    console.log("new synth note pattern - ")
+    console.log(synth1Pattern)
+
+
+
         synth.start()
 
         synth2.start()
