@@ -63,3 +63,8 @@ form div {
   justify-content: flex-end;
   padding: 20px;
 }
+
+.buttonDiv {
+  display: flex;
+  flex-direction: row;
+}

@@ -86,34 +86,46 @@ const Navigation = (authUser, firebase) => (
   </div>
 )
 
-const NavigationAuth = ({firebase}) => (
-  <div>
-    <Button
-      onClick={() => {
-        firebase.doSignOut()
-      }}
-      to="/home"
-      color="secondary"
-    >
-      Logout
-    </Button>
-  </div>
-)
-
-const NavigationNonAuth = classes => (
-  <div>
-    <div className={classes.button}>
-      <Button component={Link} to="/signin" color="secondary">
-        Login
+const NavigationAuth = props => {
+  const {classes, firebase} = props
+  return (
+    <div className={classes.buttonDiv}>
+      <Button
+        onClick={() => {
+          firebase.doSignOut()
+        }}
+        to="/home"
+        color="secondary"
+      >
+        Logout
       </Button>
     </div>
-    <div className={classes.button}>
-      <Button component={Link} to="/signup" color="secondary">
+  )
+}
+
+const NavigationNonAuth = props => {
+  const {classes} = props
+  return (
+    <div className={classes.buttonDiv}>
+      <Button
+        className={classes.button}
+        component={Link}
+        to="/signin"
+        color="secondary"
+      >
+        Login
+      </Button>
+      <Button
+        className={classes.button}
+        component={Link}
+        to="/signup"
+        color="secondary"
+      >
         Signup
       </Button>
     </div>
-  </div>
-)
+  )
+}
 
 function Navbar(props) {
   const {classes, handleClick, isLoggedIn, authUser, firebase} = props
@@ -131,9 +143,7 @@ function Navbar(props) {
                 />
               </IconButton>
             </div>
-            <div className={classes.buttonDiv}>
-              {Navigation(authUser, firebase)}
-            </div>
+            {Navigation(authUser, firebase)}
           </Toolbar>
         </AppBar>
       </MuiThemeProvider>
