@@ -22,17 +22,20 @@ const PaletteSketch = p => {
     synth2Sound = new p5.SoundFile()
   }
 
+  // buttons
+  let startRecording
+
   p.setup = () => {
     p.userStartAudio()
 
     canvas = p.createCanvas(width, height)
-    canvas.parent('paletteP5Wrapper')
+    canvas.parent('sketchPad')
     canvas.style('display', 'block')
 
     p.background(255)
     p.fill(0)
     p.strokeWeight(50)
-    canvas.class('paletteP5')
+    canvas.class('sketchPad')
 
     // Link mouse press functions
     canvas.mousePressed(p.canvasPressed)
@@ -52,12 +55,14 @@ const PaletteSketch = p => {
 
     /*         BUTTONS         */
     // Button to begin recording audio
-    let startRecording = document.createElement('button')
-    startRecording.innerText = 'Start Recording'
+    startRecording = p.createButton('Start Recording')
     startRecording.onclick = () => {
       recorder.record(soundFile)
     }
-    document.body.appendChild(startRecording)
+    // document.body.appendChild(startRecording)
+    startRecording.parent('buttonManifold')
+    startRecording.class('button')
+
     // Button to stop recording audio
     let stopRecording = document.createElement('button')
     stopRecording.innerText = 'Stop Recording'
@@ -115,6 +120,8 @@ const PaletteSketch = p => {
       replay = true
     }
     document.body.appendChild(playback)
+
+    // button manifold div
   }
 
   /*       MOUSE EVENT HANDLERS        */

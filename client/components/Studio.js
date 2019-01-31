@@ -2,7 +2,7 @@ import React from 'react'
 import DrumSketch from './sketches/DrumSketch'
 import PaletteSketch from './sketches/PaletteSketch'
 import PropTypes from 'prop-types'
-import {withStyles} from '@material-ui/core'
+import {withStyles, Button} from '@material-ui/core'
 
 let imgUrl = 'blurredBackdrop.jpg'
 
@@ -28,17 +28,31 @@ class Studio extends React.Component {
   constructor(props) {
     super(props)
     this.state = {}
+    this.startRecord = React.createRef()
   }
   componentDidMount() {
-    this.canvas = new window.p5(DrumSketch, 'drumP5Wrapper')
+    this.drum = new window.p5(DrumSketch, 'drumP5Wrapper')
     this.palette = new window.p5(PaletteSketch, 'paletteP5Wrapper')
+    // this.buttonManifold = new window.p5(PaletteSketch, 'buttonManifold')
   }
 
   render() {
     const {classes} = this.props
     return (
       <div className={classes.root}>
-        <div className="palette" id="paletteP5Wrapper" />
+        <div className="palette" id="paletteP5Wrapper">
+          <div className="sketchPad" id="sketchPad" />
+          <div className="buttonManifold" id="buttonManifold">
+            {/* <Button
+              className="button"
+              id="startRecording"
+              ref={this.startRecord}
+            >
+              Start Record
+            </Button> */}
+          </div>
+        </div>
+
         <div className="drums" id="drumP5Wrapper">
           <div className="drumMachine" id="drumMachine" />
           <div className="bpmCTRL" id="bpmCTRL" />
