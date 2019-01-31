@@ -59,7 +59,12 @@ form div {
 }
 
 .buttonManifold {
+  /* display: flex;
+  justify-content: flex-end; */
+}
+
+.buttonDiv {
   display: flex;
-  justify-content: flex-end;
-  padding: 20px;
+  flex-direction: row;
+  justify-content: space-between;
 }

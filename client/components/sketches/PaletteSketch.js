@@ -6,10 +6,44 @@ const PaletteSketch = p => {
   let color = 'black'
   let synth1Phrase, synth2Phrase
   let instruments = new p5.Part()
-  let synth1Pattern = [undefined, undefined, undefined , undefined, undefined, undefined, undefined , undefined, undefined, undefined, undefined , undefined, undefined, undefined, undefined , undefined]
-  let synth2Pattern = [undefined, undefined, undefined , undefined, undefined, undefined, undefined , undefined, undefined, undefined, undefined , undefined, undefined, undefined, undefined , undefined]
-  let synth1Sound;
-  let synth2Sound;
+  let synth1Pattern = [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined
+  ]
+  let synth2Pattern = [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined
+  ]
+  let synth1Sound
+  let synth2Sound
   const notes = [48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71]
   let allBlackGrid = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
   let allRedGrid = []
@@ -35,32 +69,32 @@ const PaletteSketch = p => {
     canvas.class('paletteP5')
     for (var x = 0; x < width; x += width / 16) {
       for (var y = 0; y < height; y += height / 14) {
-        p.stroke(200);
-        p.strokeWeight(1);
-        p.line(x, 0, x, height);
-        p.line(0, y, width, y);
+        p.stroke(200)
+        p.strokeWeight(1)
+        p.line(x, 0, x, height)
+        p.line(0, y, width, y)
       }
     }
     p.strokeWeight(10)
-    
+
     // Link mouse press functions
 
     synth = new p5.SinOsc()
     synth.setType('sine')
     synth.freq(0)
-    
+
     synth2 = new p5.Oscillator()
     synth2.setType('sawtooth')
     synth2.freq(0)
-  
+
     // create a sound recorder
     recorder = new p5.SoundRecorder()
     recorder.setInput(synth)
     soundFile = new p5.SoundFile()
 
-    /*                 
+    /*
   ----------------------------------------------------------
-                    Buttons 
+                    Buttons
   ----------------------------------------------------------
   */
     // Button to begin recording audio
@@ -99,7 +133,7 @@ const PaletteSketch = p => {
       instruments.loop()
     }
     play.onkeypress = () => {
-      if(key === ' '){
+      if (key === ' ') {
         playingCanvas()
         instruments.loop()
       }
@@ -135,9 +169,9 @@ const PaletteSketch = p => {
     document.body.appendChild(playback)
   }
 
-  /*                 
+  /*
   ----------------------------------------------------------
-                    Mouse Event Handlers 
+                    Mouse Event Handlers
   ----------------------------------------------------------
   */
   p.mouseDragged = () => {
@@ -154,6 +188,7 @@ const PaletteSketch = p => {
       if(color === 'red'){
         allRedGrid[indexClicked].push(rowClicked)
         console.log(synth2Pattern)
+
       }
       p.draw()
     } else {
@@ -196,9 +231,9 @@ const PaletteSketch = p => {
     state = 0
   }
 
-  /*                 
+  /*
   ----------------------------------------------------------
-                     Draw Function 
+                     Draw Function
   ----------------------------------------------------------
   */
   // Draw function that p5 calls every time the canvas is interacted with
@@ -261,9 +296,10 @@ const PaletteSketch = p => {
     },
     false
   )
-  /*                 
+
+  /*
   ----------------------------------------------------------
-                     Playing Music Function 
+                     Playing Music Function
   ----------------------------------------------------------
   */
   const playingCanvas = () => {
@@ -281,46 +317,46 @@ const PaletteSketch = p => {
 
         synth.start()
 
-        synth2.start()
-      console.log('synth1Pattern is ')
-      console.log(synth1Pattern)
-      // Setup phrases to loop
-      synth1Phrase = new p5.Phrase(
-        'synth1Sound',
-        (time, value) => {
-          if (value > 1) {
-            console.log('current value is ' + value)
-            synth.freq(p.midiToFreq(value))
-            synth.amp(0.5)
-          } else {
-            synth.freq(p.midiToFreq(value))
-            synth.amp(0)
-          }
-        },
-        synth1Pattern
-      )
-      synth2Phrase = new p5.Phrase(
-        'synth2Sound',
-        (time, value) => {
-          if (value > 1) {
-            synth2.freq(p.midiToFreq(value))
-            synth2.amp(0.5)
-          } else {
-            synth2.freq(p.midiToFreq(value))
-            synth2.amp(0)
-          }
-        },
-        synth2Pattern
-      )
 
-      instruments = new p5.Part()
+    synth2.start()
+    console.log('synth1Pattern is ')
+    console.log(synth1Pattern)
+    // Setup phrases to loop
+    synth1Phrase = new p5.Phrase(
+      'synth1Sound',
+      (time, value) => {
+        if (value > 1) {
+          console.log('current value is ' + value)
+          synth.freq(p.midiToFreq(value))
+          synth.amp(0.5)
+        } else {
+          synth.freq(p.midiToFreq(value))
+          synth.amp(0)
+        }
+      },
+      synth1Pattern
+    )
+    synth2Phrase = new p5.Phrase(
+      'synth2Sound',
+      (time, value) => {
+        if (value > 1) {
+          synth2.freq(p.midiToFreq(value))
+          synth2.amp(0.5)
+        } else {
+          synth2.freq(p.midiToFreq(value))
+          synth2.amp(0)
+        }
+      },
+      synth2Pattern
+    )
 
-      instruments.addPhrase(synth1Phrase)
-      instruments.addPhrase(synth2Phrase)
+    instruments = new p5.Part()
 
-      instruments.setBPM('80')
+    instruments.addPhrase(synth1Phrase)
+    instruments.addPhrase(synth2Phrase)
+
+    instruments.setBPM('80')
   }
-  
 }
 //_______________WILL BE USED LATER________________________________________
 //
@@ -338,7 +374,5 @@ const PaletteSketch = p => {
 //   console.log('LZ - DECOMPRESSED: ', decompressed.length, decompressed);
 //   console.log('LZ - DECOMP. ARRAY: ', dearray.length, dearray);
 // }
-
-
 
 export default PaletteSketch
