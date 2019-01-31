@@ -2,7 +2,13 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {withRouter, Route, Switch} from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {Login, Signup, UserHome, Studio} from './components'
+import {Login, UserHome, Studio} from './components'
+import {
+  SignUpForm,
+  SignUpLink,
+  SignUpPage
+} from './components/login-signup/SignUpIndex'
+import {SignInPage} from './components/login-signup/SignInIndex'
 import {me} from './store'
 
 /**
@@ -20,7 +26,8 @@ class Routes extends Component {
       <Switch>
         {/* Routes placed here are available to all visitors */}
         <Route path="/login" component={Login} />
-        <Route path="/signup" component={Signup} />
+        <Route path="/signup" component={SignUpPage} />
+        <Route path="/signin" component={SignInPage} />
         <Route path="/studio" component={Studio} />
         {/* <Route path="/canvas" component={Canvas} /> */}
         {isLoggedIn && (

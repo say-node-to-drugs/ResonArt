@@ -5,7 +5,8 @@ const PaletteSketch = p => {
   let synth, synth2
   let replay = false
   let color = 'black'
-  let synth1Sound, synth2Sound, synth1Phrase, synth2Phrase, instruments
+  let synth1Sound, synth2Sound, synth1Phrase, synth2Phrase
+  let instruments = new p5.Part()
   let synth1Pattern = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   let synth2Pattern = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
@@ -16,7 +17,7 @@ const PaletteSketch = p => {
   let recordArrayBlack = []
 
   let width = p.windowWidth * (1 / 2)
-  let height = p.windowWidth / 4
+  let height = p.windowHeight / 2
   p.preload = () => {
     synth1Sound = new p5.SoundFile()
     synth2Sound = new p5.SoundFile()
@@ -38,22 +39,26 @@ const PaletteSketch = p => {
     canvas.class('sketchPad')
 
     // Link mouse press functions
-    canvas.mousePressed(p.canvasPressed)
-    canvas.mouseReleased(p.canvasReleased)
 
     synth = new p5.SinOsc()
+    synth.freq(0)
     synth2 = new p5.Oscillator()
     synth2.setType('sawtooth')
+    synth2.freq(0)
+
+    canvas.mousePressed(p.canvasPressed)
+    canvas.mouseReleased(p.canvasReleased)
 
     // create a sound recorder
     recorder = new p5.SoundRecorder()
     recorder.setInput(synth)
     soundFile = new p5.SoundFile()
 
-    // Set input of recorder to instruments
-    // create an empty sound file that we will use to playback the recording
-
-    /*         BUTTONS         */
+    /*                 
+  ----------------------------------------------------------
+                    Buttons 
+  ----------------------------------------------------------
+  */
     // Button to begin recording audio
     startRecording = p.createButton('Start Recording')
     startRecording.onclick = () => {
@@ -88,8 +93,18 @@ const PaletteSketch = p => {
     let play = document.createElement('button')
     play.innerText = 'Play'
     play.onclick = () => {
-      playingCanvas()
-      instruments.loop()
+      if (!instruments.isPlaying) {
+        instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
+        playingCanvas()
+        instruments.loop()
+      }
+    }
+    play.onkeypress = () => {
+      if (key === ' ') {
+        instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
+        playingCanvas()
+        instruments.loop()
+      }
     }
     document.body.appendChild(play)
 
@@ -124,7 +139,11 @@ const PaletteSketch = p => {
     // button manifold div
   }
 
-  /*       MOUSE EVENT HANDLERS        */
+  /*                 
+  ----------------------------------------------------------
+                    Mouse Event Handlers 
+  ----------------------------------------------------------
+  */
   p.canvasPressed = () => {
     // If nothing is being played and the mouse is clicked on the canvas
     if (state === 0 && p.mouseX <= 800 && p.mouseY <= 800) {
@@ -147,19 +166,24 @@ const PaletteSketch = p => {
     // Stop playing synth
     if (color === 'black') {
       synth.fade(0, 0.5)
+      synth.amp(0)
       synth.stop()
     } else if (color === 'red') {
       synth2.fade(0, 0.5)
+      synth2.amp(0)
       synth2.stop()
     }
     state = 0
   }
 
-  /*       DRAW FUNCTION       */
+  /*                 
+  ----------------------------------------------------------
+                     Draw Function 
+  ----------------------------------------------------------
+  */
   let blackPixels = []
   let redPixels = []
   let pixels
-  let loopNum = 0
   // Draw function that p5 calls every time the canvas is interacted with
   p.draw = () => {
     // Set previous mouse position correctly if starting a new line
@@ -170,24 +194,33 @@ const PaletteSketch = p => {
 
     if (state) {
       // Gives us a value between 30 and  80 (good audible frequencies)
-      if (p.mouseX <= 800 && p.mouseY <= 800) {
+      if (
+        p.mouseX <= width &&
+        p.mouseX >= 0 &&
+        p.mouseY <= height &&
+        p.mouseY >= 0
+      ) {
         // Start stroke and play audio based on color
         if (color === 'black') {
           synth.amp(2)
-          synth.freq(p.midiToFreq(60 * (800 - p.mouseY) / 500 + 20))
+          synth.freq(p.midiToFreq(90 * (height - p.mouseY) / height) + 30)
           p.stroke(0)
           recordArrayBlack.push(p.mouseX)
           recordArrayBlack.push(p.mouseY)
           //LZcompressed(recordArrayBlack);
         } else if (color === 'red') {
           synth2.amp(2)
-          synth2.freq(p.midiToFreq(60 * (800 - p.mouseY) / 500 + 20))
+          synth2.freq(p.midiToFreq(90 * (height - p.mouseY) / height) + 30)
           p.stroke(255, 0, 0)
           recordArrayRed.push(p.mouseX)
           recordArrayRed.push(p.mouseY)
           //LZcompressed(recordArrayRed);
         }
         p.line(prevX, prevY, p.mouseX, p.mouseY)
+      } else {
+        synth.amp(0)
+        synth2.amp(0)
+        state = 0
       }
       // Save previous mouse position for next line() call
       prevX = p.mouseX
@@ -195,12 +228,43 @@ const PaletteSketch = p => {
     }
   }
 
-  /*       Playing Music Function        */
+  document.addEventListener(
+    'keydown',
+    function(event) {
+      if (event.key === ' ') {
+        if (!instruments.isPlaying) {
+          instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
+          playingCanvas()
+          instruments.loop()
+        } else {
+          synth.fade(0, 0.5)
+          synth.amp(0)
+          synth.stop()
+          synth2.fade(0, 0.5)
+          synth2.amp(0)
+          synth2.stop()
+          instruments.stop()
+        }
+      }
+    },
+    false
+  )
+
+  /*                 
+  ----------------------------------------------------------
+                     Playing Music Function 
+  ----------------------------------------------------------
+  */
   const playingCanvas = () => {
     // Loop for the amount of slices we take of the canvas
     for (let i = 0; i < 16; i++) {
       // Get all pixel data from current slice
-      pixels = canvas.drawingContext.getImageData(i * 50, 0, 50, 800)
+      pixels = canvas.drawingContext.getImageData(
+        i * (width / 16),
+        75,
+        width / 16,
+        height + 150
+      )
       let j = 0
       // Loop throught all pixel data and add all colored pixels' y-values to appropriate arrays
       while (j < pixels.data.length) {
@@ -211,14 +275,16 @@ const PaletteSketch = p => {
         }
         j += 4
       }
+      console.log(pixels)
 
       // Finds the average y-value for black pixels and adds the note closest to that frequency to the synth pattern
       if (blackPixels.length) {
         let averageBlack = blackPixels.reduce(getSum) / blackPixels.length
 
-        let frequency = 90 * (averageBlack / 500)
-        let index = Math.floor(14 - 14 * (frequency / 600))
+        let frequency = 90 * (averageBlack / height)
+        let index = Math.floor(14 - 14 * (frequency / height))
         synth1Pattern[i] = notes[index]
+        synth.start()
       } else {
         synth1Pattern[i] = 1
       }
@@ -226,25 +292,22 @@ const PaletteSketch = p => {
       if (redPixels.length) {
         let averageRed = redPixels.reduce(getSum) / redPixels.length
 
-        let frequency = 90 * (averageRed / 500)
-        let index = Math.floor(14 - 14 * (frequency / 600))
+        let frequency = 90 * (averageRed / height)
+        let index = Math.floor(14 - 14 * (frequency / height))
         synth2Pattern[i] = notes[index]
+        synth2.start()
       } else {
         synth2Pattern[i] = 1
       }
       // Reset the colored pixels arrays
       blackPixels = []
       redPixels = []
-
-      console.log('synth1Pattern is ')
-      console.log(synth1Pattern)
-      synth.start()
-      synth2.start()
       // Setup phrases to loop
       synth1Phrase = new p5.Phrase(
         'synth1Sound',
         (time, value) => {
           if (value > 1) {
+            console.log('current value is ' + value)
             synth.freq(p.midiToFreq(value))
             synth.amp(0.5)
           } else {
@@ -257,7 +320,7 @@ const PaletteSketch = p => {
       synth2Phrase = new p5.Phrase(
         'synth2Sound',
         (time, value) => {
-          console.log('current value is ' + value)
+          console.log(value)
           if (value > 1) {
             synth2.freq(p.midiToFreq(value))
             synth2.amp(0.5)
@@ -337,8 +400,8 @@ function sleep(milliseconds) {
 function getSum(total, num) {
   return total + num
 }
-//_______________________________________________________
-
+//_______________WILL BE USED LATER________________________________________
+//
 // function LZcompressed(array) {
 //   var string = String.fromCharCode.apply(null, array);
 //   var compressed = LZString.compress(string);
