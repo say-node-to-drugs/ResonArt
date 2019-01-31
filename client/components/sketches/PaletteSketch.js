@@ -5,6 +5,7 @@ const PaletteSketch = p => {
   let synth, synth2
   let color = 'black'
   let synth1Phrase, synth2Phrase
+  let isPlaying = false;
   let instruments = new p5.Part()
   let synth1Pattern = [
     undefined,
@@ -45,8 +46,42 @@ const PaletteSketch = p => {
   let synth1Sound
   let synth2Sound
   const notes = [48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71]
-  let allBlackGrid = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-  let allRedGrid = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+  let allBlackGrid = [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ]
+  let allRedGrid = [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ]
   let recordArrayRed = []
   let recordArrayBlack = []
 
@@ -129,13 +164,22 @@ const PaletteSketch = p => {
     let play = document.createElement('button')
     play.innerText = 'Play'
     play.onclick = () => {
-      playingCanvas()
-      instruments.loop()
-    }
-    play.onkeypress = () => {
-      if (key === ' ') {
+      if(!isPlaying) {
+        isPlaying = true;
         playingCanvas()
         instruments.loop()
+      }
+    }
+    play.onkeypress = () => {
+      if (key === ' ' && !isPlaying) {
+        isPlaying = true;
+        playingCanvas()
+        instruments.loop()
+      } else if(isPlaying) {
+        isPlaying = false;
+        synth.stop()
+        synth2.stop()
+        instruments.stop()
       }
     }
     document.body.appendChild(play)
@@ -143,6 +187,7 @@ const PaletteSketch = p => {
     let stop = document.createElement('button')
     stop.innerText = 'Stop'
     stop.onclick = () => {
+      isPlaying = false;
       synth.stop()
       synth2.stop()
       instruments.stop()
@@ -175,65 +220,68 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
   p.mouseDragged = () => {
-    if (p.mouseX >= 0 && p.mouseX <= width && p.mouseY >= 0 && p.mouseY <= height) {
-      console.log(color)
-      let rowClicked = 13 - p.floor(14 * (p.mouseY / p.height))
-      let indexClicked = p.floor(16 * p.mouseX / p.width)
-      console.log(`${indexClicked},${rowClicked}`)
-
-      if(indexClicked === 16) {
-        indexClicked--;
-      }
-
-      if(allBlackGrid[indexClicked].indexOf(rowClicked) === -1) {
-        if(color === 'black'){
-          allBlackGrid[indexClicked].push(rowClicked)
-          console.log(synth1Pattern)
+    if(!isPlaying) {
+      if (isWithinBounds(p.mouseX, p.mouseY)) {
+        let rowClicked = 13 - p.floor(14 * (p.mouseY / p.height))
+        let indexClicked = p.floor(16 * p.mouseX / p.width)
+  
+        if (indexClicked === 16) {
+          indexClicked--
         }
-        if(color === 'red'){
-          allRedGrid[indexClicked].push(rowClicked)
-          console.log(synth2Pattern)
+  
+        if (allBlackGrid[indexClicked].indexOf(rowClicked) === -1) {
+          if (color === 'black') {
+            allBlackGrid[indexClicked].push(rowClicked)
+          }
+          if (color === 'red') {
+            allRedGrid[indexClicked].push(rowClicked)
+          }
         }
+        p.draw()
+      } else {
+        synth.amp(0)
+        synth2.amp(0)
       }
-      p.draw()
-    } else {
-      synth.amp(0);
-      synth2.amp(0);
     }
   }
 
   p.mousePressed = () => {
     // If nothing is being played and the mouse is clicked on the canvas
-    if (state === 0 && p.mouseX >= 0 && p.mouseX <= width && p.mouseY >= 0 && p.mouseY <= height) {
-      // Begin playing the correct synth
-      if (color === 'black') {
-        synth.start()
-      } else if (color === 'red') {
-        synth2.start()
+    if(!isPlaying) {
+      if (isWithinBounds(p.mouseX, p.mouseY)) {
+        // Begin playing the correct synth
+        if (color === 'black') {
+          synth.start()
+        } else if (color === 'red') {
+          synth2.start()
+        }
+        // Set state to 1 so the draw() function knows to make lines and produce audio
+        state++
+        // Reset the previous mouse position
+        prevX = 0
+        prevY = 0
+      } else {
+        state = 0
+        synth.amp(0)
+        synth2.amp(0)
       }
-      // Set state to 1 so the draw() function knows to make lines and produce audio
-      state++
-      // Reset the previous mouse position
-      prevX = 0
-      prevY = 0
-    } else {
-      state = 0;
-      synth.amp(0);
-      synth2.amp(0);
+
     }
   }
   p.mouseReleased = () => {
     // Stop playing synth
-    if (color === 'black') {
-      synth.fade(0, 0.5)
-      synth.amp(0)
-      synth.stop()
-    } else if (color === 'red') {
-      synth2.fade(0, 0.5)
-      synth2.amp(0)
-      synth2.stop()
+    if(!isPlaying) {
+      if (color === 'black') {
+        synth.fade(0, 0.5)
+        synth.amp(0)
+        synth.stop()
+      } else if (color === 'red') {
+        synth2.fade(0, 0.5)
+        synth2.amp(0)
+        synth2.stop()
+      }
+      state = 0
     }
-    state = 0
   }
 
   /*
@@ -249,29 +297,28 @@ const PaletteSketch = p => {
       prevY = p.mouseY
     }
 
-    if (state) {
+    if (state && !isPlaying) {
       // Gives us a value between 30 and  80 (good audible frequencies)
-      if (p.mouseX >= 0 && p.mouseX <= width && p.mouseY >= 0 && p.mouseY <= height) {
+      if (
+        p.mouseX >= 0 &&
+        p.mouseX <= width &&
+        p.mouseY >= 0 &&
+        p.mouseY <= height
+      ) {
         // Start stroke and play audio based on color
         if (color === 'black') {
           synth.amp(2)
           synth.freq(p.midiToFreq(90 * (height - p.mouseY) / 500) + 90)
           p.stroke(0)
-          recordArrayBlack.push(p.mouseX)
-          recordArrayBlack.push(p.mouseY)
-          //LZcompressed(recordArrayBlack);
         } else if (color === 'red') {
           synth2.amp(2)
           synth2.freq(p.midiToFreq(90 * (height - p.mouseY) / 500) + 60)
           p.stroke(255, 0, 0)
-          recordArrayRed.push(p.mouseX)
-          recordArrayRed.push(p.mouseY)
-          //LZcompressed(recordArrayRed);
         }
         p.line(prevX, prevY, p.mouseX, p.mouseY)
       } else {
-        synth.amp(0);
-        synth2.amp(0);
+        synth.amp(0)
+        synth2.amp(0)
       }
       // Save previous mouse position for next line() call
       prevX = p.mouseX
@@ -284,11 +331,13 @@ const PaletteSketch = p => {
     function(event) {
       console.log('space was pressed !!!!')
       if (event.key === ' ') {
-        if (!instruments.isPlaying) {
+        if (!isPlaying) {
+          isPlaying = true;
           instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
           playingCanvas()
           instruments.loop()
         } else {
+          isPlaying = false;
           synth.fade(0, 0.5)
           synth.amp(0)
           synth.stop()
@@ -309,26 +358,27 @@ const PaletteSketch = p => {
   */
   const playingCanvas = () => {
     // Get average grid y-value for each color
-    for(let i = 0; i < allBlackGrid.length; i++) {
-      synth1Pattern[i] = allBlackGrid[i].reduce((a,b) => a + b, 0) / allBlackGrid[i].length;
-      synth1Pattern[i] = notes[Math.floor(synth1Pattern[i])];
+    for (let i = 0; i < allBlackGrid.length; i++) {
+      synth1Pattern[i] =
+        allBlackGrid[i].reduce((a, b) => a + b, 0) / allBlackGrid[i].length
+      synth1Pattern[i] = notes[Math.floor(synth1Pattern[i])]
     }
 
-
-    for(let i = 0; i < allRedGrid.length; i++) {
-      synth2Pattern[i] = allRedGrid[i].reduce((a,b) => a + b, 0) / allRedGrid[i].length;
-      synth2Pattern[i] = notes[Math.floor(synth2Pattern[i])];
+    for (let i = 0; i < allRedGrid.length; i++) {
+      synth2Pattern[i] =
+        allRedGrid[i].reduce((a, b) => a + b, 0) / allRedGrid[i].length
+      synth2Pattern[i] = notes[Math.floor(synth2Pattern[i])]
     }
 
     synth.start()
     synth2.start()
-    
+
     // Setup phrases to loop
     synth1Phrase = new p5.Phrase(
       'synth1Sound',
       (time, value) => {
         if (value > 1) {
-          console.log('current value is ' + value)
+          //console.log('current value is ' + value)
           synth.freq(p.midiToFreq(value))
           synth.amp(0.5)
         } else {
@@ -358,6 +408,14 @@ const PaletteSketch = p => {
     instruments.addPhrase(synth2Phrase)
 
     instruments.setBPM('80')
+  }
+
+
+  const isWithinBounds = (x, y) => {
+    if (x >= 0 && x <= width && y >= 0 && y <= height) {
+      return true;
+    }
+    return false;
   }
 }
 //_______________WILL BE USED LATER________________________________________
