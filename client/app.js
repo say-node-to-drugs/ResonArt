@@ -5,6 +5,7 @@ import {SignUpPage} from './components/login-signup/SignUpIndex'
 import {SignInPage} from './components/login-signup/SignInIndex'
 import {SignOutIndex} from './components/login-signup/SignOutIndex'
 import {AccountIndex} from './components/login-signup/AccountIndex'
+import {AdminIndex} from './components/admin/AdminIndex'
 import {withAuthentication} from './components/login-signup/withAuthentication.js'
 
 const App = props => (
@@ -19,6 +20,7 @@ const App = props => (
         <Route path="/signin" component={SignInPage} />
         <Route path="/studio" component={Studio} />
         <Route path="/signout" component={SignOutIndex} />
+        <Route path="/admin" component={AdminIndex} />
         {/* Displays our Login component as a fallback */}
         <Route component={Studio} />
       </Switch>
