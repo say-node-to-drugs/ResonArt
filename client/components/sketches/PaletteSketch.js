@@ -1,54 +1,56 @@
 const PaletteSketch = p => {
-  let recorder, soundFile, canvas, startTime, currentTime
+  let recorder, soundFile, canvas
   let prevX, prevY
   let state = 0 // mousePress will increment from Record, to Stop, to Play
   let synth, synth2
-  let replay = false
   let color = 'black'
-  let synth1Sound, synth2Sound, synth1Phrase, synth2Phrase
+  let synth1Phrase, synth2Phrase
   let instruments = new p5.Part()
-  let synth1Pattern = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  let synth2Pattern = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
+  let synth1Pattern = [undefined, undefined, undefined , undefined, undefined, undefined, undefined , undefined, undefined, undefined, undefined , undefined, undefined, undefined, undefined , undefined]
+  let synth2Pattern = [undefined, undefined, undefined , undefined, undefined, undefined, undefined , undefined, undefined, undefined, undefined , undefined, undefined, undefined, undefined , undefined]
+  let synth1Sound;
+  let synth2Sound;
   const notes = [48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71]
-  let recordArray = []
-  let playbackArray = []
   let recordArrayRed = []
   let recordArrayBlack = []
 
   let width = p.windowWidth * (1 / 2)
-  let height = p.windowHeight / 2
+  let height = p.windowWidth / 4
   p.preload = () => {
     synth1Sound = new p5.SoundFile()
     synth2Sound = new p5.SoundFile()
   }
 
-  // buttons
-  let startRecording
-
   p.setup = () => {
     p.userStartAudio()
 
     canvas = p.createCanvas(width, height)
-    canvas.parent('sketchPad')
+    canvas.parent('paletteP5Wrapper')
     canvas.style('display', 'block')
 
     p.background(255)
     p.fill(0)
-    p.strokeWeight(50)
-    canvas.class('sketchPad')
-
+    canvas.class('paletteP5')
+    for (var x = 0; x < width; x += width / 16) {
+      for (var y = 0; y < height; y += height / 14) {
+        p.stroke(200);
+        p.strokeWeight(1);
+        p.line(x, 0, x, height);
+        p.line(0, y, width, y);
+      }
+    }
+    p.strokeWeight(10)
+    
     // Link mouse press functions
 
     synth = new p5.SinOsc()
+    synth.setType('sine')
     synth.freq(0)
+    
     synth2 = new p5.Oscillator()
     synth2.setType('sawtooth')
     synth2.freq(0)
-
-    canvas.mousePressed(p.canvasPressed)
-    canvas.mouseReleased(p.canvasReleased)
-
+  
     // create a sound recorder
     recorder = new p5.SoundRecorder()
     recorder.setInput(synth)
@@ -60,14 +62,12 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
     // Button to begin recording audio
-    startRecording = p.createButton('Start Recording')
+    let startRecording = document.createElement('button')
+    startRecording.innerText = 'Start Recording'
     startRecording.onclick = () => {
       recorder.record(soundFile)
     }
-    // document.body.appendChild(startRecording)
-    startRecording.parent('buttonManifold')
-    startRecording.class('button')
-
+    document.body.appendChild(startRecording)
     // Button to stop recording audio
     let stopRecording = document.createElement('button')
     stopRecording.innerText = 'Stop Recording'
@@ -93,15 +93,11 @@ const PaletteSketch = p => {
     let play = document.createElement('button')
     play.innerText = 'Play'
     play.onclick = () => {
-      if (!instruments.isPlaying) {
-        instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
-        playingCanvas()
-        instruments.loop()
-      }
+      playingCanvas()
+      instruments.loop()
     }
     play.onkeypress = () => {
-      if (key === ' ') {
-        instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
+      if(key === ' '){
         playingCanvas()
         instruments.loop()
       }
@@ -135,8 +131,6 @@ const PaletteSketch = p => {
       replay = true
     }
     document.body.appendChild(playback)
-
-    // button manifold div
   }
 
   /*
@@ -144,7 +138,28 @@ const PaletteSketch = p => {
                     Mouse Event Handlers
   ----------------------------------------------------------
   */
-  p.canvasPressed = () => {
+  p.mouseDragged = () => {
+    console.log(color)
+    let rowClicked = 14- p.floor(14 * (p.mouseY / p.height))
+    let indexClicked = p.floor(16 * p.mouseX / p.width)
+    console.log(`${indexClicked},${rowClicked}`)
+
+    if(color === 'black'){
+      if(synth1Pattern[indexClicked]!== notes[rowClicked]){
+      synth1Pattern[indexClicked] = notes[rowClicked]
+      }
+      console.log(synth1Pattern)
+    }
+    if(color === 'red'){
+      if(synth2Pattern[indexClicked]!== notes[rowClicked]){
+      synth2Pattern[indexClicked] = notes[rowClicked]
+      }
+      console.log(synth2Pattern)
+    }
+    p.draw()
+  }
+
+  p.mousePressed = () => {
     // If nothing is being played and the mouse is clicked on the canvas
     if (state === 0 && p.mouseX <= 800 && p.mouseY <= 800) {
       // Begin playing the correct synth
@@ -162,7 +177,7 @@ const PaletteSketch = p => {
       state = 0
     }
   }
-  p.canvasReleased = () => {
+  p.mouseReleased = () => {
     // Stop playing synth
     if (color === 'black') {
       synth.fade(0, 0.5)
@@ -181,9 +196,6 @@ const PaletteSketch = p => {
                      Draw Function
   ----------------------------------------------------------
   */
-  let blackPixels = []
-  let redPixels = []
-  let pixels
   // Draw function that p5 calls every time the canvas is interacted with
   p.draw = () => {
     // Set previous mouse position correctly if starting a new line
@@ -194,33 +206,24 @@ const PaletteSketch = p => {
 
     if (state) {
       // Gives us a value between 30 and  80 (good audible frequencies)
-      if (
-        p.mouseX <= width &&
-        p.mouseX >= 0 &&
-        p.mouseY <= height &&
-        p.mouseY >= 0
-      ) {
+      if (p.mouseX <= 800 && p.mouseY <= 800) {
         // Start stroke and play audio based on color
         if (color === 'black') {
           synth.amp(2)
-          synth.freq(p.midiToFreq(90 * (height - p.mouseY) / height) + 30)
+          synth.freq(p.midiToFreq(60 * (800 - p.mouseY) / 500 + 20))
           p.stroke(0)
           recordArrayBlack.push(p.mouseX)
           recordArrayBlack.push(p.mouseY)
           //LZcompressed(recordArrayBlack);
         } else if (color === 'red') {
           synth2.amp(2)
-          synth2.freq(p.midiToFreq(90 * (height - p.mouseY) / height) + 30)
+          synth2.freq(p.midiToFreq(60 * (800 - p.mouseY) / 500 + 20))
           p.stroke(255, 0, 0)
           recordArrayRed.push(p.mouseX)
           recordArrayRed.push(p.mouseY)
           //LZcompressed(recordArrayRed);
         }
         p.line(prevX, prevY, p.mouseX, p.mouseY)
-      } else {
-        synth.amp(0)
-        synth2.amp(0)
-        state = 0
       }
       // Save previous mouse position for next line() call
       prevX = p.mouseX
@@ -231,6 +234,7 @@ const PaletteSketch = p => {
   document.addEventListener(
     'keydown',
     function(event) {
+      console.log('space was pressed !!!!')
       if (event.key === ' ') {
         if (!instruments.isPlaying) {
           instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
@@ -250,58 +254,17 @@ const PaletteSketch = p => {
     false
   )
 
-  /*
+  /*                 
   ----------------------------------------------------------
                      Playing Music Function
   ----------------------------------------------------------
   */
   const playingCanvas = () => {
-    // Loop for the amount of slices we take of the canvas
-    for (let i = 0; i < 16; i++) {
-      // Get all pixel data from current slice
-      pixels = canvas.drawingContext.getImageData(
-        i * (width / 16),
-        75,
-        width / 16,
-        height + 150
-      )
-      let j = 0
-      // Loop throught all pixel data and add all colored pixels' y-values to appropriate arrays
-      while (j < pixels.data.length) {
-        if (pixels.data[j] === 0 && pixels.data[j + 1] === 0) {
-          blackPixels.push(j / 50)
-        } else if (pixels.data[j] === 255 && pixels.data[j + 1] === 0) {
-          redPixels.push(j / 50)
-        }
-        j += 4
-      }
-      console.log(pixels)
-
-      // Finds the average y-value for black pixels and adds the note closest to that frequency to the synth pattern
-      if (blackPixels.length) {
-        let averageBlack = blackPixels.reduce(getSum) / blackPixels.length
-
-        let frequency = 90 * (averageBlack / height)
-        let index = Math.floor(14 - 14 * (frequency / height))
-        synth1Pattern[i] = notes[index]
         synth.start()
-      } else {
-        synth1Pattern[i] = 1
-      }
-      // Finds the average y-value for red pixels and adds the note closest to that frequency to the synth pattern
-      if (redPixels.length) {
-        let averageRed = redPixels.reduce(getSum) / redPixels.length
 
-        let frequency = 90 * (averageRed / height)
-        let index = Math.floor(14 - 14 * (frequency / height))
-        synth2Pattern[i] = notes[index]
         synth2.start()
-      } else {
-        synth2Pattern[i] = 1
-      }
-      // Reset the colored pixels arrays
-      blackPixels = []
-      redPixels = []
+      console.log('synth1Pattern is ')
+      console.log(synth1Pattern)
       // Setup phrases to loop
       synth1Phrase = new p5.Phrase(
         'synth1Sound',
@@ -311,8 +274,8 @@ const PaletteSketch = p => {
             synth.freq(p.midiToFreq(value))
             synth.amp(0.5)
           } else {
-            synth.amp(0)
             synth.freq(p.midiToFreq(value))
+            synth.amp(0)
           }
         },
         synth1Pattern
@@ -320,13 +283,12 @@ const PaletteSketch = p => {
       synth2Phrase = new p5.Phrase(
         'synth2Sound',
         (time, value) => {
-          console.log(value)
           if (value > 1) {
             synth2.freq(p.midiToFreq(value))
             synth2.amp(0.5)
           } else {
-            synth2.amp(0)
             synth2.freq(p.midiToFreq(value))
+            synth2.amp(0)
           }
         },
         synth2Pattern
@@ -338,67 +300,8 @@ const PaletteSketch = p => {
       instruments.addPhrase(synth2Phrase)
 
       instruments.setBPM('80')
-    }
   }
-
-  /*
-  ----------------------------------------------------------
-  THIS IS THE RECORDING SNIPPET OF CODE -- BELOW --
-  This needs a bitton... toggle the value of < replay > with a button. If replay === true, p5 draw will run replay once and then set replay to false. Replay will replay back the values recorded in recordArray (see above)
-  ----------------------------------------------------------
-  */
-
-  if (replay) {
-    console.log('Replaying')
-    synth.start()
-    if (color === 'red') {
-      playbackArray = recordArrayRed
-    }
-    if (color === 'black') {
-      playbackArray = recordArrayBlack
-    }
-    for (let i = 0; i < playbackArray.length - 4; i = i + 2) {
-      synth.amp(2)
-      // Gives us a value between 30 and  80 (good audible frequencies)
-      synth.freq(p.midiToFreq(60 * (800 - playbackArray[i + 1]) / 500 + 30))
-      // Start black stroke
-      p.stroke(0)
-      console.log(color)
-      p.line(
-        playbackArray[i],
-        playbackArray[i + 1],
-        playbackArray[i + 2],
-        playbackArray[i + 3]
-      )
-
-      sleep(17)
-    }
-
-    canvas.mouseReleased()
-    state = 0
-    console.log('DONE')
-    replay = false
-  }
-
-  /*
-  ----------------------------------------------------------
-  THIS IS THE RECORDING SNIPPET OF CODE -- ABOVE --
-  ----------------------------------------------------------
-  */
-}
-
-// Utility functions
-function sleep(milliseconds) {
-  var start = new Date().getTime()
-  for (var i = 0; i < 1e7; i++) {
-    if (new Date().getTime() - start > milliseconds) {
-      break
-    }
-  }
-}
-
-function getSum(total, num) {
-  return total + num
+  
 }
 //_______________WILL BE USED LATER________________________________________
 //
@@ -416,5 +319,7 @@ function getSum(total, num) {
 //   console.log('LZ - DECOMPRESSED: ', decompressed.length, decompressed);
 //   console.log('LZ - DECOMP. ARRAY: ', dearray.length, dearray);
 // }
+
+
 
 export default PaletteSketch
