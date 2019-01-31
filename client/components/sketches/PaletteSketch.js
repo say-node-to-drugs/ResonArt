@@ -54,9 +54,9 @@ const PaletteSketch = p => {
     recorder.setInput(synth)
     soundFile = new p5.SoundFile()
 
-    /*                 
+    /*
   ----------------------------------------------------------
-                    Buttons 
+                    Buttons
   ----------------------------------------------------------
   */
     // Button to begin recording audio
@@ -139,9 +139,9 @@ const PaletteSketch = p => {
     // button manifold div
   }
 
-  /*                 
+  /*
   ----------------------------------------------------------
-                    Mouse Event Handlers 
+                    Mouse Event Handlers
   ----------------------------------------------------------
   */
   p.canvasPressed = () => {
@@ -176,9 +176,9 @@ const PaletteSketch = p => {
     state = 0
   }
 
-  /*                 
+  /*
   ----------------------------------------------------------
-                     Draw Function 
+                     Draw Function
   ----------------------------------------------------------
   */
   let blackPixels = []
@@ -250,9 +250,9 @@ const PaletteSketch = p => {
     false
   )
 
-  /*                 
+  /*
   ----------------------------------------------------------
-                     Playing Music Function 
+                     Playing Music Function
   ----------------------------------------------------------
   */
   const playingCanvas = () => {
