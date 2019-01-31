@@ -94,6 +94,13 @@ const PaletteSketch = p => {
         instruments.loop()
       }
     }
+    play.onkeypress = () => {
+      if (key === ' ') {
+        instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
+        playingCanvas()
+        instruments.loop()
+      }
+    }
     document.body.appendChild(play)
 
     let stop = document.createElement('button')
@@ -247,9 +254,9 @@ const PaletteSketch = p => {
       // Get all pixel data from current slice
       pixels = canvas.drawingContext.getImageData(
         i * (width / 16),
-        0,
+        75,
         width / 16,
-        height
+        height + 150
       )
       let j = 0
       // Loop throught all pixel data and add all colored pixels' y-values to appropriate arrays
