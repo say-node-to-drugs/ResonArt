@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {logout} from '../store'
+import Firebase from '../firebase/Firebase.js'
+import {AuthUserContext} from './login-signup/SessionContext.js'
 import {
   withStyles,
   AppBar,
@@ -68,11 +70,14 @@ const styles = {
   },
   buttonDiv: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '20vw'
   },
   button: {
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
+    width: '9vw'
   },
   toolbar: {
     display: 'flex',
@@ -80,50 +85,54 @@ const styles = {
   }
 }
 
-const Navigation = (authUser, firebase) => (
-  <div>
-    {authUser ? <NavigationAuth firebase={firebase} /> : <NavigationNonAuth />}
-  </div>
-)
-
-const NavigationAuth = props => {
+function Navigation(props) {
   const {classes, firebase} = props
   return (
-    <div className={classes.buttonDiv}>
-      <Button
-        onClick={() => {
-          firebase.doSignOut()
-        }}
-        to="/home"
-        color="secondary"
-      >
-        Logout
-      </Button>
-    </div>
-  )
-}
-
-const NavigationNonAuth = props => {
-  const {classes} = props
-  return (
-    <div className={classes.buttonDiv}>
-      <Button
-        className={classes.button}
-        component={Link}
-        to="/signin"
-        color="secondary"
-      >
-        Login
-      </Button>
-      <Button
-        className={classes.button}
-        component={Link}
-        to="/signup"
-        color="secondary"
-      >
-        Signup
-      </Button>
-    </div>
+    <AuthUserContext.Consumer>
+      {authUser =>
+        authUser ? (
+          <div className={classes.buttonDiv}>
+            <Button
+              className={classes.button}
+              component={Link}
+              to="/account"
+              color="secondary"
+            >
+              Account
+            </Button>
+            <Button
+              onClick={() => {
+                firebase.doSignOut()
+              }}
+              to="/home"
+              color="secondary"
+              className={classes.button}
+            >
+              Logout
+            </Button>
+          </div>
+        ) : (
+          <div className={classes.buttonDiv}>
+            <Button
+              className={classes.button}
+              component={Link}
+              to="/signin"
+              color="secondary"
+            >
+              Login
+            </Button>{' '}
+            <Button
+              className={classes.button}
+              component={Link}
+              to="/signup"
+              color="secondary"
+            >
+              Signup
+            </Button>
+          </div>
+        )
+      }
+    </AuthUserContext.Consumer>
   )
 }
 
@@ -143,7 +152,7 @@ function Navbar(props) {
                 />
               </IconButton>
             </div>
-            {Navigation(authUser, firebase)}
+            {Navigation(props)}
           </Toolbar>
         </AppBar>
       </MuiThemeProvider>
