@@ -98,15 +98,22 @@ const Navigation = firebase => (
 
 const NavigationAuth = ({firebase}) => (
   <div>
-    <Button
-      onClick={() => {
-        firebase.doSignOut()
-      }}
-      to="/home"
-      color="secondary"
-    >
-      Logout
-    </Button>
+    <div>
+      <Button component={Link} to="/account" color="secondary">
+        Account
+      </Button>
+    </div>
+    <div>
+      <Button
+        onClick={() => {
+          firebase.doSignOut()
+        }}
+        to="/home"
+        color="secondary"
+      >
+        Logout
+      </Button>
+    </div>
   </div>
 )
 
