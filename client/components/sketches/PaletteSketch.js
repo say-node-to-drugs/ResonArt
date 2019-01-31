@@ -46,7 +46,7 @@ const PaletteSketch = p => {
   let synth2Sound
   const notes = [48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71]
   let allBlackGrid = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-  let allRedGrid = []
+  let allRedGrid = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
   let recordArrayRed = []
   let recordArrayBlack = []
 
@@ -177,18 +177,23 @@ const PaletteSketch = p => {
   p.mouseDragged = () => {
     if (p.mouseX >= 0 && p.mouseX <= width && p.mouseY >= 0 && p.mouseY <= height) {
       console.log(color)
-      let rowClicked = 14- p.floor(14 * (p.mouseY / p.height))
+      let rowClicked = 13 - p.floor(14 * (p.mouseY / p.height))
       let indexClicked = p.floor(16 * p.mouseX / p.width)
       console.log(`${indexClicked},${rowClicked}`)
 
-      if(color === 'black'){
-        allBlackGrid[indexClicked].push(rowClicked)
-        console.log(synth1Pattern)
+      if(indexClicked === 16) {
+        indexClicked--;
       }
-      if(color === 'red'){
-        allRedGrid[indexClicked].push(rowClicked)
-        console.log(synth2Pattern)
 
+      if(allBlackGrid[indexClicked].indexOf(rowClicked) === -1) {
+        if(color === 'black'){
+          allBlackGrid[indexClicked].push(rowClicked)
+          console.log(synth1Pattern)
+        }
+        if(color === 'red'){
+          allRedGrid[indexClicked].push(rowClicked)
+          console.log(synth2Pattern)
+        }
       }
       p.draw()
     } else {
@@ -250,14 +255,14 @@ const PaletteSketch = p => {
         // Start stroke and play audio based on color
         if (color === 'black') {
           synth.amp(2)
-          synth.freq(p.midiToFreq(60 * (800 - p.mouseY) / 500 + 20))
+          synth.freq(p.midiToFreq(90 * (height - p.mouseY) / 500) + 90)
           p.stroke(0)
           recordArrayBlack.push(p.mouseX)
           recordArrayBlack.push(p.mouseY)
           //LZcompressed(recordArrayBlack);
         } else if (color === 'red') {
           synth2.amp(2)
-          synth2.freq(p.midiToFreq(60 * (800 - p.mouseY) / 500 + 20))
+          synth2.freq(p.midiToFreq(90 * (height - p.mouseY) / 500) + 60)
           p.stroke(255, 0, 0)
           recordArrayRed.push(p.mouseX)
           recordArrayRed.push(p.mouseY)
@@ -304,23 +309,20 @@ const PaletteSketch = p => {
   */
   const playingCanvas = () => {
     // Get average grid y-value for each color
-    console.log("all black grids colored - ")
-    console.log(allBlackGrid)
     for(let i = 0; i < allBlackGrid.length; i++) {
       synth1Pattern[i] = allBlackGrid[i].reduce((a,b) => a + b, 0) / allBlackGrid[i].length;
       synth1Pattern[i] = notes[Math.floor(synth1Pattern[i])];
     }
-    console.log("new synth note pattern - ")
-    console.log(synth1Pattern)
 
 
+    for(let i = 0; i < allRedGrid.length; i++) {
+      synth2Pattern[i] = allRedGrid[i].reduce((a,b) => a + b, 0) / allRedGrid[i].length;
+      synth2Pattern[i] = notes[Math.floor(synth2Pattern[i])];
+    }
 
-        synth.start()
-
-
+    synth.start()
     synth2.start()
-    console.log('synth1Pattern is ')
-    console.log(synth1Pattern)
+    
     // Setup phrases to loop
     synth1Phrase = new p5.Phrase(
       'synth1Sound',
