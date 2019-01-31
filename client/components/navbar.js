@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {logout} from '../store'
+import Firebase from '../firebase/Firebase.js'
+import {AuthUserContext} from './login-signup/SessionContext.js'
 import {
   withStyles,
   AppBar,
@@ -80,23 +82,38 @@ const styles = {
   }
 }
 
-const Navigation = (authUser, firebase) => (
+const Navigation = firebase => (
   <div>
-    {authUser ? <NavigationAuth firebase={firebase} /> : <NavigationNonAuth />}
+    <AuthUserContext.Consumer>
+      {authUser =>
+        (authUser ? (
+          <NavigationAuth firebase={firebase} />
+        ) : (
+          <NavigationNonAuth />
+        ))
+      }
+    </AuthUserContext.Consumer>
   </div>
 )
 
 const NavigationAuth = ({firebase}) => (
   <div>
-    <Button
-      onClick={() => {
-        firebase.doSignOut()
-      }}
-      to="/home"
-      color="secondary"
-    >
-      Logout
-    </Button>
+    <div>
+      <Button component={Link} to="/account" color="secondary">
+        Account
+      </Button>
+    </div>
+    <div>
+      <Button
+        onClick={() => {
+          firebase.doSignOut()
+        }}
+        to="/home"
+        color="secondary"
+      >
+        Logout
+      </Button>
+    </div>
   </div>
 )
 
@@ -131,9 +148,7 @@ function Navbar(props) {
                 />
               </IconButton>
             </div>
-            <div className={classes.buttonDiv}>
-              {Navigation(authUser, firebase)}
-            </div>
+            <div className={classes.buttonDiv}>{Navigation(firebase)}</div>
           </Toolbar>
         </AppBar>
       </MuiThemeProvider>

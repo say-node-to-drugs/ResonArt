@@ -56,9 +56,9 @@ const PaletteSketch = p => {
     recorder.setInput(synth)
     soundFile = new p5.SoundFile()
 
-    /*                 
+    /*
   ----------------------------------------------------------
-                    Buttons 
+                    Buttons
   ----------------------------------------------------------
   */
     // Button to begin recording audio
@@ -133,9 +133,9 @@ const PaletteSketch = p => {
     document.body.appendChild(playback)
   }
 
-  /*                 
+  /*
   ----------------------------------------------------------
-                    Mouse Event Handlers 
+                    Mouse Event Handlers
   ----------------------------------------------------------
   */
   p.mouseDragged = () => {
@@ -191,9 +191,9 @@ const PaletteSketch = p => {
     state = 0
   }
 
-  /*                 
+  /*
   ----------------------------------------------------------
-                     Draw Function 
+                     Draw Function
   ----------------------------------------------------------
   */
   // Draw function that p5 calls every time the canvas is interacted with
@@ -253,9 +253,10 @@ const PaletteSketch = p => {
     },
     false
   )
+
   /*                 
   ----------------------------------------------------------
-                     Playing Music Function 
+                     Playing Music Function
   ----------------------------------------------------------
   */
   const playingCanvas = () => {
