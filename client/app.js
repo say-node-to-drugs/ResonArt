@@ -5,48 +5,25 @@ import {SignUpPage} from './components/login-signup/SignUpIndex'
 import {SignInPage} from './components/login-signup/SignInIndex'
 import {SignOutIndex} from './components/login-signup/SignOutIndex'
 import {withFirebase} from './firebase/FirebaseContext'
+import {AuthUserContext} from './components/login-signup/SessionContext.js'
+import {withAuthentication} from './components/login-signup/withAuthentication.js'
 
-class App extends Component {
-  constructor(props) {
-    super(props)
+const App = props => (
+  <Router>
+    <div>
+      <Navbar firebase={props.firebase} />
 
-    this.state = {
-      authUser: null
-    }
-  }
+      {/* Routes placed here are available to all visitors */}
+      <Route path="/login" component={Login} />
+      <Route path="/signup" component={SignUpPage} />
+      <Route path="/signin" component={SignInPage} />
+      <Route path="/studio" component={Studio} />
+      <Route path="/signout" component={SignOutIndex} />
+      {/* <Route path="/canvas" component={Canvas} /> */}
+      {/* Displays our Login component as a fallback */}
+      <Route component={Studio} />
+    </div>
+  </Router>
+)
 
-  componentDidMount() {
-    this.listener = this.props.firebase.auth.onAuthStateChanged(authUser => {
-      authUser ? this.setState({authUser}) : this.setState({authUser: null})
-    })
-  }
-
-  componentWillUnmount() {
-    this.listener()
-  }
-
-  render() {
-    return (
-      <Router>
-        <div>
-          <Navbar
-            authUser={this.state.authUser}
-            firebase={this.props.firebase}
-          />
-
-          {/* Routes placed here are available to all visitors */}
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={SignUpPage} />
-          <Route path="/signin" component={SignInPage} />
-          <Route path="/studio" component={Studio} />
-          <Route path="/signout" component={SignOutIndex} />
-          {/* <Route path="/canvas" component={Canvas} /> */}
-          {/* Displays our Login component as a fallback */}
-          <Route component={Studio} />
-        </div>
-      </Router>
-    )
-  }
-}
-
-export default withFirebase(App)
+export default withAuthentication(App)
