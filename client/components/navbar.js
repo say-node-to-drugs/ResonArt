@@ -3,9 +3,6 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {logout} from '../store'
-import {SignOutButton} from './login-signup/SignOutIndex'
-import {SignUpPage} from './login-signup/SignUpIndex'
-import {SignInPage} from './login-signup/SignInIndex'
 import {
   withStyles,
   AppBar,
@@ -83,8 +80,43 @@ const styles = {
   }
 }
 
+const Navigation = (authUser, firebase) => (
+  <div>
+    {authUser ? <NavigationAuth firebase={firebase} /> : <NavigationNonAuth />}
+  </div>
+)
+
+const NavigationAuth = ({firebase}) => (
+  <div>
+    <Button
+      onClick={() => {
+        firebase.doSignOut()
+      }}
+      to="/home"
+      color="secondary"
+    >
+      Logout
+    </Button>
+  </div>
+)
+
+const NavigationNonAuth = classes => (
+  <div>
+    <div className={classes.button}>
+      <Button component={Link} to="/signin" color="secondary">
+        Login
+      </Button>
+    </div>
+    <div className={classes.button}>
+      <Button component={Link} to="/signup" color="secondary">
+        Signup
+      </Button>
+    </div>
+  </div>
+)
+
 function Navbar(props) {
-  const {classes, handleClick, isLoggedIn} = props
+  const {classes, handleClick, isLoggedIn, authUser, firebase} = props
   return (
     <div id="navbar" className={classes.root}>
       <MuiThemeProvider theme={theme}>
@@ -99,30 +131,9 @@ function Navbar(props) {
                 />
               </IconButton>
             </div>
-            {isLoggedIn ? (
-              <Typography
-                component={SignOutButton}
-                to="/home"
-                variant="h6"
-                color="secondary"
-                className={classes.grow}
-              >
-                Logout
-              </Typography>
-            ) : (
-              <div className={classes.buttonDiv}>
-                <div className={classes.button}>
-                  <Button component={Link} to="/signin" color="secondary">
-                    Login
-                  </Button>
-                </div>
-                <div className={classes.button}>
-                  <Button component={Link} to="/signup" color="secondary">
-                    Signup
-                  </Button>
-                </div>
-              </div>
-            )}
+            <div className={classes.buttonDiv}>
+              {Navigation(authUser, firebase)}
+            </div>
           </Toolbar>
         </AppBar>
       </MuiThemeProvider>

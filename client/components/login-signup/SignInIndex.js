@@ -12,8 +12,6 @@ export const SignInPage = () => (
   </div>
 )
 
-console.log('INIT 2 ', withFirebase)
-
 const INITIAL_STATE = {
   email: '',
   password: '',
@@ -49,9 +47,6 @@ class SignInFormBase extends Component {
 
   render() {
     const {email, password, error} = this.state
-
-    console.log('RENDER 1')
-
     const isInvalid = password === '' || email === ''
 
     return (
