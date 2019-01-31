@@ -3,11 +3,7 @@ import {connect} from 'react-redux'
 import {withRouter, Route, Switch} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import {Login, UserHome, Studio} from './components'
-import {
-  SignUpForm,
-  SignUpLink,
-  SignUpPage
-} from './components/login-signup/SignUpIndex'
+import {SignUpPage} from './components/login-signup/SignUpIndex'
 import {SignInPage} from './components/login-signup/SignInIndex'
 import {me} from './store'
 
