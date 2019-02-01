@@ -1,3 +1,6 @@
+import {drums} from './DrumSketch'
+
+
 const PaletteSketch = p => {
   let recorder, soundFile, canvas
   let prevX, prevY
@@ -5,8 +8,8 @@ const PaletteSketch = p => {
   let synth, synth2
   let color = 'black'
   let synth1Phrase, synth2Phrase
-  let isPlaying = false
-  let instruments = new p5.Part()
+
+  let isPlaying = false;
   let synth1Pattern = [
     undefined,
     undefined,
@@ -122,6 +125,21 @@ const PaletteSketch = p => {
     synth2.setType('sawtooth')
     synth2.freq(0)
 
+
+        // Setup phrases to loop
+    synth1Phrase = new p5.Phrase('synth1Sound', (time, value) => {
+          setTimeout(() => {
+            synth.amp(value ? 0.5: 0)
+            synth.freq(p.midiToFreq(value))
+          }, time * 1000)
+          }, synth1Pattern);
+    synth2Phrase = new p5.Phrase('synth2Sound', (time, value) => {
+          setTimeout(() => {
+            synth2.amp(value ? 0.5: 0)
+            synth2.freq(p.midiToFreq(value))
+          }, time * 1000)
+          }, synth2Pattern)
+
     // create a sound recorder
     recorder = new p5.SoundRecorder()
     recorder.setInput(synth)
@@ -150,10 +168,12 @@ const PaletteSketch = p => {
     let play = document.createElement('button')
     play.innerText = 'Play'
     play.onclick = () => {
-      if (!isPlaying) {
-        isPlaying = true
+
+      if(!isPlaying) {
+        isPlaying = true;
+        drums.metro.metroTicks = 0
         playingCanvas()
-        instruments.loop()
+        drums.loop()
       }
     }
     document.body.appendChild(play)
@@ -164,7 +184,7 @@ const PaletteSketch = p => {
       isPlaying = false
       synth.stop()
       synth2.stop()
-      instruments.stop()
+      drums.stop()
     }
     document.body.appendChild(stop)
     // DOWNLOAD AUDIO
@@ -240,15 +260,17 @@ const PaletteSketch = p => {
     function(event) {
       if (event.key === ' ') {
         if (!isPlaying) {
-          isPlaying = true
-          instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
+
+          isPlaying = true;
+          drums.metro.metroTicks = 0 // restarts playhead at beginning [0]
           playingCanvas()
-          instruments.loop()
+          drums.loop()
         } else {
-          isPlaying = false
-          fadeOutInstrument(synth)
-          fadeOutInstrument(synth2)
-          instruments.stop()
+
+          isPlaying = false;
+          fadeOutInstrument(synth);
+          fadeOutInstrument(synth2);
+          drums.stop()
         }
       }
     },
@@ -272,38 +294,11 @@ const PaletteSketch = p => {
     synth.start()
     synth2.start()
 
-    // Setup phrases to loop
-    synth1Phrase = new p5.Phrase(
-      'synth1Sound',
-      (time, value) => {
-        if (value > 1) {
-          //console.log('current value is ' + value)
-          synth.freq(p.midiToFreq(value))
-          synth.amp(0.5)
-        } else {
-          synth.freq(p.midiToFreq(value))
-          synth.amp(0)
-        }
-      },
-      synth1Pattern
-    )
-    synth2Phrase = new p5.Phrase(
-      'synth2Sound',
-      (time, value) => {
-        if (value > 1) {
-          synth2.freq(p.midiToFreq(value))
-          synth2.amp(0.5)
-        } else {
-          synth2.freq(p.midiToFreq(value))
-          synth2.amp(0)
-        }
-      },
-      synth2Pattern
-    )
-    instruments = new p5.Part()
-    instruments.addPhrase(synth1Phrase)
-    instruments.addPhrase(synth2Phrase)
-    instruments.setBPM('80')
+
+    //drums = new p5.Part()
+    drums.addPhrase(synth1Phrase)
+    drums.addPhrase(synth2Phrase)
+    drums.setBPM('80')
   }
 
   // Move these to seperate files eventually
@@ -312,8 +307,15 @@ const PaletteSketch = p => {
                      Utility Functions
   ----------------------------------------------------------
   */
-  const fadeOutInstrument = instrument => {
-    instrument.fade(0, 0.5)
+
+  function sleep(milliseconds) {
+    var currentTime = new Date().getTime();
+
+    while (currentTime + milliseconds >= new Date().getTime()) {}
+  }
+
+  const fadeOutInstrument = (instrument) => {
+    //instrument.fade(0, 0.5)
     instrument.amp(0)
     instrument.stop()
   }
@@ -330,16 +332,23 @@ const PaletteSketch = p => {
   }
 
   const drawColor = (color, lastX, lastY, x, y) => {
-    switch (color) {
+
+    let frequency = p.midiToFreq(scaleDifference * (height - p.mouseY) / height + notes[0]);
+
+    switch(color) {
       case 'black':
         synth.amp(2)
         synth.freq(p.midiToFreq(90 * (height - p.mouseY) / 500) + 90)
         p.stroke(0)
+        synth.amp(0.5)
+        synth.freq(frequency)
         break
       case 'red':
         synth2.amp(2)
         synth2.freq(p.midiToFreq(90 * (height - p.mouseY) / 500) + 60)
         p.stroke(255, 0, 0)
+        synth2.amp(0.5)
+        synth2.freq(frequency)
         break
       default:
         p.stroke(0)
