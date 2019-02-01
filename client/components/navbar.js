@@ -122,6 +122,16 @@ function Navigation(props) {
               Login
             </Button>{' '}
             <Button
+              onClick={() => {
+                firebase.doSignInWithGoogle()
+              }}
+              to="/home"
+              color="secondary"
+              className={classes.button}
+            >
+              Google Login
+            </Button>
+            <Button
               className={classes.button}
               component={Link}
               to="/signup"

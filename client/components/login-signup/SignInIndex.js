@@ -4,11 +4,13 @@ import {compose} from 'recompose'
 import {SignUpLink} from './SignUpIndex'
 import {PasswordForgetLink} from './PasswordForget.js'
 import {withFirebase} from '../../firebase/FirebaseContext.js'
+import {SignInGoogle} from './SignInGoogle'
 
 export const SignInPage = () => (
   <div>
     <h1>SignIn</h1>
     <SignInForm />
+    <SignInGoogle />
     <PasswordForgetLink />
     <SignUpLink />
   </div>
