@@ -8,7 +8,6 @@ const PaletteSketch = p => {
   let color = 'black'
   let synth1Phrase, synth2Phrase
   let isPlaying = false
-  let instruments = new p5.Part()
   let synth1Pattern = [
     undefined,
     undefined,
@@ -117,8 +116,7 @@ const PaletteSketch = p => {
 
     p.background(255)
     p.fill(0)
-    p.strokeWeight(10)
-
+    
     for (let x = 0; x < width; x += width / 16) {
       for (let y = 0; y < height; y += height / 14) {
         p.stroke(200)
@@ -127,7 +125,8 @@ const PaletteSketch = p => {
         p.line(0, y, width, y)
       }
     }
-
+    p.strokeWeight(10)
+    
     // Link mouse press functions
 
     synth = new p5.SinOsc()
@@ -170,71 +169,64 @@ const PaletteSketch = p => {
                     Buttons
   ----------------------------------------------------------
   */
-    // Button to begin recording audio
-    // startRecord = p.createButton('Start Record')
-    // startRecord.onclick = () => {
-    //   recorder.record(soundFile)
-    //   console.log('start record')
-    // }
-    // startRecord.parent('buttonManifold')
-
-    // Button to stop recording audio
-    // stopRecord = p.createButton('Stop Record')
-    // stopRecord.onclick = () => {
-    //   recorder.stop()
-    // }
-    // stopRecord.parent('buttonManifold')
 
     // Button to change paint to red
     redPaint = p.createButton('Red')
-    redPaint.onclick = () => {
-      color = 'red'
-    }
     redPaint.parent('buttonManifold')
+    redPaint.mousePressed(() => {
+      color = 'red'
+    })
 
     // Button to change paint to black
     blackPaint = p.createButton('Black')
-    blackPaint.onclick = () => {
+    blackPaint.mousePressed(() => {
       color = 'black'
-    }
+    })
     blackPaint.parent('buttonManifold')
 
     // Button to handle canvas playback
     play = p.createButton('Play')
-    play.onclick = () => {
+    play.mousePressed(() => {
       if (!isPlaying) {
         isPlaying = true
         drums.metro.metroTicks = 0
         playingCanvas()
         drums.loop()
       }
-    }
+    })
     play.parent('buttonManifold')
 
     stop = p.createButton('Stop')
-    stop.onclick = () => {
+    stop.mousePressed( () => {
       isPlaying = false
       synth.stop()
       synth2.stop()
       drums.stop()
-    }
+    })
     stop.parent('buttonManifold')
+
+    // SAVE IMAGE
+    let saveImage = p.createButton('Save Image')
+    saveImage.mousePressed(() => {
+      p.saveCanvas(canvas, 'myCanvas', 'png');
+    })
+    saveImage.parent('buttonManifold')
 
     // Button to download the currently recorded audio
     download = p.createButton('Download')
-    download.onclick = () => {
+    download.mousePressed(() => {
       p.saveSound(soundFile, 'myHorribleSound.wav')
       // Re-initialize the soundfile
       soundFile = new p5.SoundFile()
       // Retrieve all pixels from the canvas
-    }
+    })
     download.parent('buttonManifold')
 
     // Button for playback of strokes
     playback = p.createButton('Playback')
-    playback.onclick = () => {
+    playback.mousePressed(() => {
       replay = true
-    }
+    })
     playback.parent('buttonManifold')
   }
 
@@ -244,8 +236,6 @@ const PaletteSketch = p => {
     p.resizeCanvas(width, height)
     p.background(255)
     p.fill(0)
-    p.strokeWeight(10)
-
     for (let x = 0; x < width; x += width / 16) {
       for (let y = 0; y < height; y += height / 14) {
         p.stroke(200)
@@ -254,6 +244,7 @@ const PaletteSketch = p => {
         p.line(0, y, width, y)
       }
     }
+    p.strokeWeight(10)
   }
 
   /*
@@ -353,12 +344,6 @@ const PaletteSketch = p => {
                      Utility Functions
   ----------------------------------------------------------
   */
-  function sleep(milliseconds) {
-    var currentTime = new Date().getTime()
-
-    // while (currentTime + milliseconds >= new Date().getTime()) {}
-  }
-
   const fadeOutInstrument = instrument => {
     //instrument.fade(0, 0.5)
     instrument.amp(0)
@@ -377,10 +362,7 @@ const PaletteSketch = p => {
   }
 
   const drawColor = (color, lastX, lastY, x, y) => {
-    let frequency = p.midiToFreq(
-      scaleDifference * (height - p.mouseY) / height + notes[0]
-    )
-
+    let frequency = p.midiToFreq(scaleDifference * (height - p.mouseY) / height + notes[0])
     switch (color) {
       case 'black':
         p.stroke(0)
