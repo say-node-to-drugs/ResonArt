@@ -132,35 +132,21 @@ const PaletteSketch = p => {
                     Buttons
   ----------------------------------------------------------
   */
-    // Button to begin recording audio
-    let startRecording = document.createElement('button')
-    startRecording.innerText = 'Start Recording'
-    startRecording.onclick = () => {
-      recorder.record(soundFile)
-    }
-    document.body.appendChild(startRecording)
-    // Button to stop recording audio
-    let stopRecording = document.createElement('button')
-    stopRecording.innerText = 'Stop Recording'
-    stopRecording.onclick = () => {
-      recorder.stop()
-    }
-    document.body.appendChild(stopRecording)
-    // Button to change paint to red
+    // RED PAINT
     let redPaint = document.createElement('button')
     redPaint.innerText = 'Red'
     redPaint.onclick = () => {
       color = 'red'
     }
     document.body.appendChild(redPaint)
-    // Button to change paint to black
+    // BLACK PAINT
     let blackPaint = document.createElement('button')
     blackPaint.innerText = 'Black'
     blackPaint.onclick = () => {
       color = 'black'
     }
     document.body.appendChild(blackPaint)
-    // Button to handle canvas playback
+    // PLAY
     let play = document.createElement('button')
     play.innerText = 'Play'
     play.onclick = () => {
@@ -170,20 +156,8 @@ const PaletteSketch = p => {
         instruments.loop()
       }
     }
-    play.onkeypress = () => {
-      if (key === ' ' && !isPlaying) {
-        isPlaying = true;
-        playingCanvas()
-        instruments.loop()
-      } else if(isPlaying) {
-        isPlaying = false;
-        synth.stop()
-        synth2.stop()
-        instruments.stop()
-      }
-    }
     document.body.appendChild(play)
-
+    // STOP PLAYING
     let stop = document.createElement('button')
     stop.innerText = 'Stop'
     stop.onclick = () => {
@@ -193,8 +167,7 @@ const PaletteSketch = p => {
       instruments.stop()
     }
     document.body.appendChild(stop)
-    // Button to download the currently recorded audio
-
+    // DOWNLOAD AUDIO
     let download = document.createElement('button')
     download.innerText = 'Download'
     download.onclick = () => {
@@ -205,7 +178,7 @@ const PaletteSketch = p => {
     }
     document.body.appendChild(download)
 
-    // Button for playback of strokes
+    // PLAYBACK STROKES
     let playback = document.createElement('button')
     playback.innerText = 'Playback'
     playback.onclick = () => {
@@ -220,14 +193,162 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
   p.mouseDragged = () => {
-    if(!isPlaying) {
+    mouseDrag(p.mouseX, p.mouseY);
+  }
+
+  p.mousePressed = () => {
+    mousePress(p.mouseX, p.mouseY);
+  }
+  p.mouseReleased = () => {
+    mouseRelease();
+  }
+
+  /*
+  ----------------------------------------------------------
+                     Draw Function
+  ----------------------------------------------------------
+  */
+  p.draw = () => {
+    // Set previous mouse position correctly if starting a new line
+    if (prevX === 0) {
+      prevX = p.mouseX
+      prevY = p.mouseY
+    }
+
+    if (state && !isPlaying) {
+      // Gives us a value between 30 and  80 (good audible frequencies)
       if (isWithinBounds(p.mouseX, p.mouseY)) {
-        let rowClicked = 13 - p.floor(14 * (p.mouseY / p.height))
-        let indexClicked = p.floor(16 * p.mouseX / p.width)
-  
-        if (indexClicked === 16) {
-          indexClicked--
+        // Start stroke and play audio based on color
+        drawColor(color, prevX, prevY, p.mouseX, p.mouseY);
+      } else {
+        synth.amp(0)
+        synth2.amp(0)
+      }
+      // Save previous mouse position for next line() call
+      prevX = p.mouseX
+      prevY = p.mouseY
+    }
+  }
+
+   /*
+  ----------------------------------------------------------
+                     Key Press Handler
+  ----------------------------------------------------------
+  */
+  document.addEventListener(
+    'keydown',
+    function(event) {
+      if (event.key === ' ') {
+        if (!isPlaying) {
+          isPlaying = true;
+          instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
+          playingCanvas()
+          instruments.loop()
+        } else {
+          isPlaying = false;
+          fadeOutInstrument(synth);
+          fadeOutInstrument(synth2);
+          instruments.stop()
         }
+      }
+    },
+    false
+  )
+
+  /*
+  ----------------------------------------------------------
+                     Playing Music Function
+  ----------------------------------------------------------
+  */
+  const playingCanvas = () => {
+    // Get average grid y-value for each color
+    for (let i = 0; i < allBlackGrid.length; i++) {
+      synth1Pattern[i] = notes[getAverage(allBlackGrid[i])];
+    }
+    for (let i = 0; i < allRedGrid.length; i++) {
+      synth2Pattern[i] = notes[getAverage(allRedGrid[i])]
+    }
+
+    synth.start()
+    synth2.start()
+
+    // Setup phrases to loop
+    synth1Phrase = new p5.Phrase('synth1Sound', (time, value) => {
+        if (value > 1) {
+          //console.log('current value is ' + value)
+          synth.freq(p.midiToFreq(value))
+          synth.amp(0.5)
+        } else {
+          synth.freq(p.midiToFreq(value))
+          synth.amp(0)
+        }
+      }, synth1Pattern);
+    synth2Phrase = new p5.Phrase('synth2Sound', (time, value) => {
+        if (value > 1) {
+          synth2.freq(p.midiToFreq(value))
+          synth2.amp(0.5)
+        } else {
+          synth2.freq(p.midiToFreq(value))
+          synth2.amp(0)
+        }
+      }, synth2Pattern)
+    instruments = new p5.Part()
+    instruments.addPhrase(synth1Phrase)
+    instruments.addPhrase(synth2Phrase)
+    instruments.setBPM('80')
+  }
+
+
+  // Move these to seperate files eventually
+  /*
+  ----------------------------------------------------------
+                     Utility Functions
+  ----------------------------------------------------------
+  */
+  const fadeOutInstrument = (instrument) => {
+    instrument.fade(0, 0.5)
+    instrument.amp(0)
+    instrument.stop()
+  }
+
+  const isWithinBounds = (x, y) => {
+    if (x >= 0 && x <= width && y >= 0 && y <= height) {
+      return true;
+    }
+    return false;
+  }
+
+  const getAverage = (array) => {
+    return Math.floor(array.reduce((a, b) => a + b, 0) / array.length);
+  }
+
+  const drawColor = (color, lastX, lastY, x, y) => {
+    switch(color) {
+      case 'black':
+        synth.amp(2)
+        synth.freq(p.midiToFreq(90 * (height - p.mouseY) / 500) + 90)
+        p.stroke(0)
+        break
+      case 'red':
+        synth2.amp(2)
+        synth2.freq(p.midiToFreq(90 * (height - p.mouseY) / 500) + 60)
+        p.stroke(255, 0, 0)
+        break
+      default:
+        p.stroke(0)
+        break
+    }
+    p.line(lastX, lastY, x, y)
+  }
+
+  const mouseDrag = (x, y) => {
+    if(!isPlaying) {
+      if (isWithinBounds(x, y)) {
+        // Calculate (x, y) value of the grid cell being dragged over
+        let rowClicked = 13 - p.floor(14 * (y / p.height))
+        let indexClicked = p.floor(16 * x / p.width)
+  
+        if (indexClicked === 16) { indexClicked-- }
   
         if (allBlackGrid[indexClicked].indexOf(rowClicked) === -1) {
           if (color === 'black') {
@@ -245,10 +366,9 @@ const PaletteSketch = p => {
     }
   }
 
-  p.mousePressed = () => {
-    // If nothing is being played and the mouse is clicked on the canvas
+  const mousePress = (x, y) => {
     if(!isPlaying) {
-      if (isWithinBounds(p.mouseX, p.mouseY)) {
+      if (isWithinBounds(x, y)) {
         // Begin playing the correct synth
         if (color === 'black') {
           synth.start()
@@ -265,11 +385,10 @@ const PaletteSketch = p => {
         synth.amp(0)
         synth2.amp(0)
       }
-
     }
   }
-  p.mouseReleased = () => {
-    // Stop playing synth
+
+  const mouseRelease = () => {
     if(!isPlaying) {
       if (color === 'black') {
         synth.fade(0, 0.5)
@@ -282,140 +401,6 @@ const PaletteSketch = p => {
       }
       state = 0
     }
-  }
-
-  /*
-  ----------------------------------------------------------
-                     Draw Function
-  ----------------------------------------------------------
-  */
-  // Draw function that p5 calls every time the canvas is interacted with
-  p.draw = () => {
-    // Set previous mouse position correctly if starting a new line
-    if (prevX === 0) {
-      prevX = p.mouseX
-      prevY = p.mouseY
-    }
-
-    if (state && !isPlaying) {
-      // Gives us a value between 30 and  80 (good audible frequencies)
-      if (
-        p.mouseX >= 0 &&
-        p.mouseX <= width &&
-        p.mouseY >= 0 &&
-        p.mouseY <= height
-      ) {
-        // Start stroke and play audio based on color
-        if (color === 'black') {
-          synth.amp(2)
-          synth.freq(p.midiToFreq(90 * (height - p.mouseY) / 500) + 90)
-          p.stroke(0)
-        } else if (color === 'red') {
-          synth2.amp(2)
-          synth2.freq(p.midiToFreq(90 * (height - p.mouseY) / 500) + 60)
-          p.stroke(255, 0, 0)
-        }
-        p.line(prevX, prevY, p.mouseX, p.mouseY)
-      } else {
-        synth.amp(0)
-        synth2.amp(0)
-      }
-      // Save previous mouse position for next line() call
-      prevX = p.mouseX
-      prevY = p.mouseY
-    }
-  }
-
-  document.addEventListener(
-    'keydown',
-    function(event) {
-      console.log('space was pressed !!!!')
-      if (event.key === ' ') {
-        if (!isPlaying) {
-          isPlaying = true;
-          instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
-          playingCanvas()
-          instruments.loop()
-        } else {
-          isPlaying = false;
-          synth.fade(0, 0.5)
-          synth.amp(0)
-          synth.stop()
-          synth2.fade(0, 0.5)
-          synth2.amp(0)
-          synth2.stop()
-          instruments.stop()
-        }
-      }
-    },
-    false
-  )
-
-  /*
-  ----------------------------------------------------------
-                     Playing Music Function
-  ----------------------------------------------------------
-  */
-  const playingCanvas = () => {
-    // Get average grid y-value for each color
-    for (let i = 0; i < allBlackGrid.length; i++) {
-      synth1Pattern[i] =
-        allBlackGrid[i].reduce((a, b) => a + b, 0) / allBlackGrid[i].length
-      synth1Pattern[i] = notes[Math.floor(synth1Pattern[i])]
-    }
-
-    for (let i = 0; i < allRedGrid.length; i++) {
-      synth2Pattern[i] =
-        allRedGrid[i].reduce((a, b) => a + b, 0) / allRedGrid[i].length
-      synth2Pattern[i] = notes[Math.floor(synth2Pattern[i])]
-    }
-
-    synth.start()
-    synth2.start()
-
-    // Setup phrases to loop
-    synth1Phrase = new p5.Phrase(
-      'synth1Sound',
-      (time, value) => {
-        if (value > 1) {
-          //console.log('current value is ' + value)
-          synth.freq(p.midiToFreq(value))
-          synth.amp(0.5)
-        } else {
-          synth.freq(p.midiToFreq(value))
-          synth.amp(0)
-        }
-      },
-      synth1Pattern
-    )
-    synth2Phrase = new p5.Phrase(
-      'synth2Sound',
-      (time, value) => {
-        if (value > 1) {
-          synth2.freq(p.midiToFreq(value))
-          synth2.amp(0.5)
-        } else {
-          synth2.freq(p.midiToFreq(value))
-          synth2.amp(0)
-        }
-      },
-      synth2Pattern
-    )
-
-    instruments = new p5.Part()
-
-    instruments.addPhrase(synth1Phrase)
-    instruments.addPhrase(synth2Phrase)
-
-    instruments.setBPM('80')
-  }
-
-
-  const isWithinBounds = (x, y) => {
-    if (x >= 0 && x <= width && y >= 0 && y <= height) {
-      return true;
-    }
-    return false;
   }
 }
 //_______________WILL BE USED LATER________________________________________
