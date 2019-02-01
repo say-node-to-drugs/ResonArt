@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 
 import {withFirebase} from '../../firebase/FirebaseContext.js'
 
-const PasswordForgetPage = () => (
+export const PasswordForgetPage = () => (
   <div>
     <h1>PasswordForget</h1>
     <PasswordForgetForm />
@@ -24,6 +24,8 @@ class PasswordForgetFormBase extends Component {
 
   onSubmit = event => {
     const {email} = this.state
+
+    console.log('PASSWORD RESET')
 
     this.props.firebase
       .doPasswordReset(email)
@@ -46,8 +48,6 @@ class PasswordForgetFormBase extends Component {
 
     const isInvalid = email === ''
 
-    console.log('PW FORGET')
-
     return (
       <form onSubmit={this.onSubmit}>
         <input
@@ -69,11 +69,9 @@ class PasswordForgetFormBase extends Component {
 
 const PasswordForgetLink = () => (
   <p>
-    <Link to="/account">Forgot Password?</Link>
+    <Link to="/forgot">Forgot Password?</Link>
   </p>
 )
-
-export default PasswordForgetPage
 
 const PasswordForgetForm = withFirebase(PasswordForgetFormBase)
 
