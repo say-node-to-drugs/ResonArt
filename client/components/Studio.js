@@ -1,5 +1,5 @@
 import React from 'react'
-import DrumSketch from './sketches/DrumSketch'
+import {DrumSketch} from './sketches/DrumSketch'
 import PaletteSketch from './sketches/PaletteSketch'
 import PropTypes from 'prop-types'
 import {withStyles, Button} from '@material-ui/core'

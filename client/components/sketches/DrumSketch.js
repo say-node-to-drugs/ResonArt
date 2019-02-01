@@ -1,3 +1,5 @@
+let drums = new p5.Part();
+
 const DrumSketch = p => {
   // Set height and width of canvas
 
@@ -13,7 +15,6 @@ const DrumSketch = p => {
   let bass
   let hPat, cPat, bPat, sPat
   let hPhrase, cPhrase, bPhrase
-  let drums
   let bpmCTRL
 
   // make library globally available
@@ -41,21 +42,21 @@ const DrumSketch = p => {
     hPhrase = new p5.Phrase(
       'hh',
       time => {
-        hh.play(time)
+        hh.play(time - 20)
       },
       hPat
     )
     cPhrase = new p5.Phrase(
       'clap',
       time => {
-        clap.play(time)
+        clap.play(time - 20)
       },
       cPat
     )
     bPhrase = new p5.Phrase(
       'bass',
       time => {
-        bass.play(time)
+        bass.play(time - 20)
       },
       bPat
     )
@@ -78,18 +79,18 @@ const DrumSketch = p => {
     p.drawMatrix()
   }
 
-  p.keyPressed = () => {
-    if (p.key === ' ') {
-      if (hh.isLoaded() && clap.isLoaded() && bass.isLoaded()) {
-        if (!drums.isPlaying) {
-          drums.metro.metroTicks = 0 // restarts playhead at beginning [0]
-          drums.loop()
-        } else {
-          drums.stop()
-        }
-      }
-    }
-  }
+  // p.keyPressed = () => {
+  //   if (p.key === ' ') {
+  //     if (hh.isLoaded() && clap.isLoaded() && bass.isLoaded()) {
+  //       if (!drums.isPlaying) {
+  //         drums.metro.metroTicks = 0 // restarts playhead at beginning [0]
+  //         drums.loop()
+  //       } else {
+  //         drums.stop()
+  //       }
+  //     }
+  //   }
+  // }
 
   p.canvasPressed = () => {
     let rowClicked = p.floor(3 * p.mouseY / canvasHeight)
@@ -160,4 +161,4 @@ const DrumSketch = p => {
   }
 }
 
-export default DrumSketch
+export {DrumSketch, drums}
