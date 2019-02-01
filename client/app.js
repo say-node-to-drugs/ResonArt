@@ -15,7 +15,6 @@ const App = props => (
       <Navbar firebase={props.firebase} />
       <Switch>
         {/* Routes placed here are available to all visitors */}
-        <Route path="/login" component={Login} />
         <Route path="/account" component={AccountIndex} />
         <Route path="/signup" component={SignUpPage} />
         <Route path="/signin" component={SignInPage} />

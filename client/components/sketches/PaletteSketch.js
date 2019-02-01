@@ -8,7 +8,6 @@ const PaletteSketch = p => {
   let color = 'black'
   let synth1Phrase, synth2Phrase
   let isPlaying = false
-  let instruments = new p5.Part()
   let synth1Pattern = [
     undefined,
     undefined,
@@ -88,20 +87,8 @@ const PaletteSketch = p => {
   let recordArrayRed = []
   let recordArrayBlack = []
 
-  // let width = p.windowWidth / 2 - 30;
   let width = p.windowWidth / 2 - 30
   let height = p.windowHeight * (4 / 10)
-
-  // buttons
-  let startRecord,
-    stopRecord,
-    redPaint,
-    blackPaint,
-    play,
-    stop,
-    download,
-    playback
-
   p.preload = () => {
     synth1Sound = new p5.SoundFile()
     synth2Sound = new p5.SoundFile()
@@ -113,20 +100,19 @@ const PaletteSketch = p => {
     canvas = p.createCanvas(width, height)
     canvas.parent('sketchPad')
     canvas.style('display', 'block')
-    canvas.class('palette')
 
     p.background(255)
     p.fill(0)
-    p.strokeWeight(10)
-
-    for (let x = 0; x < width; x += width / 16) {
-      for (let y = 0; y < height; y += height / 14) {
+    canvas.class('paletteP5')
+    for (var x = 0; x < width; x += width / 16) {
+      for (var y = 0; y < height; y += height / 14) {
         p.stroke(200)
         p.strokeWeight(1)
         p.line(x, 0, x, height)
         p.line(0, y, width, y)
       }
     }
+    p.strokeWeight(10)
 
     // Link mouse press functions
 
@@ -170,37 +156,23 @@ const PaletteSketch = p => {
                     Buttons
   ----------------------------------------------------------
   */
-    // Button to begin recording audio
-    // startRecord = p.createButton('Start Record')
-    // startRecord.onclick = () => {
-    //   recorder.record(soundFile)
-    //   console.log('start record')
-    // }
-    // startRecord.parent('buttonManifold')
-
-    // Button to stop recording audio
-    // stopRecord = p.createButton('Stop Record')
-    // stopRecord.onclick = () => {
-    //   recorder.stop()
-    // }
-    // stopRecord.parent('buttonManifold')
-
-    // Button to change paint to red
-    redPaint = p.createButton('Red')
+    // RED PAINT
+    let redPaint = document.createElement('button')
+    redPaint.innerText = 'Red'
     redPaint.onclick = () => {
       color = 'red'
     }
-    redPaint.parent('buttonManifold')
-
-    // Button to change paint to black
-    blackPaint = p.createButton('Black')
+    document.body.appendChild(redPaint)
+    // BLACK PAINT
+    let blackPaint = document.createElement('button')
+    blackPaint.innerText = 'Black'
     blackPaint.onclick = () => {
       color = 'black'
     }
-    blackPaint.parent('buttonManifold')
-
-    // Button to handle canvas playback
-    play = p.createButton('Play')
+    document.body.appendChild(blackPaint)
+    // PLAY
+    let play = document.createElement('button')
+    play.innerText = 'Play'
     play.onclick = () => {
       if (!isPlaying) {
         isPlaying = true
@@ -209,33 +181,35 @@ const PaletteSketch = p => {
         drums.loop()
       }
     }
-    play.parent('buttonManifold')
-
-    stop = p.createButton('Stop')
+    document.body.appendChild(play)
+    // STOP PLAYING
+    let stop = document.createElement('button')
+    stop.innerText = 'Stop'
     stop.onclick = () => {
       isPlaying = false
       synth.stop()
       synth2.stop()
       drums.stop()
     }
-    stop.parent('buttonManifold')
-
-    // Button to download the currently recorded audio
-    download = p.createButton('Download')
+    document.body.appendChild(stop)
+    // DOWNLOAD AUDIO
+    let download = document.createElement('button')
+    download.innerText = 'Download'
     download.onclick = () => {
       p.saveSound(soundFile, 'myHorribleSound.wav')
       // Re-initialize the soundfile
       soundFile = new p5.SoundFile()
       // Retrieve all pixels from the canvas
     }
-    download.parent('buttonManifold')
+    document.body.appendChild(download)
 
-    // Button for playback of strokes
-    playback = p.createButton('Playback')
+    // PLAYBACK STROKES
+    let playback = document.createElement('button')
+    playback.innerText = 'Playback'
     playback.onclick = () => {
       replay = true
     }
-    playback.parent('buttonManifold')
+    document.body.appendChild(playback)
   }
 
   p.windowResized = () => {
@@ -244,7 +218,7 @@ const PaletteSketch = p => {
     p.resizeCanvas(width, height)
     p.background(255)
     p.fill(0)
-    p.strokeWeight(10)
+    // p.strokeWeight(10)
 
     for (let x = 0; x < width; x += width / 16) {
       for (let y = 0; y < height; y += height / 14) {

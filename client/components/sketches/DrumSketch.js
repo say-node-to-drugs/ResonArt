@@ -81,18 +81,18 @@ const DrumSketch = p => {
     p.drawMatrix()
   }
 
-  p.keyPressed = () => {
-    if (p.key === ' ') {
-      if (hh.isLoaded() && clap.isLoaded() && bass.isLoaded()) {
-        if (!drums.isPlaying) {
-          drums.metro.metroTicks = 0 // restarts playhead at beginning [0]
-          drums.loop()
-        } else {
-          drums.stop()
-        }
-      }
-    }
-  }
+  // p.keyPressed = () => {
+  //   if (p.key === ' ') {
+  //     if (hh.isLoaded() && clap.isLoaded() && bass.isLoaded()) {
+  //       if (!drums.isPlaying) {
+  //         drums.metro.metroTicks = 0 // restarts playhead at beginning [0]
+  //         drums.loop()
+  //       } else {
+  //         drums.stop()
+  //       }
+  //     }
+  //   }
+  // }
 
   p.canvasPressed = () => {
     let rowClicked = p.floor(3 * p.mouseY / (p.windowHeight / 6))

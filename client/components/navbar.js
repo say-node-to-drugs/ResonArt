@@ -137,7 +137,7 @@ function Navigation(props) {
 }
 
 function Navbar(props) {
-  const {classes, handleClick, isLoggedIn, authUser, firebase} = props
+  const {classes} = props
   return (
     <div id="navbar" className={classes.root}>
       <MuiThemeProvider theme={theme}>
