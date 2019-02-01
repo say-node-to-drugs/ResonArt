@@ -1,3 +1,5 @@
+let drums = new p5.Part()
+
 const DrumSketch = p => {
   // Set height and width of canvas
 
@@ -13,7 +15,6 @@ const DrumSketch = p => {
   let bass
   let hPat, cPat, bPat, sPat
   let hPhrase, cPhrase, bPhrase
-  let drums
   let bpmCTRL
 
   p.preload = () => {
@@ -189,4 +190,4 @@ const DrumSketch = p => {
   }
 }
 
-export default DrumSketch
+export {DrumSketch, drums}

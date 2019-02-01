@@ -30,6 +30,8 @@ class Firebase {
 
     this.auth = app.auth()
     this.db = app.database()
+    this.googleProvider = new app.auth.GoogleAuthProvider()
+    this.facebookProvider = new app.auth.FacebookAuthProvider()
   }
 
   // *** Auth API ***
@@ -45,6 +47,12 @@ class Firebase {
   doPasswordReset = email => this.auth.sendPasswordResetEmail(email)
 
   doPasswordUpdate = password => this.auth.currentUser.updatePassword(password)
+
+  // *** Third-Party API ***
+
+  doSignInWithGoogle = () => this.auth.signInWithPopup(this.googleProvider)
+
+  doSignInWithFacebook = () => this.auth.signInWithPopup(this.facebookProvider)
 
   // *** User API ***
 
