@@ -279,12 +279,10 @@ const PaletteSketch = p => {
     // Setup phrases to loop
     synth1Phrase = new p5.Phrase('synth1Sound', (time, value) => {
       synth.amp(value ? 0.5: 0)
-      synth.fade(0.5, 0)
       synth.freq(p.midiToFreq(value))
       }, synth1Pattern);
     synth2Phrase = new p5.Phrase('synth2Sound', (time, value) => {
       synth2.amp(value ? 0.5: 0)
-      synth2.fade(0.5, 0)
       synth2.freq(p.midiToFreq(value))
       }, synth2Pattern)
     //drums = new p5.Part()
@@ -319,15 +317,17 @@ const PaletteSketch = p => {
 
   const drawColor = (color, lastX, lastY, x, y) => {
     let frequency = p.midiToFreq(scaleDifference * (height - p.mouseY) / height + notes[0]);
-    synth.amp(2)
-    synth.freq(frequency)
 
     switch(color) {
       case 'black':
         p.stroke(0)
+        synth.amp(0.5)
+        synth.freq(frequency)
         break
       case 'red':
         p.stroke(255, 0, 0)
+        synth2.amp(0.5)
+        synth2.freq(frequency)
         break
       default:
         break
