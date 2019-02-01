@@ -1,3 +1,6 @@
+import {drums} from './DrumSketch'
+
+
 const PaletteSketch = p => {
   let recorder, soundFile, canvas
   let prevX, prevY
@@ -6,7 +9,6 @@ const PaletteSketch = p => {
   let color = 'black'
   let synth1Phrase, synth2Phrase
   let isPlaying = false;
-  let instruments = new p5.Part()
   let synth1Pattern = [
     undefined,
     undefined,
@@ -153,8 +155,9 @@ const PaletteSketch = p => {
     play.onclick = () => {
       if(!isPlaying) {
         isPlaying = true;
+        drums.metro.metroTicks = 0
         playingCanvas()
-        instruments.loop()
+        drums.loop()
       }
     }
     document.body.appendChild(play)
@@ -165,7 +168,7 @@ const PaletteSketch = p => {
       isPlaying = false;
       synth.stop()
       synth2.stop()
-      instruments.stop()
+      drums.stop()
     }
     document.body.appendChild(stop)
     // DOWNLOAD AUDIO
@@ -242,14 +245,14 @@ const PaletteSketch = p => {
       if (event.key === ' ') {
         if (!isPlaying) {
           isPlaying = true;
-          instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
+          drums.metro.metroTicks = 0 // restarts playhead at beginning [0]
           playingCanvas()
-          instruments.loop()
+          drums.loop()
         } else {
           isPlaying = false;
           fadeOutInstrument(synth);
           fadeOutInstrument(synth2);
-          instruments.stop()
+          drums.stop()
         }
       }
     },
@@ -275,34 +278,19 @@ const PaletteSketch = p => {
 
     // Setup phrases to loop
     synth1Phrase = new p5.Phrase('synth1Sound', (time, value) => {
-      let volume = 0;
-      if(value) {
-        volume = .5;
-      }
+      synth.amp(value ? 0.5: 0)
+      synth.fade(0.5, 0)
       synth.freq(p.midiToFreq(value))
-      synth.amp(0 + volume)
-
-        if (value) {
-          synth.freq(p.midiToFreq(value))
-          synth.amp(0.5)
-        } else {
-          synth.freq(p.midiToFreq(value))
-          synth.amp(0)
-        }
       }, synth1Pattern);
     synth2Phrase = new p5.Phrase('synth2Sound', (time, value) => {
-        if (value) {
-          synth2.freq(p.midiToFreq(value))
-          synth2.amp(0.5)
-        } else {
-          synth2.freq(p.midiToFreq(value))
-          synth2.amp(0)
-        }
+      synth2.amp(value ? 0.5: 0)
+      synth2.fade(0.5, 0)
+      synth2.freq(p.midiToFreq(value))
       }, synth2Pattern)
-    instruments = new p5.Part()
-    instruments.addPhrase(synth1Phrase)
-    instruments.addPhrase(synth2Phrase)
-    instruments.setBPM('80')
+    //drums = new p5.Part()
+    drums.addPhrase(synth1Phrase)
+    drums.addPhrase(synth2Phrase)
+    drums.setBPM('80')
   }
 
 
@@ -333,7 +321,7 @@ const PaletteSketch = p => {
     let frequency = p.midiToFreq(scaleDifference * (height - p.mouseY) / height + notes[0]);
     synth.amp(2)
     synth.freq(frequency)
-    
+
     switch(color) {
       case 'black':
         p.stroke(0)
