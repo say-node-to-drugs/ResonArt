@@ -9,7 +9,8 @@ const AccountPage = () => (
   <AuthUserContext.Consumer>
     {authUser => (
       <div>
-        <h1>Account: {authUser.email}</h1>
+        {console.log('ACCOUNT: ', authUser)}
+        <h1>Account: Welcome, {authUser.email}, you cheeky monkey!</h1>
         <PasswordForgetForm />
         <PasswordChangeForm />
       </div>
@@ -19,4 +20,4 @@ const AccountPage = () => (
 
 const condition = authUser => !!authUser
 
-export default withAuthorization(condition)(AccountPage)
+export const AccountIndex = withAuthorization(condition)(AccountPage)

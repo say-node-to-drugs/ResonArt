@@ -4,7 +4,9 @@ import {Login, Studio, Navbar} from './components'
 import {SignUpPage} from './components/login-signup/SignUpIndex'
 import {SignInPage} from './components/login-signup/SignInIndex'
 import {SignOutIndex} from './components/login-signup/SignOutIndex'
-import {AccountPage} from './components/login-signup/AccountIndex'
+import {AccountIndex} from './components/login-signup/AccountIndex'
+import {PasswordForgetPage} from './components/login-signup/PasswordForget.js'
+import {AdminIndex} from './components/admin/AdminIndex'
 import {withAuthentication} from './components/login-signup/withAuthentication.js'
 
 const App = props => (
@@ -14,11 +16,13 @@ const App = props => (
       <Switch>
         {/* Routes placed here are available to all visitors */}
         <Route path="/login" component={Login} />
-        <Route path="/account" component={AccountPage} />
+        <Route path="/account" component={AccountIndex} />
         <Route path="/signup" component={SignUpPage} />
         <Route path="/signin" component={SignInPage} />
         <Route path="/studio" component={Studio} />
         <Route path="/signout" component={SignOutIndex} />
+        <Route path="/forgot" component={PasswordForgetPage} />
+        <Route path="/admin" component={AdminIndex} />
         {/* Displays our Login component as a fallback */}
         <Route component={Studio} />
       </Switch>

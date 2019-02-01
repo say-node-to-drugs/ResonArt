@@ -6,27 +6,17 @@ import {withStyles, Button, Paper, Grid} from '@material-ui/core'
 
 let imgUrl = 'blurredBackdrop.jpg'
 
-let styles = theme => ({
+let styles = () => ({
   root: {
-    // backgroundImage: `url(${imgUrl})`,
     background: `url(${imgUrl}) no-repeat center center fixed`,
     backgroundSize: 'cover',
     overflow: 'hidden',
-    flexGrow: 1
-    // display: 'table',
-    // justifyContent: 'center',
-    // textAlign: 'center',
-    // margin: 'auto',
-    // padding: '50px',
-    // flexDirection: 'column',
+    flexGrow: 1,
+    padding: 30,
+    height: 'inherit'
   },
   grow: {
     flexGrow: 1
-  },
-  paper: {
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center',
-    color: theme.palette.text.secondary
   }
 })
 
@@ -44,24 +34,23 @@ class Studio extends React.Component {
   render() {
     const {classes} = this.props
     return (
-      // <div className={classes.root}>
-      <Grid container className={classes.root} spacing={24}>
-        {/* <div className="palette" id="paletteP5Wrapper"> */}
-        <Grid item xs={3}>
+      <Grid container className={classes.root} justify="center">
+        <Grid item sm={3}>
           <div className="spacer" />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item sm={6}>
           <div className="sketchPad" id="sketchPad" />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item sm={3}>
           <div className="buttonManifold" id="buttonManifold" />
         </Grid>
+        <Grid item sm={12}>
+          <div className="drumMachine" id="drumMachine" />
+        </Grid>
+        <Grid item sm={2}>
+          <div className="bpmCTRL" id="bpmCTRL" />
+        </Grid>
       </Grid>
-      // <div className="drums" id="drumP5Wrapper">
-      //   <div className="drumMachine" id="drumMachine" />
-      //   <div className="bpmCTRL" id="bpmCTRL" />
-      // </div>
-      // </div>
     )
   }
 }

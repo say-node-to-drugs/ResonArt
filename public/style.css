@@ -29,8 +29,8 @@ form div {
 
 /* container */
 .palette {
-  display: flex;
-  justify-content: center;
+  /* display: flex;
+  justify-content: center; */
   /* width: 60vw;
   height: 40vh; */
 }
@@ -68,12 +68,14 @@ form div {
 
 /* bpm slider control */
 .bpmCTRL {
-  flex-grow: 1;
+  display: flex;
+  justify-content: center;
 }
 
 /* drum machine component */
 .drumMachine {
-  flex-grow: 1;
+  display: flex;
+  justify-content: center;
 }
 
 /* NavBar buttons */
