@@ -125,6 +125,21 @@ const PaletteSketch = p => {
     synth2.setType('sawtooth')
     synth2.freq(0)
 
+
+        // Setup phrases to loop
+    synth1Phrase = new p5.Phrase('synth1Sound', (time, value) => {
+          setTimeout(() => {
+            synth.amp(value ? 0.5: 0)
+            synth.freq(p.midiToFreq(value))
+          }, time * 1000)
+          }, synth1Pattern);
+    synth2Phrase = new p5.Phrase('synth2Sound', (time, value) => {
+          setTimeout(() => {
+            synth2.amp(value ? 0.5: 0)
+            synth2.freq(p.midiToFreq(value))
+          }, time * 1000)
+          }, synth2Pattern)
+
     // create a sound recorder
     recorder = new p5.SoundRecorder()
     recorder.setInput(synth)
@@ -276,15 +291,6 @@ const PaletteSketch = p => {
     synth.start()
     synth2.start()
 
-    // Setup phrases to loop
-    synth1Phrase = new p5.Phrase('synth1Sound', (time, value) => {
-      synth.amp(value ? 0.5: 0)
-      synth.freq(p.midiToFreq(value))
-      }, synth1Pattern);
-    synth2Phrase = new p5.Phrase('synth2Sound', (time, value) => {
-      synth2.amp(value ? 0.5: 0)
-      synth2.freq(p.midiToFreq(value))
-      }, synth2Pattern)
     //drums = new p5.Part()
     drums.addPhrase(synth1Phrase)
     drums.addPhrase(synth2Phrase)
@@ -298,8 +304,14 @@ const PaletteSketch = p => {
                      Utility Functions
   ----------------------------------------------------------
   */
+  function sleep(milliseconds) {
+    var currentTime = new Date().getTime();
+
+    while (currentTime + milliseconds >= new Date().getTime()) {}
+  }
+
   const fadeOutInstrument = (instrument) => {
-    instrument.fade(0, 0.5)
+    //instrument.fade(0, 0.5)
     instrument.amp(0)
     instrument.stop()
   }
