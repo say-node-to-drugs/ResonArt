@@ -42,21 +42,21 @@ const DrumSketch = p => {
     hPhrase = new p5.Phrase(
       'hh',
       time => {
-        hh.play(time - 20)
+        hh.play(time)
       },
       hPat
     )
     cPhrase = new p5.Phrase(
       'clap',
       time => {
-        clap.play(time - 20)
+        clap.play(time)
       },
       cPat
     )
     bPhrase = new p5.Phrase(
       'bass',
       time => {
-        bass.play(time - 20)
+        bass.play(time)
       },
       bPat
     )
