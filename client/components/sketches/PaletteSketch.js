@@ -48,8 +48,19 @@ const PaletteSketch = p => {
   let recordArrayRed = []
   let recordArrayBlack = []
 
-  let width = p.windowWidth * (1 / 2)
-  let height = p.windowWidth / 4
+  let width = window.innerWidth * (6 / 10)
+  let height = window.innerHeight * (4 / 10)
+
+  // buttons
+  let startRecord,
+    stopRecord,
+    redPaint,
+    blackPaint,
+    play,
+    stop,
+    download,
+    playback
+
   p.preload = () => {
     synth1Sound = new p5.SoundFile()
     synth2Sound = new p5.SoundFile()
@@ -59,12 +70,12 @@ const PaletteSketch = p => {
     p.userStartAudio()
 
     canvas = p.createCanvas(width, height)
-    canvas.parent('paletteP5Wrapper')
+    canvas.parent('sketchPad')
     canvas.style('display', 'block')
+    canvas.class('palette')
 
     p.background(255)
     p.fill(0)
-    canvas.class('paletteP5')
     for (var x = 0; x < width; x += width / 16) {
       for (var y = 0; y < height; y += height / 14) {
         p.stroke(200)
@@ -96,75 +107,72 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
     // Button to begin recording audio
-    let startRecording = document.createElement('button')
-    startRecording.innerText = 'Start Recording'
-    startRecording.onclick = () => {
+    startRecord = p.createButton('Start Record')
+    startRecord.onclick = () => {
+      console.log('start record')
       recorder.record(soundFile)
     }
-    document.body.appendChild(startRecording)
+    startRecord.parent('buttonManifold')
+
     // Button to stop recording audio
-    let stopRecording = document.createElement('button')
-    stopRecording.innerText = 'Stop Recording'
-    stopRecording.onclick = () => {
+    stopRecord = p.createButton('Stop Record')
+    stopRecord.onclick = () => {
       recorder.stop()
     }
-    document.body.appendChild(stopRecording)
+    stopRecord.parent('buttonManifold')
+
     // Button to change paint to red
-    let redPaint = document.createElement('button')
-    redPaint.innerText = 'Red'
+    redPaint = p.createButton('Red')
     redPaint.onclick = () => {
       color = 'red'
     }
-    document.body.appendChild(redPaint)
+    redPaint.parent('buttonManifold')
+
     // Button to change paint to black
-    let blackPaint = document.createElement('button')
-    blackPaint.innerText = 'Black'
+    blackPaint = p.createButton('Black')
     blackPaint.onclick = () => {
       color = 'black'
     }
-    document.body.appendChild(blackPaint)
+    blackPaint.parent('buttonManifold')
+
     // Button to handle canvas playback
-    let play = document.createElement('button')
-    play.innerText = 'Play'
+    play = p.createButton('Play')
     play.onclick = () => {
-      playingCanvas()
+      p.playingCanvas()
       instruments.loop()
     }
     play.onkeypress = () => {
       if (key === ' ') {
-        playingCanvas()
+        p.playingCanvas()
         instruments.loop()
       }
     }
-    document.body.appendChild(play)
+    play.parent('buttonManifold')
 
-    let stop = document.createElement('button')
-    stop.innerText = 'Stop'
+    stop = p.createButton('Stop')
     stop.onclick = () => {
       synth.stop()
       synth2.stop()
       instruments.stop()
     }
-    document.body.appendChild(stop)
-    // Button to download the currently recorded audio
+    stop.parent('buttonManifold')
 
-    let download = document.createElement('button')
-    download.innerText = 'Download'
+    // Button to download the currently recorded audio
+    download = p.createButton('Download')
     download.onclick = () => {
       p.saveSound(soundFile, 'myHorribleSound.wav')
       // Re-initialize the soundfile
       soundFile = new p5.SoundFile()
       // Retrieve all pixels from the canvas
     }
-    document.body.appendChild(download)
+    download.parent('buttonManifold')
 
     // Button for playback of strokes
-    let playback = document.createElement('button')
-    playback.innerText = 'Playback'
+    playback = p.createButton('Playback')
     playback.onclick = () => {
       replay = true
     }
-    document.body.appendChild(playback)
+    playback.parent('buttonManifold')
   }
 
   /*
@@ -272,7 +280,7 @@ const PaletteSketch = p => {
       if (event.key === ' ') {
         if (!instruments.isPlaying) {
           instruments.metro.metroTicks = 0 // restarts playhead at beginning [0]
-          playingCanvas()
+          p.playingCanvas()
           instruments.loop()
         } else {
           synth.fade(0, 0.5)
@@ -293,7 +301,7 @@ const PaletteSketch = p => {
                      Playing Music Function
   ----------------------------------------------------------
   */
-  const playingCanvas = () => {
+  p.playingCanvas = () => {
     synth.start()
 
     synth2.start()

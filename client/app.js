@@ -9,7 +9,7 @@ import {withAuthentication} from './components/login-signup/withAuthentication.j
 
 const App = props => (
   <Router>
-    <div>
+    <div className="app">
       <Navbar firebase={props.firebase} />
       <Switch>
         {/* Routes placed here are available to all visitors */}
