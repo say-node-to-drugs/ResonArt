@@ -1,6 +1,5 @@
 import {drums} from './DrumSketch'
 
-
 const PaletteSketch = p => {
   let recorder, soundFile, canvas
   let prevX, prevY
@@ -8,7 +7,7 @@ const PaletteSketch = p => {
   let synth, synth2
   let color = 'black'
   let synth1Phrase, synth2Phrase
-  let isPlaying = false;
+  let isPlaying = false
   let synth1Pattern = [
     undefined,
     undefined,
@@ -48,7 +47,7 @@ const PaletteSketch = p => {
   let synth1Sound
   let synth2Sound
   const notes = [48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71]
-  let scaleDifference = notes[notes.length - 1] - notes[0];
+  let scaleDifference = notes[notes.length - 1] - notes[0]
   let allBlackGrid = [
     [],
     [],
@@ -125,20 +124,27 @@ const PaletteSketch = p => {
     synth2.setType('sawtooth')
     synth2.freq(0)
 
-
-        // Setup phrases to loop
-    synth1Phrase = new p5.Phrase('synth1Sound', (time, value) => {
-          setTimeout(() => {
-            synth.amp(value ? 0.5: 0)
-            synth.freq(p.midiToFreq(value))
-          }, time * 1000)
-          }, synth1Pattern);
-    synth2Phrase = new p5.Phrase('synth2Sound', (time, value) => {
-          setTimeout(() => {
-            synth2.amp(value ? 0.5: 0)
-            synth2.freq(p.midiToFreq(value))
-          }, time * 1000)
-          }, synth2Pattern)
+    // Setup phrases to loop
+    synth1Phrase = new p5.Phrase(
+      'synth1Sound',
+      (time, value) => {
+        setTimeout(() => {
+          synth.amp(value ? 0.5 : 0)
+          synth.freq(p.midiToFreq(value))
+        }, time * 1000)
+      },
+      synth1Pattern
+    )
+    synth2Phrase = new p5.Phrase(
+      'synth2Sound',
+      (time, value) => {
+        setTimeout(() => {
+          synth2.amp(value ? 0.5 : 0)
+          synth2.freq(p.midiToFreq(value))
+        }, time * 1000)
+      },
+      synth2Pattern
+    )
 
     // create a sound recorder
     recorder = new p5.SoundRecorder()
@@ -168,8 +174,8 @@ const PaletteSketch = p => {
     let play = document.createElement('button')
     play.innerText = 'Play'
     play.onclick = () => {
-      if(!isPlaying) {
-        isPlaying = true;
+      if (!isPlaying) {
+        isPlaying = true
         drums.metro.metroTicks = 0
         playingCanvas()
         drums.loop()
@@ -180,7 +186,7 @@ const PaletteSketch = p => {
     let stop = document.createElement('button')
     stop.innerText = 'Stop'
     stop.onclick = () => {
-      isPlaying = false;
+      isPlaying = false
       synth.stop()
       synth2.stop()
       drums.stop()
@@ -212,14 +218,14 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
   p.mouseDragged = () => {
-    mouseDrag(p.mouseX, p.mouseY);
+    mouseDrag(p.mouseX, p.mouseY)
   }
 
   p.mousePressed = () => {
-    mousePress(p.mouseX, p.mouseY);
+    mousePress(p.mouseX, p.mouseY)
   }
   p.mouseReleased = () => {
-    mouseRelease();
+    mouseRelease()
   }
 
   /*
@@ -238,7 +244,7 @@ const PaletteSketch = p => {
       // Gives us a value between 30 and  80 (good audible frequencies)
       if (isWithinBounds(p.mouseX, p.mouseY)) {
         // Start stroke and play audio based on color
-        drawColor(color, prevX, prevY, p.mouseX, p.mouseY);
+        drawColor(color, prevX, prevY, p.mouseX, p.mouseY)
       } else {
         synth.amp(0)
         synth2.amp(0)
@@ -249,7 +255,7 @@ const PaletteSketch = p => {
     }
   }
 
-   /*
+  /*
   ----------------------------------------------------------
                      Key Press Handler
   ----------------------------------------------------------
@@ -259,14 +265,14 @@ const PaletteSketch = p => {
     function(event) {
       if (event.key === ' ') {
         if (!isPlaying) {
-          isPlaying = true;
+          isPlaying = true
           drums.metro.metroTicks = 0 // restarts playhead at beginning [0]
           playingCanvas()
           drums.loop()
         } else {
-          isPlaying = false;
-          fadeOutInstrument(synth);
-          fadeOutInstrument(synth2);
+          isPlaying = false
+          fadeOutInstrument(synth)
+          fadeOutInstrument(synth2)
           drums.stop()
         }
       }
@@ -282,7 +288,7 @@ const PaletteSketch = p => {
   const playingCanvas = () => {
     // Get average grid y-value for each color
     for (let i = 0; i < allBlackGrid.length; i++) {
-      synth1Pattern[i] = notes[getAverage(allBlackGrid[i])];
+      synth1Pattern[i] = notes[getAverage(allBlackGrid[i])]
     }
     for (let i = 0; i < allRedGrid.length; i++) {
       synth2Pattern[i] = notes[getAverage(allRedGrid[i])]
@@ -297,7 +303,6 @@ const PaletteSketch = p => {
     drums.setBPM('80')
   }
 
-
   // Move these to seperate files eventually
   /*
   ----------------------------------------------------------
@@ -305,12 +310,12 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
   function sleep(milliseconds) {
-    var currentTime = new Date().getTime();
+    var currentTime = new Date().getTime()
 
     while (currentTime + milliseconds >= new Date().getTime()) {}
   }
 
-  const fadeOutInstrument = (instrument) => {
+  const fadeOutInstrument = instrument => {
     //instrument.fade(0, 0.5)
     instrument.amp(0)
     instrument.stop()
@@ -318,19 +323,21 @@ const PaletteSketch = p => {
 
   const isWithinBounds = (x, y) => {
     if (x >= 0 && x <= width && y >= 0 && y <= height) {
-      return true;
+      return true
     }
-    return false;
+    return false
   }
 
-  const getAverage = (array) => {
-    return Math.floor(array.reduce((a, b) => a + b, 0) / array.length);
+  const getAverage = array => {
+    return Math.floor(array.reduce((a, b) => a + b, 0) / array.length)
   }
 
   const drawColor = (color, lastX, lastY, x, y) => {
-    let frequency = p.midiToFreq(scaleDifference * (height - p.mouseY) / height + notes[0]);
+    let frequency = p.midiToFreq(
+      scaleDifference * (height - p.mouseY) / height + notes[0]
+    )
 
-    switch(color) {
+    switch (color) {
       case 'black':
         p.stroke(0)
         synth.amp(0.5)
@@ -348,14 +355,16 @@ const PaletteSketch = p => {
   }
 
   const mouseDrag = (x, y) => {
-    if(!isPlaying) {
+    if (!isPlaying) {
       if (isWithinBounds(x, y)) {
         // Calculate (x, y) value of the grid cell being dragged over
         let rowClicked = 13 - p.floor(14 * (y / p.height))
         let indexClicked = p.floor(16 * x / p.width)
-  
-        if (indexClicked === 16) { indexClicked-- }
-  
+
+        if (indexClicked === 16) {
+          indexClicked--
+        }
+
         if (allBlackGrid[indexClicked].indexOf(rowClicked) === -1) {
           if (color === 'black') {
             allBlackGrid[indexClicked].push(rowClicked)
@@ -373,7 +382,7 @@ const PaletteSketch = p => {
   }
 
   const mousePress = (x, y) => {
-    if(!isPlaying) {
+    if (!isPlaying) {
       if (isWithinBounds(x, y)) {
         // Begin playing the correct synth
         if (color === 'black') {
@@ -395,7 +404,7 @@ const PaletteSketch = p => {
   }
 
   const mouseRelease = () => {
-    if(!isPlaying) {
+    if (!isPlaying) {
       if (color === 'black') {
         fadeOutInstrument(synth)
       } else if (color === 'red') {

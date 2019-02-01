@@ -5,12 +5,14 @@ import {SignUpLink} from './SignUpIndex'
 import {PasswordForgetLink} from './PasswordForget.js'
 import {withFirebase} from '../../firebase/FirebaseContext.js'
 import {SignInGoogle} from './SignInGoogle'
+import {SignInFacebook} from './SignInFacebook'
 
 export const SignInPage = () => (
   <div>
     <h1>SignIn</h1>
     <SignInForm />
     <SignInGoogle />
+    <SignInFacebook />
     <PasswordForgetLink />
     <SignUpLink />
   </div>
