@@ -1,7 +1,7 @@
 const PaletteSketch = p => {
   let recorder, soundFile, canvas
   let prevX, prevY
-  let state = 0 // mousePress will increment from Record, to Stop, to Play
+  let state = 0
   let synth, synth2
   let color = 'black'
   let synth1Phrase, synth2Phrase
@@ -46,6 +46,7 @@ const PaletteSketch = p => {
   let synth1Sound
   let synth2Sound
   const notes = [48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71]
+  let scaleDifference = notes[notes.length - 1] - notes[0];
   let allBlackGrid = [
     [],
     [],
@@ -274,8 +275,14 @@ const PaletteSketch = p => {
 
     // Setup phrases to loop
     synth1Phrase = new p5.Phrase('synth1Sound', (time, value) => {
-        if (value > 1) {
-          //console.log('current value is ' + value)
+      let volume = 0;
+      if(value) {
+        volume = .5;
+      }
+      synth.freq(p.midiToFreq(value))
+      synth.amp(0 + volume)
+
+        if (value) {
           synth.freq(p.midiToFreq(value))
           synth.amp(0.5)
         } else {
@@ -284,7 +291,7 @@ const PaletteSketch = p => {
         }
       }, synth1Pattern);
     synth2Phrase = new p5.Phrase('synth2Sound', (time, value) => {
-        if (value > 1) {
+        if (value) {
           synth2.freq(p.midiToFreq(value))
           synth2.amp(0.5)
         } else {
@@ -323,19 +330,18 @@ const PaletteSketch = p => {
   }
 
   const drawColor = (color, lastX, lastY, x, y) => {
+    let frequency = p.midiToFreq(scaleDifference * (height - p.mouseY) / height + notes[0]);
+    synth.amp(2)
+    synth.freq(frequency)
+    
     switch(color) {
       case 'black':
-        synth.amp(2)
-        synth.freq(p.midiToFreq(90 * (height - p.mouseY) / 500) + 90)
         p.stroke(0)
         break
       case 'red':
-        synth2.amp(2)
-        synth2.freq(p.midiToFreq(90 * (height - p.mouseY) / 500) + 60)
         p.stroke(255, 0, 0)
         break
       default:
-        p.stroke(0)
         break
     }
     p.line(lastX, lastY, x, y)
@@ -391,13 +397,9 @@ const PaletteSketch = p => {
   const mouseRelease = () => {
     if(!isPlaying) {
       if (color === 'black') {
-        synth.fade(0, 0.5)
-        synth.amp(0)
-        synth.stop()
+        fadeOutInstrument(synth)
       } else if (color === 'red') {
-        synth2.fade(0, 0.5)
-        synth2.amp(0)
-        synth2.stop()
+        fadeOutInstrument(synth2)
       }
       state = 0
     }
