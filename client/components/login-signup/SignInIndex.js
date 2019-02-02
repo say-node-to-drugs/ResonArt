@@ -6,6 +6,7 @@ import {PasswordForgetLink} from './PasswordForget.js'
 import {withFirebase} from '../../firebase/FirebaseContext.js'
 import {SignInGoogle} from './SignInGoogle'
 import {SignInFacebook} from './SignInFacebook'
+import {SignInTwitter} from './SignInTwitter'
 
 export const SignInPage = () => (
   <div>
@@ -13,6 +14,7 @@ export const SignInPage = () => (
     <SignInForm />
     <SignInGoogle />
     <SignInFacebook />
+    <SignInTwitter />
     <PasswordForgetLink />
     <SignUpLink />
   </div>
