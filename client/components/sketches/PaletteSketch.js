@@ -4,9 +4,9 @@ const PaletteSketch = p => {
   let recorder, soundFile, canvas
   let prevX, prevY
   let state = 0
-  let synth, synth2
+  let synth, synth2, synth3
   let color = 'black'
-  let synth1Phrase, synth2Phrase
+  let synth1Phrase, synth2Phrase, synth3Phrase
   let isPlaying = false
   let synth1Pattern = [
     undefined,
@@ -44,9 +44,26 @@ const PaletteSketch = p => {
     undefined,
     undefined
   ]
-  let synth1Sound
-  let synth2Sound
-  const notes = [48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71]
+  let synth3Pattern = [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined
+  ]
+  let synth1Sound, synth2Sound, synth3Sound
+  const notes = [38, 40, 42, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71]
   let scaleDifference = notes[notes.length - 1] - notes[0]
   let allBlackGrid = [
     [],
@@ -84,6 +101,24 @@ const PaletteSketch = p => {
     [],
     []
   ]
+  let allBlueGrid = [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ]
   let recordArrayRed = []
   let recordArrayBlack = []
 
@@ -92,23 +127,25 @@ const PaletteSketch = p => {
   let height = p.windowHeight * (4 / 10)
 
   // buttons
-  let startRecord,
-    stopRecord,
-    redPaint,
+  let redPaint,
+    bluePaint,
     blackPaint,
     play,
     stop,
     download,
-    playback
+    playback,
+    load
 
   p.preload = () => {
     synth1Sound = new p5.SoundFile()
     synth2Sound = new p5.SoundFile()
+    synth3Sound = new p5.SoundFile()
   }
 
   p.setup = () => {
     p.userStartAudio()
 
+    // Create our canvas
     canvas = p.createCanvas(width, height)
     canvas.parent('sketchPad')
     canvas.style('display', 'block')
@@ -117,6 +154,7 @@ const PaletteSketch = p => {
     p.background(255)
     p.fill(0)
     
+    // Draw grid lines
     for (let x = 0; x < width; x += width / 16) {
       for (let y = 0; y < height; y += height / 14) {
         p.stroke(200)
@@ -127,15 +165,18 @@ const PaletteSketch = p => {
     }
     p.strokeWeight(10)
     
-    // Link mouse press functions
-
-    synth = new p5.SinOsc()
+    // Create instruments
+    synth = new p5.Oscillator()
     synth.setType('sine')
     synth.freq(0)
 
     synth2 = new p5.Oscillator()
     synth2.setType('sawtooth')
     synth2.freq(0)
+
+    synth3 = new p5.Oscillator()
+    synth3.setType('triangle')
+    synth3.freq(0)
 
     // Setup phrases to loop
     synth1Phrase = new p5.Phrase(
@@ -145,19 +186,23 @@ const PaletteSketch = p => {
           synth.amp(value ? 0.5 : 0)
           synth.freq(p.midiToFreq(value))
         }, time * 1000)
-      },
-      synth1Pattern
-    )
+      },synth1Pattern)
     synth2Phrase = new p5.Phrase(
       'synth2Sound',
       (time, value) => {
         setTimeout(() => {
-          synth2.amp(value ? 0.5 : 0)
+          synth2.amp(value ? 0.3 : 0)
           synth2.freq(p.midiToFreq(value))
         }, time * 1000)
-      },
-      synth2Pattern
-    )
+      },synth2Pattern)
+    synth3Phrase = new p5.Phrase(
+      'synth3Sound',
+      (time, value) => {
+        setTimeout(() => {
+          synth3.amp(value ? 0.3 : 0)
+          synth3.freq(p.midiToFreq(value))
+        }, time * 1000)
+      },synth3Pattern)
 
     // create a sound recorder
     recorder = new p5.SoundRecorder()
@@ -170,21 +215,28 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
 
-    // Button to change paint to red
+    // RED PAINT
     redPaint = p.createButton('Red')
-    redPaint.parent('buttonManifold')
     redPaint.mousePressed(() => {
       color = 'red'
     })
+    redPaint.parent('buttonManifold')
 
-    // Button to change paint to black
+    // RED PAINT
+    bluePaint = p.createButton('Blue')
+    bluePaint.mousePressed(() => {
+      color = 'blue'
+    })
+    bluePaint.parent('buttonManifold')
+
+    // BLACK PAINT
     blackPaint = p.createButton('Black')
     blackPaint.mousePressed(() => {
       color = 'black'
     })
     blackPaint.parent('buttonManifold')
 
-    // Button to handle canvas playback
+    // PLAY AUDIO
     play = p.createButton('Play')
     play.mousePressed(() => {
       if (!isPlaying) {
@@ -196,6 +248,7 @@ const PaletteSketch = p => {
     })
     play.parent('buttonManifold')
 
+    // STOP AUDIO
     stop = p.createButton('Stop')
     stop.mousePressed( () => {
       isPlaying = false
@@ -212,7 +265,7 @@ const PaletteSketch = p => {
     })
     saveImage.parent('buttonManifold')
 
-    // Button to download the currently recorded audio
+    // DOWNLOAD AUDIO
     download = p.createButton('Download')
     download.mousePressed(() => {
       p.saveSound(soundFile, 'myHorribleSound.wav')
@@ -222,14 +275,31 @@ const PaletteSketch = p => {
     })
     download.parent('buttonManifold')
 
-    // Button for playback of strokes
+    // PLAYBACK STROKE
     playback = p.createButton('Playback')
     playback.mousePressed(() => {
       replay = true
     })
     playback.parent('buttonManifold')
+
+    // ------------------
+    // LOAD PRESET CANVAS
+    // ------------------
+    load = p.createButton('Load Preset Image')
+    load.mousePressed(() => {
+      p.loadImage('myCanvas.png', img => {
+        img.resize(width, height)
+        p.image(img, 0, 0);
+      });
+    })
+    load.parent('buttonManifold')
   }
 
+  /*
+  ----------------------------------------------------------
+                    Resized Window Logic
+  ----------------------------------------------------------
+  */
   p.windowResized = () => {
     width = p.windowWidth / 2 - 30
     height = p.windowHeight * (4 / 10)
@@ -308,6 +378,7 @@ const PaletteSketch = p => {
           isPlaying = false
           fadeOutInstrument(synth)
           fadeOutInstrument(synth2)
+          fadeOutInstrument(synth3)
           drums.stop()
         }
       }
@@ -328,13 +399,18 @@ const PaletteSketch = p => {
     for (let i = 0; i < allRedGrid.length; i++) {
       synth2Pattern[i] = notes[getAverage(allRedGrid[i])]
     }
+    for (let i = 0; i < allBlueGrid.length; i++) {
+      synth3Pattern[i] = notes[getAverage(allBlueGrid[i])]
+    }
 
     synth.start()
     synth2.start()
+    synth3.start()
 
     //drums = new p5.Part()
     drums.addPhrase(synth1Phrase)
     drums.addPhrase(synth2Phrase)
+    drums.addPhrase(synth3Phrase)
     drums.setBPM('80')
   }
 
@@ -371,9 +447,13 @@ const PaletteSketch = p => {
         break
       case 'red':
         p.stroke(255, 0, 0)
-        synth2.amp(0.5)
+        synth2.amp(0.3)
         synth2.freq(frequency)
         break
+      case 'blue':
+        p.stroke(0, 0, 255)
+        synth3.amp(0.3)
+        synth3.freq(frequency)
       default:
         break
     }
@@ -384,7 +464,7 @@ const PaletteSketch = p => {
     if (!isPlaying) {
       if (isWithinBounds(x, y)) {
         // Calculate (x, y) value of the grid cell being dragged over
-        let rowClicked = 13 - p.floor(14 * (y / p.height))
+        let rowClicked = 20 - p.floor(21 * (y / p.height))
         let indexClicked = p.floor(16 * x / p.width)
 
         if (indexClicked === 16) {
@@ -394,15 +474,17 @@ const PaletteSketch = p => {
         if (allBlackGrid[indexClicked].indexOf(rowClicked) === -1) {
           if (color === 'black') {
             allBlackGrid[indexClicked].push(rowClicked)
-          }
-          if (color === 'red') {
+          } else if (color === 'red') {
             allRedGrid[indexClicked].push(rowClicked)
+          } else if (color === 'blue') {
+            allBlueGrid[indexClicked].push(rowClicked)
           }
         }
         p.draw()
       } else {
         synth.amp(0)
         synth2.amp(0)
+        synth3.amp(0)
       }
     }
   }
@@ -415,6 +497,8 @@ const PaletteSketch = p => {
           synth.start()
         } else if (color === 'red') {
           synth2.start()
+        } else if (color === 'blue') {
+          synth3.start()
         }
         // Set state to 1 so the draw() function knows to make lines and produce audio
         state++
@@ -425,6 +509,7 @@ const PaletteSketch = p => {
         state = 0
         synth.amp(0)
         synth2.amp(0)
+        synth3.amp(0)
       }
     }
   }
@@ -435,6 +520,8 @@ const PaletteSketch = p => {
         fadeOutInstrument(synth)
       } else if (color === 'red') {
         fadeOutInstrument(synth2)
+      } else if (color === 'blue') {
+        fadeOutInstrument(synth3)
       }
       state = 0
     }
