@@ -87,8 +87,20 @@ const PaletteSketch = p => {
   let recordArrayRed = []
   let recordArrayBlack = []
 
-  let width = p.windowWidth * (1 / 2)
-  let height = p.windowWidth / 4
+  // let width = p.windowWidth / 2 - 30;
+  let width = p.windowWidth / 2 - 30
+  let height = p.windowHeight * (4 / 10)
+
+  // buttons
+  let startRecord,
+    stopRecord,
+    redPaint,
+    blackPaint,
+    play,
+    stop,
+    download,
+    playback
+
   p.preload = () => {
     synth1Sound = new p5.SoundFile()
     synth2Sound = new p5.SoundFile()
@@ -98,14 +110,15 @@ const PaletteSketch = p => {
     p.userStartAudio()
 
     canvas = p.createCanvas(width, height)
-    canvas.parent('paletteP5Wrapper')
+    canvas.parent('sketchPad')
     canvas.style('display', 'block')
+    canvas.class('palette')
 
     p.background(255)
     p.fill(0)
-    canvas.class('paletteP5')
-    for (var x = 0; x < width; x += width / 16) {
-      for (var y = 0; y < height; y += height / 14) {
+    
+    for (let x = 0; x < width; x += width / 16) {
+      for (let y = 0; y < height; y += height / 14) {
         p.stroke(200)
         p.strokeWeight(1)
         p.line(x, 0, x, height)
@@ -113,7 +126,7 @@ const PaletteSketch = p => {
       }
     }
     p.strokeWeight(10)
-
+    
     // Link mouse press functions
 
     synth = new p5.SinOsc()
@@ -156,60 +169,82 @@ const PaletteSketch = p => {
                     Buttons
   ----------------------------------------------------------
   */
-    // RED PAINT
-    let redPaint = document.createElement('button')
-    redPaint.innerText = 'Red'
-    redPaint.onclick = () => {
+
+    // Button to change paint to red
+    redPaint = p.createButton('Red')
+    redPaint.parent('buttonManifold')
+    redPaint.mousePressed(() => {
       color = 'red'
-    }
-    document.body.appendChild(redPaint)
-    // BLACK PAINT
-    let blackPaint = document.createElement('button')
-    blackPaint.innerText = 'Black'
-    blackPaint.onclick = () => {
+    })
+
+    // Button to change paint to black
+    blackPaint = p.createButton('Black')
+    blackPaint.mousePressed(() => {
       color = 'black'
-    }
-    document.body.appendChild(blackPaint)
-    // PLAY
-    let play = document.createElement('button')
-    play.innerText = 'Play'
-    play.onclick = () => {
+    })
+    blackPaint.parent('buttonManifold')
+
+    // Button to handle canvas playback
+    play = p.createButton('Play')
+    play.mousePressed(() => {
       if (!isPlaying) {
         isPlaying = true
         drums.metro.metroTicks = 0
         playingCanvas()
         drums.loop()
       }
-    }
-    document.body.appendChild(play)
-    // STOP PLAYING
-    let stop = document.createElement('button')
-    stop.innerText = 'Stop'
-    stop.onclick = () => {
+    })
+    play.parent('buttonManifold')
+
+    stop = p.createButton('Stop')
+    stop.mousePressed( () => {
       isPlaying = false
       synth.stop()
       synth2.stop()
       drums.stop()
-    }
-    document.body.appendChild(stop)
-    // DOWNLOAD AUDIO
-    let download = document.createElement('button')
-    download.innerText = 'Download'
-    download.onclick = () => {
+    })
+    stop.parent('buttonManifold')
+
+    // SAVE IMAGE
+    let saveImage = p.createButton('Save Image')
+    saveImage.mousePressed(() => {
+      p.saveCanvas(canvas, 'myCanvas', 'png');
+    })
+    saveImage.parent('buttonManifold')
+
+    // Button to download the currently recorded audio
+    download = p.createButton('Download')
+    download.mousePressed(() => {
       p.saveSound(soundFile, 'myHorribleSound.wav')
       // Re-initialize the soundfile
       soundFile = new p5.SoundFile()
       // Retrieve all pixels from the canvas
-    }
-    document.body.appendChild(download)
+    })
+    download.parent('buttonManifold')
 
-    // PLAYBACK STROKES
-    let playback = document.createElement('button')
-    playback.innerText = 'Playback'
-    playback.onclick = () => {
+    // Button for playback of strokes
+    playback = p.createButton('Playback')
+    playback.mousePressed(() => {
       replay = true
+    })
+    playback.parent('buttonManifold')
+  }
+
+  p.windowResized = () => {
+    width = p.windowWidth / 2 - 30
+    height = p.windowHeight * (4 / 10)
+    p.resizeCanvas(width, height)
+    p.background(255)
+    p.fill(0)
+    for (let x = 0; x < width; x += width / 16) {
+      for (let y = 0; y < height; y += height / 14) {
+        p.stroke(200)
+        p.strokeWeight(1)
+        p.line(x, 0, x, height)
+        p.line(0, y, width, y)
+      }
     }
-    document.body.appendChild(playback)
+    p.strokeWeight(10)
   }
 
   /*
@@ -309,12 +344,6 @@ const PaletteSketch = p => {
                      Utility Functions
   ----------------------------------------------------------
   */
-  function sleep(milliseconds) {
-    var currentTime = new Date().getTime()
-
-    while (currentTime + milliseconds >= new Date().getTime()) {}
-  }
-
   const fadeOutInstrument = instrument => {
     //instrument.fade(0, 0.5)
     instrument.amp(0)
@@ -333,10 +362,7 @@ const PaletteSketch = p => {
   }
 
   const drawColor = (color, lastX, lastY, x, y) => {
-    let frequency = p.midiToFreq(
-      scaleDifference * (height - p.mouseY) / height + notes[0]
-    )
-
+    let frequency = p.midiToFreq(scaleDifference * (height - p.mouseY) / height + notes[0])
     switch (color) {
       case 'black':
         p.stroke(0)
