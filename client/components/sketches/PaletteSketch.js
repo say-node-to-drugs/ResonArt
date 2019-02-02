@@ -1,4 +1,5 @@
 import {drums} from './DrumSketch'
+import {saveCanvasToFirebase} from '../../firebase/saveCanvas.js'
 
 const PaletteSketch = p => {
   let recorder, soundFile, canvas
@@ -63,7 +64,28 @@ const PaletteSketch = p => {
     undefined
   ]
   let synth1Sound, synth2Sound, synth3Sound
-  const notes = [38, 40, 42, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71]
+  const notes = [
+    38,
+    40,
+    42,
+    43,
+    45,
+    47,
+    48,
+    50,
+    52,
+    53,
+    55,
+    57,
+    59,
+    60,
+    62,
+    64,
+    65,
+    67,
+    69,
+    71
+  ]
   let scaleDifference = notes[notes.length - 1] - notes[0]
   let allBlackGrid = [
     [],
@@ -127,14 +149,7 @@ const PaletteSketch = p => {
   let height = p.windowHeight * (4 / 10)
 
   // buttons
-  let redPaint,
-    bluePaint,
-    blackPaint,
-    play,
-    stop,
-    download,
-    playback,
-    load
+  let redPaint, bluePaint, blackPaint, play, stop, download, playback, load
 
   p.preload = () => {
     synth1Sound = new p5.SoundFile()
@@ -153,7 +168,7 @@ const PaletteSketch = p => {
 
     p.background(255)
     p.fill(0)
-    
+
     // Draw grid lines
     for (let x = 0; x < width; x += width / 16) {
       for (let y = 0; y < height; y += height / 14) {
@@ -164,7 +179,7 @@ const PaletteSketch = p => {
       }
     }
     p.strokeWeight(10)
-    
+
     // Create instruments
     synth = new p5.Oscillator()
     synth.setType('sine')
@@ -186,7 +201,9 @@ const PaletteSketch = p => {
           synth.amp(value ? 0.5 : 0)
           synth.freq(p.midiToFreq(value))
         }, time * 1000)
-      },synth1Pattern)
+      },
+      synth1Pattern
+    )
     synth2Phrase = new p5.Phrase(
       'synth2Sound',
       (time, value) => {
@@ -194,7 +211,9 @@ const PaletteSketch = p => {
           synth2.amp(value ? 0.3 : 0)
           synth2.freq(p.midiToFreq(value))
         }, time * 1000)
-      },synth2Pattern)
+      },
+      synth2Pattern
+    )
     synth3Phrase = new p5.Phrase(
       'synth3Sound',
       (time, value) => {
@@ -202,7 +221,9 @@ const PaletteSketch = p => {
           synth3.amp(value ? 0.3 : 0)
           synth3.freq(p.midiToFreq(value))
         }, time * 1000)
-      },synth3Pattern)
+      },
+      synth3Pattern
+    )
 
     // create a sound recorder
     recorder = new p5.SoundRecorder()
@@ -250,7 +271,7 @@ const PaletteSketch = p => {
 
     // STOP AUDIO
     stop = p.createButton('Stop')
-    stop.mousePressed( () => {
+    stop.mousePressed(() => {
       isPlaying = false
       synth.stop()
       synth2.stop()
@@ -261,7 +282,7 @@ const PaletteSketch = p => {
     // SAVE IMAGE
     let saveImage = p.createButton('Save Image')
     saveImage.mousePressed(() => {
-      p.saveCanvas(canvas, 'myCanvas', 'png');
+      saveCanvasToFirebase(p, canvas, 'myCanvas', 'png')
     })
     saveImage.parent('buttonManifold')
 
@@ -289,8 +310,8 @@ const PaletteSketch = p => {
     load.mousePressed(() => {
       p.loadImage('myCanvas.png', img => {
         img.resize(width, height)
-        p.image(img, 0, 0);
-      });
+        p.image(img, 0, 0)
+      })
     })
     load.parent('buttonManifold')
   }
@@ -438,7 +459,9 @@ const PaletteSketch = p => {
   }
 
   const drawColor = (color, lastX, lastY, x, y) => {
-    let frequency = p.midiToFreq(scaleDifference * (height - p.mouseY) / height + notes[0])
+    let frequency = p.midiToFreq(
+      scaleDifference * (height - p.mouseY) / height + notes[0]
+    )
     switch (color) {
       case 'black':
         p.stroke(0)
