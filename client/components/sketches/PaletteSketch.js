@@ -1,5 +1,6 @@
 import {drums} from './DrumSketch'
 import {saveCanvasToFirebase} from '../../firebase/saveCanvas.js'
+import {loadCanvasFromFirebase} from '../../firebase/loadCanvas.js'
 
 const PaletteSketch = p => {
   let recorder, soundFile, canvas
@@ -282,7 +283,7 @@ const PaletteSketch = p => {
     // SAVE IMAGE
     let saveImage = p.createButton('Save Image')
     saveImage.mousePressed(() => {
-      saveCanvasToFirebase(p, canvas, 'myCanvas', 'png')
+      saveCanvasToFirebase(p) // This saves to Firebase
     })
     saveImage.parent('buttonManifold')
 
@@ -308,7 +309,8 @@ const PaletteSketch = p => {
     // ------------------
     load = p.createButton('Load Preset Image')
     load.mousePressed(() => {
-      p.loadImage('myCanvas.png', img => {
+      // This pulls a saved canvas from firebase
+      p.loadImage(loadCanvasFromFirebase(p), img => {
         img.resize(width, height)
         p.image(img, 0, 0)
       })

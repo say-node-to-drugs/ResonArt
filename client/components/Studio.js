@@ -35,7 +35,7 @@ class Studio extends React.Component {
   render() {
     const {classes} = this.props
     var appUser = this.props.firebase.auth.currentUser
-    console.log('STUDIO: ', appUser)
+    console.log('STUDIO: ', appUser) // Temporarily here to analyze firebase user object
     return (
       <Grid container className={classes.root} justify="center">
         <Grid item sm={3}>
