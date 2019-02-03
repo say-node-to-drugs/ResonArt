@@ -23,25 +23,19 @@ let styles = () => ({
 class Studio extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      loading: true
-    }
+    this.state = {}
     this.startRecord = React.createRef()
   }
   componentDidMount() {
     this.drum = new window.p5(DrumSketch, 'drumP5Wrapper')
     this.palette = new window.p5(PaletteSketch, 'paletteP5Wrapper')
     this.palette.firebase = this.props.firebase
-    this.setState({loading: false})
   }
 
   render() {
-    if (this.state.loading) {
-      return <div />
-    }
     const {classes} = this.props
     var appUser = this.props.firebase.auth.currentUser
-    console.log('STUDIO: ', this.props.firebase.auth.currentUser)
+    console.log('STUDIO: ', appUser)
     return (
       <Grid container className={classes.root} justify="center">
         <Grid item sm={3}>
