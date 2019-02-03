@@ -8,25 +8,26 @@ const arrayBaser = array => {
 }
 
 export const saveCanvasToFirebase = (p, black, red, blue) => {
-  const userRef = p.firebase.user(p.firebase.auth.currentUser.uid)
-  const userCanvas = userRef.child('canvas')
-  console.log('BLACK 1: ', black)
+  if (!p.firebase.auth.currentUser) {
+    return console.log('You must log in or sign up to save a canvas.')
+  } else {
+    const userRef = p.firebase.user(p.firebase.auth.currentUser.uid)
+    const userCanvas = userRef.child('canvas')
 
-  let revBlack = arrayBaser(black)
-  let revRed = arrayBaser(red)
-  let revBlue = arrayBaser(blue)
+    let revBlack = arrayBaser(black)
+    let revRed = arrayBaser(red)
+    let revBlue = arrayBaser(blue)
 
-  console.log('BLACK 2: ', revBlack)
+    p.saveFrames('canvas', 'png', 1, 1, function(im) {
+      userCanvas.push({canvasData: {dataURL: im[0], revBlack, revRed, revBlue}})
+    })
 
-  p.saveFrames('canvas', 'png', 1, 1, function(im) {
-    userCanvas.push({canvas: {dataURL: im[0], revBlack, revRed, revBlue}})
-  })
+    //------------------------------------------------------------------
+    //THIS FUNCTION BELOW EXISTS ONLY FOR THE CONSOLE LOG, AND CAN EVENTUALLY BE REMOVED.
 
-  //------------------------------------------------------------------
-  //THIS FUNCTION BELOW EXISTS ONLY FOR THE CONSOLE LOG, AND CAN EVENTUALLY BE REMOVED.
-
-  p.firebase.user(p.firebase.auth.currentUser.uid).on('value', snapshot => {
-    const userObject = snapshot.val()
-    console.log('SAVED FILE FOR USER: ', userObject)
-  })
+    p.firebase.user(p.firebase.auth.currentUser.uid).on('value', snapshot => {
+      const userObject = snapshot.val()
+      console.log('SAVED FILE FOR USER: ', userObject)
+    })
+  }
 }
