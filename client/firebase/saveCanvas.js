@@ -14,12 +14,12 @@ export const saveCanvasToFirebase = (p, black, red, blue) => {
     const userRef = p.firebase.user(p.firebase.auth.currentUser.uid)
     const userCanvas = userRef.child('canvas')
 
-    let revBlack = arrayBaser(black)
-    let revRed = arrayBaser(red)
-    let revBlue = arrayBaser(blue)
+    black = arrayBaser(black)
+    red = arrayBaser(red)
+    blue = arrayBaser(blue)
 
     p.saveFrames('canvas', 'png', 1, 1, function(im) {
-      userCanvas.push({canvasData: {dataURL: im[0], revBlack, revRed, revBlue}})
+      userCanvas.push({canvasData: {dataURL: im[0], black, red, blue}})
     })
 
     //------------------------------------------------------------------

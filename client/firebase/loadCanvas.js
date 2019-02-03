@@ -1,7 +1,7 @@
 import preloadBlankCanvas from './preloadBlankCanvas.js'
 
-const fireObjectToArray = (snapshot, color) => {
-  return snapshot.map(element => {
+const fireObjectToArray = (fireObject, color) => {
+  return fireObject.map(element => {
     let newArray = []
     for (let key in element) {
       if (element[key] === -1) {
@@ -11,54 +11,53 @@ const fireObjectToArray = (snapshot, color) => {
       }
       newArray.push(element[key])
     }
-    console.log('NEW ARRAY: ', color, newArray)
     return newArray
   })
 }
 
 export const loadCanvasFromFirebase = p => {
-  const userRef = p.firebase.user(p.firebase.auth.currentUser.uid)
-  const userCanvas = userRef.child('canvas')
-  let dataURLSnapshot = []
-  let preBlackSnapshot = []
-  let preRedSnapshot = []
-  let preBlueSnapshot = []
-  let blackSnapshot = []
-  let redSnapshot = []
-  let blueSnapshot = []
+  if (!p.firebase.auth.currentUser) {
+    return console.log('You must log in or sign up to save a canvas.')
+  } else {
+    let newObjectArray = []
+    let filteredArray = []
 
-  userCanvas.on('value', function(snapshot) {
-    snapshot.forEach(function(childSnapshot) {
-      var childData = childSnapshot.val()
-      dataURLSnapshot.push(childData.canvas.dataURL.imageData)
-      preBlackSnapshot.push(childData.canvas.black)
-      preRedSnapshot.push(childData.canvas.red)
-      preBlueSnapshot.push(childData.canvas.blue)
-    })
-  })
+    const userCanvas = p.firebase
+      .user(p.firebase.auth.currentUser.uid)
+      .child('canvas')
 
-  blackSnapshot = fireObjectToArray(preBlackSnapshot, 'black')
-  redSnapshot = fireObjectToArray(preRedSnapshot, 'red')
-  blueSnapshot = fireObjectToArray(preBlueSnapshot, 'blue')
+    userCanvas
+      .once('value', snapshot => {
+        for (let key in snapshot.val()) {
+          newObjectArray.push(snapshot.val()[key])
+        }
+      })
+      .then(() => {
+        for (let i = 0; i < newObjectArray.length; i++) {
+          filteredArray.push(newObjectArray[i].canvasData)
+          console.log(filteredArray)
+          filteredArray[i].black = fireObjectToArray(
+            filteredArray[i].black,
+            'black'
+          )
+          filteredArray[i].red = fireObjectToArray(filteredArray[i].red, 'red')
+          filteredArray[i].blue = fireObjectToArray(
+            filteredArray[i].blue,
+            'blue'
+          )
+        }
+        console.log('FILTERED: ', filteredArray)
+        return [
+          filteredArray[0].dataURL.imageData,
+          filteredArray[0].black,
+          filteredArray[0].red,
+          filteredArray[0].blue
+        ]
+      })
+      .catch(error => {
+        console.log(error)
+      })
 
-  blackSnapshot = console.log(
-    'ALL IMAGE OBJECTS FROM USER PROFILE: ',
-    dataURLSnapshot
-  )
-  console.log('FIRST IMAGE OBJECT FROM USER PROFILE: ', dataURLSnapshot[0])
-  console.log('ALL BLACK OBJECTS FROM USER PROFILE: ', blackSnapshot)
-  console.log('FIRST BLACK OBJECT FROM USER PROFILE: ', blackSnapshot[0])
-
-  return [dataURLSnapshot[0], blackSnapshot[0], redSnapshot[0], blueSnapshot[0]]
+    console.log('LOADED FILE FOR USER 2: ', filteredArray[0])
+  }
 }
-
-/*
-.then(() => {
-  blackSnapshot = fireObjectToArray(preBlackSnapshot, 'black')
-  redSnapshot = fireObjectToArray(preRedSnapshot, 'red')
-  blueSnapshot = fireObjectToArray(preBlueSnapshot, 'blue')
-})
-.catch(error => {
-  console.log(error)
-})
-*/
