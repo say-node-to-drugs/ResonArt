@@ -283,7 +283,7 @@ const PaletteSketch = p => {
     // SAVE IMAGE
     let saveImage = p.createButton('Save Image')
     saveImage.mousePressed(() => {
-      saveCanvasToFirebase(p) // This saves to Firebase
+      saveCanvasToFirebase(p, allBlackGrid, allRedGrid, allBlueGrid) // This saves to Firebase
     })
     saveImage.parent('buttonManifold')
 
@@ -310,10 +310,14 @@ const PaletteSketch = p => {
     load = p.createButton('Load Preset Image')
     load.mousePressed(() => {
       // This pulls a saved canvas from firebase
-      p.loadImage(loadCanvasFromFirebase(p), img => {
+      let [dataURL, black, red, blue] = loadCanvasFromFirebase(p)
+      p.loadImage(dataURL, img => {
         img.resize(width, height)
         p.image(img, 0, 0)
       })
+      allBlackGrid = black
+      allRedGrid = red
+      allBlueGrid = blue
     })
     load.parent('buttonManifold')
   }
