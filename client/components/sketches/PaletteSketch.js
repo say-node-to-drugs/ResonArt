@@ -359,6 +359,10 @@ const PaletteSketch = p => {
       await loadCanvasFromFirebase(p)
 
       console.log('GET VALUE FROM BUTTON PRESSED: ', p.firebase.loaded)
+      console.log(
+        'GET LATEST VALUE FROM BUTTON PRESSED: ',
+        p.firebase.loaded[p.firebase.loaded.length - 1]
+      )
       /*
       THIS IS ALL A PLACEHOLDER FOR CODE ONCE WE KNOW HOW WE WILL USE THIS DATA
       */
@@ -370,8 +374,23 @@ const PaletteSketch = p => {
         }
       )
       allBlackGrid = p.firebase.loaded[p.firebase.loaded.length - 1].black
+      allBlackGrid.forEach(function(elem, idx) {
+        elem = [].concat.apply([], elem)
+        allBlackGrid[idx] = elem
+      })
+
       allRedGrid = p.firebase.loaded[p.firebase.loaded.length - 1].red
+      allRedGrid.forEach(function(elem, idx) {
+        elem = [].concat.apply([], elem)
+        allRedGrid[idx] = elem
+      })
+
       allBlueGrid = p.firebase.loaded[p.firebase.loaded.length - 1].blue
+      allBlueGrid.forEach(function(elem, idx) {
+        elem = [].concat.apply([], elem)
+        allBlueGrid[idx] = elem
+      })
+      console.log(allBlackGrid, allRedGrid, allBlueGrid)
     })
     load.parent('buttonManifold')
   }
