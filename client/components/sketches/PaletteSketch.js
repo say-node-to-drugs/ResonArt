@@ -142,15 +142,29 @@ const PaletteSketch = p => {
     [],
     []
   ]
+  let averageBlack = []
+  let averageBlue = []
+  let averageRed = []
   let recordArrayRed = []
   let recordArrayBlack = []
+  let downloading = false
+  let downloadCounter = 0
+  let singleLoopTime = 0
 
   // let width = p.windowWidth / 2 - 30;
   let width = p.windowWidth / 2 - 30
   let height = p.windowHeight * (4 / 10)
 
   // buttons
-  let redPaint, bluePaint, blackPaint, play, stop, download, playback, load
+  let redPaint,
+    bluePaint,
+    blackPaint,
+    play,
+    stop,
+    download,
+    playback,
+    load,
+    eraser
 
   p.preload = () => {
     synth1Sound = new p5.SoundFile()
@@ -221,14 +235,32 @@ const PaletteSketch = p => {
         setTimeout(() => {
           synth3.amp(value ? 0.3 : 0)
           synth3.freq(p.midiToFreq(value))
+          if (downloading && downloadCounter++ === 15) {
+            // Stop instruments, part, and recorder
+            synth.stop()
+            synth2.stop()
+            synth3.stop()
+            drums.stop()
+            recorder.stop()
+
+            // Reset downloading flags
+            downloadCounter = 0
+            downloading = false
+            isPlaying = false
+            // Save the audio file to the browser client and re-initialize the sound file
+            p.saveSound(soundFile, 'myHorribleSound.wav')
+            soundFile = new p5.SoundFile()
+          }
         }, time * 1000)
       },
       synth3Pattern
     )
 
+    drums.setBPM('80')
+
     // create a sound recorder
     recorder = new p5.SoundRecorder()
-    recorder.setInput(synth)
+    recorder.setInput()
     soundFile = new p5.SoundFile()
 
     /*
@@ -244,7 +276,7 @@ const PaletteSketch = p => {
     })
     redPaint.parent('buttonManifold')
 
-    // RED PAINT
+    // BLUE PAINT
     bluePaint = p.createButton('Blue')
     bluePaint.mousePressed(() => {
       color = 'blue'
@@ -258,13 +290,20 @@ const PaletteSketch = p => {
     })
     blackPaint.parent('buttonManifold')
 
+    // ERASER
+    eraser = p.createButton('Eraser')
+    eraser.mousePressed(() => {
+      color = 'eraser'
+    })
+    eraser.parent('buttonManifold')
+
     // PLAY AUDIO
     play = p.createButton('Play')
     play.mousePressed(() => {
       if (!isPlaying) {
         isPlaying = true
         drums.metro.metroTicks = 0
-        playingCanvas()
+        loadPaletteArrangement()
         drums.loop()
       }
     })
@@ -290,10 +329,16 @@ const PaletteSketch = p => {
     // DOWNLOAD AUDIO
     download = p.createButton('Download')
     download.mousePressed(() => {
-      p.saveSound(soundFile, 'myHorribleSound.wav')
-      // Re-initialize the soundfile
-      soundFile = new p5.SoundFile()
-      // Retrieve all pixels from the canvas
+      isPlaying = true
+      drums.metro.metroTicks = 0
+      downloadCounter = 0
+
+      // Setup and the palette to play it's audio
+      loadPaletteArrangement()
+      recorder.record(soundFile)
+      // Loops just once
+      downloading = true
+      drums.loop()
     })
     download.parent('buttonManifold')
 
@@ -339,18 +384,8 @@ const PaletteSketch = p => {
   p.windowResized = () => {
     width = p.windowWidth / 2 - 30
     height = p.windowHeight * (4 / 10)
+
     p.resizeCanvas(width, height)
-    p.background(255)
-    p.fill(0)
-    for (let x = 0; x < width; x += width / 16) {
-      for (let y = 0; y < height; y += height / 14) {
-        p.stroke(200)
-        p.strokeWeight(1)
-        p.line(x, 0, x, height)
-        p.line(0, y, width, y)
-      }
-    }
-    p.strokeWeight(10)
   }
 
   /*
@@ -358,10 +393,6 @@ const PaletteSketch = p => {
                     Mouse Event Handlers
   ----------------------------------------------------------
   */
-  p.mouseDragged = () => {
-    mouseDrag(p.mouseX, p.mouseY)
-  }
-
   p.mousePressed = () => {
     mousePress(p.mouseX, p.mouseY)
   }
@@ -385,6 +416,7 @@ const PaletteSketch = p => {
       // Gives us a value between 30 and  80 (good audible frequencies)
       if (isWithinBounds(p.mouseX, p.mouseY)) {
         // Start stroke and play audio based on color
+        mouseDrag(p.mouseX, p.mouseY)
         drawColor(color, prevX, prevY, p.mouseX, p.mouseY)
       } else {
         synth.amp(0)
@@ -408,7 +440,7 @@ const PaletteSketch = p => {
         if (!isPlaying) {
           isPlaying = true
           drums.metro.metroTicks = 0 // restarts playhead at beginning [0]
-          playingCanvas()
+          loadPaletteArrangement()
           drums.loop()
         } else {
           isPlaying = false
@@ -427,7 +459,7 @@ const PaletteSketch = p => {
                      Playing Music Function
   ----------------------------------------------------------
   */
-  const playingCanvas = () => {
+  const loadPaletteArrangement = () => {
     // Get average grid y-value for each color
     for (let i = 0; i < allBlackGrid.length; i++) {
       synth1Pattern[i] = notes[getAverage(allBlackGrid[i])]
@@ -447,7 +479,6 @@ const PaletteSketch = p => {
     drums.addPhrase(synth1Phrase)
     drums.addPhrase(synth2Phrase)
     drums.addPhrase(synth3Phrase)
-    drums.setBPM('80')
   }
 
   // Move these to seperate files eventually
@@ -477,6 +508,7 @@ const PaletteSketch = p => {
     let frequency = p.midiToFreq(
       scaleDifference * (height - p.mouseY) / height + notes[0]
     )
+    p.strokeWeight(10)
     switch (color) {
       case 'black':
         p.stroke(0)
@@ -492,6 +524,11 @@ const PaletteSketch = p => {
         p.stroke(0, 0, 255)
         synth3.amp(0.3)
         synth3.freq(frequency)
+        break
+      case 'eraser':
+        p.strokeWeight(50)
+        p.stroke(255, 255, 255)
+        break
       default:
         break
     }
@@ -500,29 +537,39 @@ const PaletteSketch = p => {
 
   const mouseDrag = (x, y) => {
     if (!isPlaying) {
-      if (isWithinBounds(x, y)) {
-        // Calculate (x, y) value of the grid cell being dragged over
-        let rowClicked = 20 - p.floor(21 * (y / p.height))
-        let indexClicked = p.floor(16 * x / p.width)
+      // Calculate (x, y) value of the grid cell being dragged over
+      let rowClicked = 20 - p.floor(21 * (y / p.height))
+      let indexClicked = p.floor(16 * x / p.width)
 
-        if (indexClicked === 16) {
-          indexClicked--
-        }
+      if (indexClicked === 16) {
+        indexClicked--
+      }
 
-        if (allBlackGrid[indexClicked].indexOf(rowClicked) === -1) {
-          if (color === 'black') {
-            allBlackGrid[indexClicked].push(rowClicked)
-          } else if (color === 'red') {
-            allRedGrid[indexClicked].push(rowClicked)
-          } else if (color === 'blue') {
-            allBlueGrid[indexClicked].push(rowClicked)
-          }
-        }
-        p.draw()
-      } else {
-        synth.amp(0)
-        synth2.amp(0)
-        synth3.amp(0)
+      if (
+        color === 'black' &&
+        allBlackGrid[indexClicked].indexOf(rowClicked) === -1
+      ) {
+        allBlackGrid[indexClicked].push(rowClicked)
+      } else if (
+        color === 'red' &&
+        allRedGrid[indexClicked].indexOf(rowClicked) === -1
+      ) {
+        allRedGrid[indexClicked].push(rowClicked)
+      } else if (
+        color === 'blue' &&
+        allBlueGrid[indexClicked].indexOf(rowClicked) === -1
+      ) {
+        allBlueGrid[indexClicked].push(rowClicked)
+      } else if (color === 'eraser') {
+        allBlackGrid[indexClicked] = allBlackGrid[indexClicked].filter(
+          elem => elem > rowClicked + 1 && elem < rowClicked - 1
+        )
+        allRedGrid[indexClicked] = allRedGrid[indexClicked].filter(
+          elem => elem > rowClicked + 1 && elem < rowClicked - 1
+        )
+        allBlueGrid[indexClicked] = allBlueGrid[indexClicked].filter(
+          elem => elem > rowClicked + 1 && elem < rowClicked - 1
+        )
       }
     }
   }
@@ -538,6 +585,7 @@ const PaletteSketch = p => {
         } else if (color === 'blue') {
           synth3.start()
         }
+        mouseDrag(x, y)
         // Set state to 1 so the draw() function knows to make lines and produce audio
         state++
         // Reset the previous mouse position
