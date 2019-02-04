@@ -17,6 +17,9 @@ let styles = () => ({
   },
   grow: {
     flexGrow: 1
+  },
+  padding: {
+    padding: 30
   }
 })
 
@@ -41,8 +44,8 @@ class Studio extends React.Component {
         <Grid item sm={6}>
           <div className="sketchPad" id="sketchPad" />
         </Grid>
-        <Grid item sm={3}>
-          <div className="buttonManifold" id="buttonManifold" />
+        <Grid item className={classes.padding} sm={3}>
+          <Grid container id="buttonManifold" spacing={16} />
         </Grid>
         <Grid item sm={12}>
           <div className="drumMachine" id="drumMachine" />
@@ -60,35 +63,3 @@ Studio.propTypes = {
 }
 
 export default withStyles(styles)(Studio)
-
-// function FullWidthGrid(props) {
-//   const { classes } = props;
-
-//   return (
-//     <div className={classes.root}>
-//       <Grid container spacing={24}>
-//         <Grid item xs={12}>
-//           <Paper className={classes.paper}>xs=12</Paper>
-//         </Grid>
-//         <Grid item xs={12} sm={6}>
-//           <Paper className={classes.paper}>xs=12 sm=6</Paper>
-//         </Grid>
-//         <Grid item xs={12} sm={6}>
-//           <Paper className={classes.paper}>xs=12 sm=6</Paper>
-//         </Grid>
-//         <Grid item xs={6} sm={3}>
-//           <Paper className={classes.paper}>xs=6 sm=3</Paper>
-//         </Grid>
-//         <Grid item xs={6} sm={3}>
-//           <Paper className={classes.paper}>xs=6 sm=3</Paper>
-//         </Grid>
-//         <Grid item xs={6} sm={3}>
-//           <Paper className={classes.paper}>xs=6 sm=3</Paper>
-//         </Grid>
-//         <Grid item xs={6} sm={3}>
-//           <Paper className={classes.paper}>xs=6 sm=3</Paper>
-//         </Grid>
-//       </Grid>
-//     </div>
-//   );
-// }
