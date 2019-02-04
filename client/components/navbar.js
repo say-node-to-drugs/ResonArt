@@ -127,7 +127,7 @@ function Navigation(props) {
               to="/signup"
               color="secondary"
             >
-              Signup
+              Sign Up
             </Button>
           </div>
         )

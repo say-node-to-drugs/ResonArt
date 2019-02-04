@@ -5,3 +5,5 @@
  */
 export {default as Navbar} from './navbar'
 export {default as Studio} from './Studio'
+export {default as Login} from './login-signup/SignInIndex'
+export {default as CreateAccount} from './login-signup/SignUpIndex'

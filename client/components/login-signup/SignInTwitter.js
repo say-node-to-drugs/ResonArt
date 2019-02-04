@@ -11,7 +11,7 @@ const styles = theme => ({
   }
 })
 
-class SignInGoogleBase extends Component {
+class SignInTwitterBase extends Component {
   constructor(props) {
     super(props)
 
@@ -20,18 +20,18 @@ class SignInGoogleBase extends Component {
 
   onSubmit = event => {
     this.props.firebase
-      .doSignInWithGoogle()
+      .doSignInWithTwitter()
       .then(socialAuthUser => {
         // Create a user in your Firebase Realtime Database too
         return this.props.firebase.user(socialAuthUser.user.uid).update({
-          username: socialAuthUser.user.displayName,
-          email: socialAuthUser.user.email,
+          username: socialAuthUser.additionalUserInfo.profile.name,
+          email: socialAuthUser.additionalUserInfo.profile.email,
           roles: []
         })
       })
       .then(() => {
-        this.setState({error: null})
-        this.props.history.push('/home')
+        // this.setState({ error: null });
+        // this.props.history.push('/home');
       })
       .catch(error => {
         this.setState({error})
@@ -41,7 +41,6 @@ class SignInGoogleBase extends Component {
   }
 
   render() {
-    const {error} = this.state
     const {classes} = this.props
     return (
       <form onSubmit={this.onSubmit}>
@@ -52,20 +51,19 @@ class SignInGoogleBase extends Component {
           color="primary"
           className={classes.submit}
         >
-          Sign In With Google
+          Sign In With Twitter
         </Button>
-        {error && <p>{error.message}</p>}
       </form>
     )
   }
 }
 
-SignInGoogleBase.propTypes = {
+SignInTwitterBase.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export const SignInGoogle = compose(
+export const SignInTwitter = compose(
   withRouter,
   withFirebase,
-  withStyles(styles, SignInGoogleBase)
-)(SignInGoogleBase)
+  withStyles(styles, SignInTwitterBase)
+)(SignInTwitterBase)
