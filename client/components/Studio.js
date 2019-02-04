@@ -8,18 +8,9 @@ let imgUrl = 'blurredBackdrop.jpg'
 
 let styles = () => ({
   root: {
-    background: `url(${imgUrl}) no-repeat center center fixed`,
-    backgroundSize: 'cover',
-    overflow: 'hidden',
     flexGrow: 1,
     padding: 30,
-    height: 'inherit'
-  },
-  grow: {
-    flexGrow: 1
-  },
-  padding: {
-    padding: 30
+    height: '93vh'
   }
 })
 
@@ -41,21 +32,18 @@ class Studio extends React.Component {
     console.log('STUDIO: ', appUser) // Temporarily here to analyze firebase user object
     return (
       <Grid container className={classes.root} justify="center">
-        <Grid item sm={3}>
-          <div className="spacer" />
+        <Grid item sm={3} id="spacer" className="spacer" />
+        <Grid item sm={6} id="sketchPad" className="sketchPad" />
+        <Grid item sm={3} className="buttonSpacer">
+          <Grid
+            container
+            id="buttonManifold"
+            className="buttonManifold"
+            spacing={16}
+          />
         </Grid>
-        <Grid item sm={6}>
-          <div className="sketchPad" id="sketchPad" />
-        </Grid>
-        <Grid item className={classes.padding} sm={3}>
-          <Grid container id="buttonManifold" spacing={16} />
-        </Grid>
-        <Grid item sm={12}>
-          <div className="drumMachine" id="drumMachine" />
-        </Grid>
-        <Grid item sm={2}>
-          <div className="bpmCTRL" id="bpmCTRL" />
-        </Grid>
+        <Grid item sm={12} id="drumMachine" className="drumMachine" />
+        <Grid item sm={2} id="bpmCTRL" className="bpmCTRL" />
       </Grid>
     )
   }

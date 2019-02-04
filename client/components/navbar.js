@@ -27,8 +27,8 @@ import MenuIcon from '@material-ui/icons/Menu'
 
 const theme = createMuiTheme({
   palette: {
-    primary: {main: blue[900]}, // Purple and green play nicely together.
-    secondary: {main: purple[500]} // This is just green.A700 as hex.
+    primary: {main: '#153243'}, // Purple and green play nicely together.
+    secondary: {main: '#F4F9E9'} // This is just green.A700 as hex.
   },
   overrides: {
     // Name of the component ⚛️ / style sheet
@@ -36,15 +36,12 @@ const theme = createMuiTheme({
       // Name of the rule
       text: {
         // Some CSS
-        background: `linear-gradient(45deg, ${yellow[200]} 30%, ${
-          red[200]
-        } 90%)`,
+        background: 'transparent',
         borderRadius: 3,
-        border: 0,
-        color: 'black',
+        border: '2px solid white',
+        color: 'white',
         height: 48,
-        padding: '0 30px',
-        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)'
+        padding: '0 10px'
       }
     }
   },
@@ -53,7 +50,6 @@ const theme = createMuiTheme({
 
 const styles = {
   root: {
-    backgroundImage: 'newWaveAudio.jpg',
     backgroundSize: 'cover',
     overflow: 'hidden',
     flexGrow: 1
@@ -75,9 +71,9 @@ const styles = {
     width: '20vw'
   },
   button: {
-    paddingLeft: 10,
-    paddingRight: 10,
-    width: '9vw'
+    paddingLeft: 5,
+    paddingRight: 5,
+    width: '8vw'
   },
   toolbar: {
     display: 'flex',
@@ -92,12 +88,7 @@ function Navigation(props) {
       {authUser =>
         authUser ? (
           <div className={classes.buttonDiv}>
-            <Button
-              className={classes.button}
-              component={Link}
-              to="/account"
-              color="secondary"
-            >
+            <Button className={classes.button} component={Link} to="/account">
               Account
             </Button>
             <Button
@@ -105,7 +96,6 @@ function Navigation(props) {
                 firebase.doSignOut()
               }}
               to="/home"
-              color="secondary"
               className={classes.button}
             >
               Logout
@@ -113,20 +103,10 @@ function Navigation(props) {
           </div>
         ) : (
           <div className={classes.buttonDiv}>
-            <Button
-              className={classes.button}
-              component={Link}
-              to="/signin"
-              color="secondary"
-            >
+            <Button className={classes.button} component={Link} to="/signin">
               Login
             </Button>{' '}
-            <Button
-              className={classes.button}
-              component={Link}
-              to="/signup"
-              color="secondary"
-            >
+            <Button className={classes.button} component={Link} to="/signup">
               Sign Up
             </Button>
           </div>
