@@ -19,45 +19,43 @@ export const loadCanvasFromFirebase = p => {
   if (!p.firebase.auth.currentUser) {
     return console.log('You must log in or sign up to save a canvas.')
   } else {
+    p.firebase.loaded = []
     let newObjectArray = []
-    let filteredArray = []
 
     const userCanvas = p.firebase
       .user(p.firebase.auth.currentUser.uid)
       .child('canvas')
 
     userCanvas
-      .once('value', snapshot => {
-        for (let key in snapshot.val()) {
-          newObjectArray.push(snapshot.val()[key])
+      .once('value', async function(snapshot) {
+        let snapshotObject = await snapshot.val()
+        for (let key in snapshotObject) {
+          newObjectArray.push(snapshotObject[key])
         }
+        return newObjectArray
       })
       .then(() => {
         for (let i = 0; i < newObjectArray.length; i++) {
-          filteredArray.push(newObjectArray[i].canvasData)
-          console.log(filteredArray)
-          filteredArray[i].black = fireObjectToArray(
-            filteredArray[i].black,
+          p.firebase.loaded.push(newObjectArray[i].canvasData)
+          p.firebase.loaded[i].black = fireObjectToArray(
+            p.firebase.loaded[i].black,
             'black'
           )
-          filteredArray[i].red = fireObjectToArray(filteredArray[i].red, 'red')
-          filteredArray[i].blue = fireObjectToArray(
-            filteredArray[i].blue,
+          p.firebase.loaded[i].red = fireObjectToArray(
+            p.firebase.loaded[i].red,
+            'red'
+          )
+          p.firebase.loaded[i].blue = fireObjectToArray(
+            p.firebase.loaded[i].blue,
             'blue'
           )
         }
-        console.log('FILTERED: ', filteredArray)
-        return [
-          filteredArray[0].dataURL.imageData,
-          filteredArray[0].black,
-          filteredArray[0].red,
-          filteredArray[0].blue
-        ]
+        console.log('VALUE FROM LOAD COMPONENT: ', p.firebase.loaded)
+
+        return p.firebase.loaded
       })
       .catch(error => {
         console.log(error)
       })
-
-    console.log('LOADED FILE FOR USER 2: ', filteredArray[0])
   }
 }
