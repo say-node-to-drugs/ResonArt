@@ -26,7 +26,7 @@ export const loadCanvasFromFirebase = p => {
       .user(p.firebase.auth.currentUser.uid)
       .child('canvas')
 
-    userCanvas
+    return userCanvas
       .once('value', async function(snapshot) {
         let snapshotObject = await snapshot.val()
         for (let key in snapshotObject) {
@@ -51,11 +51,11 @@ export const loadCanvasFromFirebase = p => {
           )
         }
         console.log('VALUE FROM LOAD COMPONENT: ', p.firebase.loaded)
-
         return p.firebase.loaded
       })
       .catch(error => {
         console.log(error)
       })
   }
+  return p.firebase.loaded
 }
