@@ -310,7 +310,10 @@ const PaletteSketch = p => {
     load = p.createButton('Load Preset Image')
     load.mousePressed(() => {
       // This pulls a saved canvas from firebase
-      let [dataURL, black, red, blue] = loadCanvasFromFirebase(p)
+      loadCanvasFromFirebase(p)
+      console.log('GET VALUE FROM BUTTON PRESSED: ', p.firebase.loaded)
+      /*
+      THIS IS ALL A PLACEHOLDER FOR CODE ONCE WE KNOW HOW WE WILL USE THIS DATA
       p.loadImage(dataURL, img => {
         img.resize(width, height)
         p.image(img, 0, 0)
@@ -318,6 +321,7 @@ const PaletteSketch = p => {
       allBlackGrid = black
       allRedGrid = red
       allBlueGrid = blue
+      */
     })
     load.parent('buttonManifold')
   }
