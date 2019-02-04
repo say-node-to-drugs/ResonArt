@@ -317,13 +317,16 @@ const PaletteSketch = p => {
       /*
       THIS IS ALL A PLACEHOLDER FOR CODE ONCE WE KNOW HOW WE WILL USE THIS DATA
       */
-      p.loadImage(p.firebase.loaded[0].dataURL.imageData, img => {
-        img.resize(width, height)
-        p.image(img, 0, 0)
-      })
-      allBlackGrid = p.firebase.loaded[0].black
-      allRedGrid = p.firebase.loaded[0].red
-      allBlueGrid = p.firebase.loaded[0].blue
+      p.loadImage(
+        p.firebase.loaded[p.firebase.loaded.length - 1].dataURL.imageData,
+        img => {
+          img.resize(width, height)
+          p.image(img, 0, 0)
+        }
+      )
+      allBlackGrid = p.firebase.loaded[p.firebase.loaded.length - 1].black
+      allRedGrid = p.firebase.loaded[p.firebase.loaded.length - 1].red
+      allBlueGrid = p.firebase.loaded[p.firebase.loaded.length - 1].blue
     })
     load.parent('buttonManifold')
   }

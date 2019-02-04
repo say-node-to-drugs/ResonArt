@@ -57,5 +57,4 @@ export const loadCanvasFromFirebase = p => {
         console.log(error)
       })
   }
-  return p.firebase.loaded
 }
