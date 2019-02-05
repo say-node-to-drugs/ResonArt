@@ -2,6 +2,7 @@ import {drums} from './DrumSketch'
 import {saveCanvasToFirebase} from '../../firebase/saveCanvas.js'
 import {loadCanvasFromFirebase} from '../../firebase/loadCanvas.js'
 
+
 const PaletteSketch = p => {
   let recorder, soundFile, canvas
   let prevX, prevY
@@ -162,7 +163,7 @@ const PaletteSketch = p => {
     play,
     stop,
     download,
-    playback,
+    clearCanvas,
     load,
     eraser
 
@@ -183,16 +184,7 @@ const PaletteSketch = p => {
 
     p.background(255)
     p.fill(0)
-
-    // Draw grid lines
-    for (let x = 0; x < width; x += width / 16) {
-      for (let y = 0; y < height; y += height / 14) {
-        p.stroke(200)
-        p.strokeWeight(1)
-        p.line(x, 0, x, height)
-        p.line(0, y, width, y)
-      }
-    }
+    drawGridLines();
     p.strokeWeight(10)
 
     // Create instruments
@@ -255,21 +247,21 @@ const PaletteSketch = p => {
   */
 
     // RED PAINT
-    redPaint = p.createButton('Red')
+    redPaint = p.createButton('Sawtooth Synth (Red)')
     redPaint.mousePressed(() => {
       color = 'red'
     })
     redPaint.parent('buttonManifold')
 
     // BLUE PAINT
-    bluePaint = p.createButton('Blue')
+    bluePaint = p.createButton('Triangle Synth (Blue)')
     bluePaint.mousePressed(() => {
       color = 'blue'
     })
     bluePaint.parent('buttonManifold')
 
     // BLACK PAINT
-    blackPaint = p.createButton('Black')
+    blackPaint = p.createButton('Sine Synth (Black)')
     blackPaint.mousePressed(() => {
       color = 'black'
     })
@@ -288,6 +280,9 @@ const PaletteSketch = p => {
       if (!isPlaying) {
         isPlaying = true
         drums.metro.metroTicks = 0
+        synth.start()
+        synth2.start()
+        synth3.start()
         loadPaletteArrangement()
         drums.loop()
       }
@@ -331,12 +326,21 @@ const PaletteSketch = p => {
     })
     download.parent('buttonManifold')
 
-    // PLAYBACK STROKE
-    playback = p.createButton('Playback')
-    playback.mousePressed(() => {
-      replay = true
+    // CLEAR PALETTE
+    clearCanvas = p.createButton('Clear Palette')
+    clearCanvas.mousePressed(() => {
+      p.resizeCanvas(width, height)
+      p.background(255)
+      p.fill(0)
+      drawGridLines();
+      // Reset grid arrays for each color
+      allBlackGrid = generateColorArray();
+      allRedGrid = generateColorArray();
+      allBlueGrid = generateColorArray();
+      loadPaletteArrangement();
     })
-    playback.parent('buttonManifold')
+    clearCanvas.parent('buttonManifold')
+    clearCanvas.class('button')
 
     // ------------------
     // LOAD PRESET CANVAS
@@ -461,6 +465,9 @@ const PaletteSketch = p => {
         if (!isPlaying) {
           isPlaying = true
           drums.metro.metroTicks = 0 // restarts playhead at beginning [0]
+          synth.start()
+          synth2.start()
+          synth3.start()
           loadPaletteArrangement()
           drums.loop()
         } else {
@@ -508,6 +515,26 @@ const PaletteSketch = p => {
                      Utility Functions
   ----------------------------------------------------------
   */
+  const generateColorArray = () => {
+    let array = [];
+    for(let i = 0; i < 16; i++) {
+      array.push([])
+    }
+    return array;
+  }
+
+  const drawGridLines = () => {
+    // Draw grid lines
+    for (let x = 0; x < width; x += width / 16) {
+      for (let y = 0; y < height; y += height / 14) {
+        p.stroke(200)
+        p.strokeWeight(1)
+        p.line(x, 0, x, height)
+        p.line(0, y, width, y)
+      }
+    }
+  }
+
   const checkDownloadingStatus = () => {
     if (downloading && downloadCounter++ > 15) {
       // Stop instruments, part, and recorder
@@ -589,6 +616,7 @@ const PaletteSketch = p => {
         color === 'black' &&
         allBlackGrid[indexClicked].indexOf(rowClicked) === -1
       ) {
+        console.log(allBlackGrid)
         allBlackGrid[indexClicked].push(rowClicked)
       } else if (
         color === 'red' &&
