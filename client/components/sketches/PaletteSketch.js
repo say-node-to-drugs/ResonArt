@@ -437,7 +437,7 @@ const PaletteSketch = p => {
       prevY = p.mouseY
     }
 
-    if (state && !isPlaying) {
+    if (state) {
       // Gives us a value between 30 and  80 (good audible frequencies)
       if (isWithinBounds(p.mouseX, p.mouseY)) {
         // Start stroke and play audio based on color
@@ -451,6 +451,7 @@ const PaletteSketch = p => {
       prevX = p.mouseX
       prevY = p.mouseY
     }
+    loadPaletteArrangement()
   }
 
   /*
@@ -603,7 +604,6 @@ const PaletteSketch = p => {
   }
 
   const mouseDrag = (x, y) => {
-    if (!isPlaying) {
       // Calculate (x, y) value of the grid cell being dragged over
       let rowClicked = 20 - p.floor(21 * (y / p.height))
       let indexClicked = p.floor(16 * x / p.width)
@@ -640,10 +640,8 @@ const PaletteSketch = p => {
         )
       }
     }
-  }
 
   const mousePress = (x, y) => {
-    if (!isPlaying) {
       if (isWithinBounds(x, y)) {
         // Begin playing the correct synth
         if (color === 'black') {
@@ -666,21 +664,18 @@ const PaletteSketch = p => {
         synth3.amp(0)
       }
     }
-  }
 
   const mouseRelease = () => {
-    if (!isPlaying) {
-      if (color === 'black') {
+      if (color === 'black' && isPlaying===false) {
         fadeOutInstrument(synth)
-      } else if (color === 'red') {
+      } else if (color === 'red' && isPlaying===false) {
         fadeOutInstrument(synth2)
-      } else if (color === 'blue') {
+      } else if (color === 'blue' && isPlaying===false) {
         fadeOutInstrument(synth3)
       }
       state = 0
     }
   }
-}
 //_______________WILL BE USED LATER________________________________________
 //
 // function LZcompressed(array) {
