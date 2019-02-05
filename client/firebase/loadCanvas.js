@@ -35,6 +35,7 @@ export const loadCanvasFromFirebase = p => {
         return newObjectArray
       })
       .then(() => {
+        p.firebase.loadDrums = true
         for (let i = 0; i < newObjectArray.length; i++) {
           p.firebase.loaded.push(newObjectArray[i].canvasData)
           p.firebase.loaded[i].black = fireObjectToArray(
