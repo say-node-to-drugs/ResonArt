@@ -74,7 +74,7 @@ const DrumSketch = p => {
     bpmCTRL.parent('bpmCTRL')
     bpmCTRL.class('bpmCTRL')
 
-    p.draw()
+    p.drawMatrix()
   }
 
   p.windowResized = () => {
@@ -82,7 +82,7 @@ const DrumSketch = p => {
     height = p.windowHeight / 6
     cellWidth = width / beatLength
     p.resizeCanvas(width, height)
-    p.draw()
+    p.drawMatrix()
   }
 
   p.bpmValue = () => {
@@ -101,7 +101,7 @@ const DrumSketch = p => {
       bPat[indexClicked] = p.invert(bPat[indexClicked])
     }
 
-    p.draw()
+    p.drawMatrix()
   }
 
   p.invert = bitInput => {
@@ -109,7 +109,7 @@ const DrumSketch = p => {
   }
 
   // Draw function
-  p.draw = () => {
+  p.drawMatrix = () => {
     p.bpmValue()
     p.background('#284B63')
     p.stroke('white')
@@ -150,12 +150,12 @@ const DrumSketch = p => {
   p.sequence = (time, beatIndex) => {
     setTimeout(() => {
       // syncs up the timing so the beats and the playhead are in sync
-      p.draw()
-      p.drawPlayhead(beatIndex)
+      p.drawMatrix()
+      p.drawMatrixPlayhead(beatIndex)
     }, time * 1000)
   }
 
-  p.drawPlayhead = beatIndex => {
+  p.drawMatrixPlayhead = beatIndex => {
     p.stroke('yellow')
     p.fill(255, 0, 0, 150)
     p.rect((beatIndex - 1) * cellWidth, 0, cellWidth, height)
