@@ -8,15 +8,9 @@ let imgUrl = 'blurredBackdrop.jpg'
 
 let styles = () => ({
   root: {
-    background: `url(${imgUrl}) no-repeat center center fixed`,
-    backgroundSize: 'cover',
-    overflow: 'hidden',
     flexGrow: 1,
     padding: 30,
-    height: 'inherit'
-  },
-  grow: {
-    flexGrow: 1
+    height: '93vh'
   }
 })
 
@@ -38,21 +32,18 @@ class Studio extends React.Component {
     console.log('STUDIO: ', appUser) // Temporarily here to analyze firebase user object
     return (
       <Grid container className={classes.root} justify="center">
-        <Grid item sm={3}>
-          <div className="spacer" />
+        <Grid item sm={3} id="spacer" className="spacer" />
+        <Grid item sm={6} id="sketchPad" className="sketchPad" />
+        <Grid item sm={3} className="buttonSpacer">
+          <Grid
+            container
+            id="buttonManifold"
+            className="buttonManifold"
+            spacing={16}
+          />
         </Grid>
-        <Grid item sm={6}>
-          <div className="sketchPad" id="sketchPad" />
-        </Grid>
-        <Grid item sm={3}>
-          <div className="buttonManifold" id="buttonManifold" />
-        </Grid>
-        <Grid item sm={12}>
-          <div className="drumMachine" id="drumMachine" />
-        </Grid>
-        <Grid item sm={2}>
-          <div className="bpmCTRL" id="bpmCTRL" />
-        </Grid>
+        <Grid item sm={6} id="drumMachine" className="drumMachine" />
+        <Grid item sm={12} id="bpmCTRL" className="bpmCTRL" />
       </Grid>
     )
   }
@@ -63,35 +54,3 @@ Studio.propTypes = {
 }
 
 export default withStyles(styles)(Studio)
-
-// function FullWidthGrid(props) {
-//   const { classes } = props;
-
-//   return (
-//     <div className={classes.root}>
-//       <Grid container spacing={24}>
-//         <Grid item xs={12}>
-//           <Paper className={classes.paper}>xs=12</Paper>
-//         </Grid>
-//         <Grid item xs={12} sm={6}>
-//           <Paper className={classes.paper}>xs=12 sm=6</Paper>
-//         </Grid>
-//         <Grid item xs={12} sm={6}>
-//           <Paper className={classes.paper}>xs=12 sm=6</Paper>
-//         </Grid>
-//         <Grid item xs={6} sm={3}>
-//           <Paper className={classes.paper}>xs=6 sm=3</Paper>
-//         </Grid>
-//         <Grid item xs={6} sm={3}>
-//           <Paper className={classes.paper}>xs=6 sm=3</Paper>
-//         </Grid>
-//         <Grid item xs={6} sm={3}>
-//           <Paper className={classes.paper}>xs=6 sm=3</Paper>
-//         </Grid>
-//         <Grid item xs={6} sm={3}>
-//           <Paper className={classes.paper}>xs=6 sm=3</Paper>
-//         </Grid>
-//       </Grid>
-//     </div>
-//   );
-// }

@@ -1,8 +1,7 @@
 import React from 'react'
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
-import {Login, Studio, Navbar} from './components'
-import {SignUpPage} from './components/login-signup/SignUpIndex'
-import {SignInPage} from './components/login-signup/SignInIndex'
+import {Studio, Navbar} from './components'
+import {Login, CreateAccount} from './components/index'
 import {SignOutIndex} from './components/login-signup/SignOutIndex'
 import {AccountIndex} from './components/login-signup/AccountIndex'
 import {PasswordForgetPage} from './components/login-signup/PasswordForget.js'
@@ -16,10 +15,9 @@ const App = props => (
       <Navbar firebase={props.firebase} />
       <Switch>
         {/* Routes placed here are available to all visitors */}
-        <Route path="/login" component={Login} />
         <Route path="/account" component={AccountIndex} />
-        <Route path="/signup" component={SignUpPage} />
-        <Route path="/signin" component={SignInPage} />
+        <Route path="/signup" component={CreateAccount} />
+        <Route path="/signin" component={Login} />
         <Route
           path="/studio"
           render={() => <Studio {...props} firebase={props.firebase} />}

@@ -3,11 +3,11 @@ let drums = new p5.Part()
 const DrumSketch = p => {
   // Set height and width of canvas
 
-  let canvasWidth = p.windowWidth / 2
-  let canvasHeight = p.windowHeight / 6
+  let width = p.windowWidth / 2 - 30
+  let height = p.windowHeight / 6
 
   let beatLength = 16
-  let cellWidth = canvasWidth / beatLength
+  let cellWidth = width / beatLength
 
   let canvas
   let hh
@@ -16,6 +16,7 @@ const DrumSketch = p => {
   let hPat, cPat, bPat, sPat
   let hPhrase, cPhrase, bPhrase
   let bpmCTRL
+  let bpmValue
 
   p.preload = () => {
     hh = p.loadSound('drumSamples/hh_sample.mp3', () => {})
@@ -27,7 +28,7 @@ const DrumSketch = p => {
   p.setup = () => {
     p.userStartAudio()
 
-    canvas = p.createCanvas(p.windowWidth / 2, p.windowHeight / 6)
+    canvas = p.createCanvas(width, height)
     canvas.parent('drumMachine')
     canvas.mousePressed(p.canvasPressed)
 
@@ -77,13 +78,21 @@ const DrumSketch = p => {
   }
 
   p.windowResized = () => {
-    p.resizeCanvas(p.windowWidth / 2, p.windowHeight / 6)
+    width = p.windowWidth / 2 - 30
+    height = p.windowHeight / 6
+    cellWidth = width / beatLength
+    p.resizeCanvas(width, height)
     p.drawMatrix()
   }
 
+  p.bpmValue = () => {
+    p.fill(0)
+    p.text('ichi', 100, 100)
+  }
+
   p.canvasPressed = () => {
-    let rowClicked = p.floor(3 * p.mouseY / (p.windowHeight / 6))
-    let indexClicked = p.floor(16 * p.mouseX / (p.windowWidth / 2))
+    let rowClicked = p.floor(3 * p.mouseY / height)
+    let indexClicked = p.floor(16 * p.mouseX / width)
     if (rowClicked === 0) {
       hPat[indexClicked] = p.invert(hPat[indexClicked])
     } else if (rowClicked === 1) {
@@ -101,58 +110,31 @@ const DrumSketch = p => {
 
   // Draw function
   p.drawMatrix = () => {
-    p.background('blue')
+    p.bpmValue()
+    p.background('#284B63')
     p.stroke('white')
     p.strokeWeight(4)
     p.fill('white')
     for (let i = 0; i < beatLength + 1; i++) {
       // startx, starty, endx, endy
-      p.line(
-        i * (p.windowWidth / 32),
-        0,
-        i * (p.windowWidth / 32),
-        p.windowHeight / 6
-      )
+      p.line(i * cellWidth, 0, i * cellWidth, height)
     }
 
     for (let i = 0; i < 4; i++) {
-      p.line(
-        0,
-        i * (p.windowHeight / 6) / 3,
-        p.windowWidth / 2,
-        i * (p.windowHeight / 6) / 3
-      )
+      p.line(0, i * height / 3, width, i * height / 3)
     }
 
     p.noStroke()
 
     for (let i = 0; i < beatLength; i++) {
       if (hPat[i] === 1) {
-        p.ellipse(
-          i * (p.windowWidth / 32) + 0.5 * (p.windowWidth / 32),
-          p.windowHeight / 6 / 6,
-          10,
-          10,
-          10
-        )
+        p.ellipse(i * cellWidth + 0.5 * cellWidth, height / 6, 10, 10, 10)
       }
       if (cPat[i] === 1) {
-        p.ellipse(
-          i * (p.windowWidth / 32) + 0.5 * (p.windowWidth / 32),
-          p.windowHeight / 6 / 2,
-          10,
-          10,
-          10
-        )
+        p.ellipse(i * cellWidth + 0.5 * cellWidth, height / 2, 10, 10, 10)
       }
       if (bPat[i] === 1) {
-        p.ellipse(
-          i * (p.windowWidth / 32) + 0.5 * (p.windowWidth / 32),
-          p.windowHeight / 6 * 5 / 6,
-          10,
-          10,
-          10
-        )
+        p.ellipse(i * cellWidth + 0.5 * cellWidth, height * 5 / 6, 10, 10, 10)
       }
     }
   }
@@ -168,12 +150,7 @@ const DrumSketch = p => {
   p.drawPlayhead = beatIndex => {
     p.stroke('yellow')
     p.fill(255, 0, 0, 150)
-    p.rect(
-      (beatIndex - 1) * (p.windowWidth / 32),
-      0,
-      p.windowWidth / 32,
-      p.windowHeight / 6
-    )
+    p.rect((beatIndex - 1) * cellWidth, 0, cellWidth, height)
   }
 }
 

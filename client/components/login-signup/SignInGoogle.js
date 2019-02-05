@@ -2,6 +2,14 @@ import React, {Component} from 'react'
 import {withFirebase} from '../../firebase/FirebaseContext.js'
 import {compose} from 'recompose'
 import {Link, withRouter} from 'react-router-dom'
+import PropTypes from 'prop-types'
+import {withStyles, Button} from '@material-ui/core'
+
+const styles = theme => ({
+  submit: {
+    marginTop: theme.spacing.unit * 3
+  }
+})
 
 class SignInGoogleBase extends Component {
   constructor(props) {
@@ -34,15 +42,30 @@ class SignInGoogleBase extends Component {
 
   render() {
     const {error} = this.state
-
+    const {classes} = this.props
     return (
       <form onSubmit={this.onSubmit}>
-        <button type="submit">Sign In with Google</button>
-
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+        >
+          Sign In With Google
+        </Button>
         {error && <p>{error.message}</p>}
       </form>
     )
   }
 }
 
-export const SignInGoogle = compose(withRouter, withFirebase)(SignInGoogleBase)
+SignInGoogleBase.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export const SignInGoogle = compose(
+  withRouter,
+  withFirebase,
+  withStyles(styles, SignInGoogleBase)
+)(SignInGoogleBase)

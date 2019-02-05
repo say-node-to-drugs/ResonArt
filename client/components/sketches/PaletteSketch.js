@@ -147,10 +147,6 @@ const PaletteSketch = p => {
   let downloading = false
   let downloadCounter = 0
 
-  // let width = p.windowWidth / 2 - 30;
-  let width = p.windowWidth / 2 - 30
-  let height = p.windowHeight * (4 / 10)
-
   // buttons
   let redPaint,
     bluePaint,
@@ -160,8 +156,11 @@ const PaletteSketch = p => {
     download,
     playback,
     load,
+    saveImage,
     eraser
 
+  let width = p.windowWidth / 2 - 30
+  let height = p.windowHeight * (4 / 10)
   p.preload = () => {
     synth1Sound = new p5.SoundFile()
     synth2Sound = new p5.SoundFile()
@@ -175,7 +174,6 @@ const PaletteSketch = p => {
     canvas = p.createCanvas(width, height)
     canvas.parent('sketchPad')
     canvas.style('display', 'block')
-    canvas.class('palette')
 
     p.background(255)
     p.fill(0)
@@ -234,8 +232,8 @@ const PaletteSketch = p => {
           synth3.freq(p.midiToFreq(value))
 
           // Logic to stop playing after one loop if download was pressed
-          if(downloading) {
-            downloadCounter++;
+          if (downloading) {
+            downloadCounter++
           }
           if (downloading && downloadCounter >= 16) {
             // Stop instruments, part, and recorder
@@ -244,7 +242,7 @@ const PaletteSketch = p => {
             fadeOutInstrument(synth2)
             fadeOutInstrument(synth3)
             drums.stop()
-            recorder.stop();
+            recorder.stop()
 
             // Reset downloading flags
             downloadCounter = 0
@@ -277,6 +275,7 @@ const PaletteSketch = p => {
       color = 'red'
     })
     redPaint.parent('buttonManifold')
+    redPaint.class('button')
 
     // BLUE PAINT
     bluePaint = p.createButton('Blue')
@@ -284,6 +283,7 @@ const PaletteSketch = p => {
       color = 'blue'
     })
     bluePaint.parent('buttonManifold')
+    bluePaint.class('button')
 
     // BLACK PAINT
     blackPaint = p.createButton('Black')
@@ -291,6 +291,7 @@ const PaletteSketch = p => {
       color = 'black'
     })
     blackPaint.parent('buttonManifold')
+    blackPaint.class('button')
 
     // ERASER
     eraser = p.createButton('Eraser')
@@ -298,6 +299,7 @@ const PaletteSketch = p => {
       color = 'eraser'
     })
     eraser.parent('buttonManifold')
+    eraser.class('button')
 
     // PLAY AUDIO
     play = p.createButton('Play')
@@ -310,6 +312,7 @@ const PaletteSketch = p => {
       }
     })
     play.parent('buttonManifold')
+    play.class('button')
 
     // STOP AUDIO
     stop = p.createButton('Stop')
@@ -321,13 +324,15 @@ const PaletteSketch = p => {
       drums.stop()
     })
     stop.parent('buttonManifold')
+    stop.class('button')
 
     // SAVE IMAGE
-    let saveImage = p.createButton('Save Image')
+    saveImage = p.createButton('Save Image')
     saveImage.mousePressed(() => {
       saveCanvasToFirebase(p, allBlackGrid, allRedGrid, allBlueGrid) // This saves to Firebase
     })
     saveImage.parent('buttonManifold')
+    saveImage.class('button')
 
     // DOWNLOAD AUDIO
     download = p.createButton('Download')
@@ -344,6 +349,7 @@ const PaletteSketch = p => {
       drums.start()
     })
     download.parent('buttonManifold')
+    download.class('button')
 
     // PLAYBACK STROKE
     playback = p.createButton('Playback')
@@ -351,6 +357,7 @@ const PaletteSketch = p => {
       replay = true
     })
     playback.parent('buttonManifold')
+    playback.class('button')
 
     // ------------------
     // LOAD PRESET CANVAS
@@ -404,6 +411,7 @@ const PaletteSketch = p => {
         p.firebase.loaded[p.firebase.loaded.length - 1].seq
     })
     load.parent('buttonManifold')
+    load.class('button')
   }
 
   /*
@@ -505,7 +513,7 @@ const PaletteSketch = p => {
     synth2.start()
     synth3.start()
 
-    if(drums.getPhrase('synth1Sound')) {
+    if (drums.getPhrase('synth1Sound')) {
       drums.removePhrase('synth1Sound')
       drums.removePhrase('synth2Sound')
       drums.removePhrase('synth3Sound')

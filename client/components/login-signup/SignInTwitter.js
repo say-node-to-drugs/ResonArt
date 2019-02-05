@@ -2,6 +2,14 @@ import React, {Component} from 'react'
 import {withFirebase} from '../../firebase/FirebaseContext.js'
 import {compose} from 'recompose'
 import {Link, withRouter} from 'react-router-dom'
+import PropTypes from 'prop-types'
+import {withStyles, Button} from '@material-ui/core'
+
+const styles = theme => ({
+  submit: {
+    marginTop: theme.spacing.unit * 3
+  }
+})
 
 class SignInTwitterBase extends Component {
   constructor(props) {
@@ -11,7 +19,6 @@ class SignInTwitterBase extends Component {
   }
 
   onSubmit = event => {
-    console.log(this.props)
     this.props.firebase
       .doSignInWithTwitter()
       .then(socialAuthUser => {
@@ -34,18 +41,29 @@ class SignInTwitterBase extends Component {
   }
 
   render() {
-    const {error} = this.state
-
+    const {classes} = this.props
     return (
       <form onSubmit={this.onSubmit}>
-        <button type="submit">Sign In with Twitter</button>
-
-        {error && <p>{error.message}</p>}
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+        >
+          Sign In With Twitter
+        </Button>
       </form>
     )
   }
 }
 
-export const SignInTwitter = compose(withRouter, withFirebase)(
-  SignInTwitterBase
-)
+SignInTwitterBase.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export const SignInTwitter = compose(
+  withRouter,
+  withFirebase,
+  withStyles(styles, SignInTwitterBase)
+)(SignInTwitterBase)

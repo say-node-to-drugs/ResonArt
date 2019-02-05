@@ -1,5 +1,13 @@
+body,
+html {
+  min-height: 100%;
+}
+
 body {
   font-family: sans-serif;
+  background-color: #f4f9e9;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 a {
@@ -38,22 +46,32 @@ form div {
 /* drawing tool */
 .sketchPad {
   box-shadow: 0 4px 8px 0 grey, 0 6px 20px 0 grey;
-  /* flex-grow: 2;
-  flex-basis: 60vw; */
+  height: 40vh;
 }
 
 /* control buttons for palette */
 .buttonManifold {
-  /* display: flex;
-  justify-content: flex-end; */
-  /* flex-grow: 1;
-  flex-basis: 20vw; */
+  padding: 30px;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.buttonSpacer {
+  height: 40vh;
+}
+
+.button {
+  background: 'transparent';
+  border: 1px solid #284b63;
+  height: 24px;
+  margin: 10px;
+  box-shadow: 0 4px 8px 0 grey, 0 6px 20px 0 grey;
 }
 
 /* spacing div to left of palette */
 .spacer {
-  /* flex-grow: 1;
-  flex-basis: 20vw; */
+  height: 40vh;
 }
 
 /* ------------DRUMS------------- */
@@ -70,12 +88,15 @@ form div {
 .bpmCTRL {
   display: flex;
   justify-content: center;
+  height: 5vh;
 }
 
 /* drum machine component */
 .drumMachine {
   display: flex;
   justify-content: center;
+  height: 16.666vh;
+  box-shadow: 0 4px 8px 0 grey, 0 6px 20px 0 grey;
 }
 
 /* NavBar buttons */
@@ -83,18 +104,4 @@ form div {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-}
-
-.button {
-  height: 60px;
-  width: 100px;
-  background: linear-gradient(
-    45deg,
-    rgb(238, 238, 163) 30%,
-    rgb(241, 187, 86) 90%
-  );
-  border-radius: 5px;
-  color: black;
-  /* padding: 20px; */
-  box-shadow: 0 3px 5px 2px rgba(255, 105, 135, 0.3);
 }
