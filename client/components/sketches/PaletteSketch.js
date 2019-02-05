@@ -217,7 +217,7 @@ const PaletteSketch = p => {
       'synth2Sound',
       (time, value) => {
         setTimeout(() => {
-          synth2.amp(value ? 0.3 : 0)
+          synth2.amp(value ? 0.2 : 0)
           synth2.freq(p.midiToFreq(value))
         }, time * 1000)
       },
@@ -257,7 +257,7 @@ const PaletteSketch = p => {
     )
 
     drums.setBPM('80')
-
+    drums.onStep(loadPaletteArrangement)
     // create a sound recorder
     recorder = new p5.SoundRecorder()
     recorder.setInput()
@@ -305,6 +305,9 @@ const PaletteSketch = p => {
     play = p.createButton('Play')
     play.mousePressed(() => {
       if (!isPlaying) {
+        synth.start()
+        synth2.start()
+        synth3.start()
         isPlaying = true
         drums.metro.metroTicks = 0
         loadPaletteArrangement()
@@ -450,7 +453,7 @@ const PaletteSketch = p => {
       prevY = p.mouseY
     }
 
-    if (state && !isPlaying) {
+    if (state) {
       // Gives us a value between 30 and  80 (good audible frequencies)
       if (isWithinBounds(p.mouseX, p.mouseY)) {
         // Start stroke and play audio based on color
@@ -477,6 +480,9 @@ const PaletteSketch = p => {
       if (event.key === ' ') {
         if (!isPlaying) {
           isPlaying = true
+          synth.start()
+          synth2.start()
+          synth3.start()
           drums.metro.metroTicks = 0 // restarts playhead at beginning [0]
           loadPaletteArrangement()
           drums.loop()
@@ -509,9 +515,9 @@ const PaletteSketch = p => {
       synth3Pattern[i] = notes[getAverage(allBlueGrid[i])]
     }
 
-    synth.start()
-    synth2.start()
-    synth3.start()
+    // synth.start()
+    // synth2.start()
+    // synth3.start()
 
     if (drums.getPhrase('synth1Sound')) {
       drums.removePhrase('synth1Sound')
@@ -575,86 +581,82 @@ const PaletteSketch = p => {
         break
     }
     p.line(lastX, lastY, x, y)
+    loadPaletteArrangement()
   }
 
   const mouseDrag = (x, y) => {
-    if (!isPlaying) {
-      // Calculate (x, y) value of the grid cell being dragged over
-      let rowClicked = 20 - p.floor(21 * (y / p.height))
-      let indexClicked = p.floor(16 * x / p.width)
+    // Calculate (x, y) value of the grid cell being dragged over
+    let rowClicked = 20 - p.floor(21 * (y / p.height))
+    let indexClicked = p.floor(16 * x / p.width)
 
-      if (indexClicked === 16) {
-        indexClicked--
-      }
+    if (indexClicked === 16) {
+      indexClicked--
+    }
 
-      if (
-        color === 'black' &&
-        allBlackGrid[indexClicked].indexOf(rowClicked) === -1
-      ) {
-        allBlackGrid[indexClicked].push(rowClicked)
-      } else if (
-        color === 'red' &&
-        allRedGrid[indexClicked].indexOf(rowClicked) === -1
-      ) {
-        allRedGrid[indexClicked].push(rowClicked)
-      } else if (
-        color === 'blue' &&
-        allBlueGrid[indexClicked].indexOf(rowClicked) === -1
-      ) {
-        allBlueGrid[indexClicked].push(rowClicked)
-      } else if (color === 'eraser') {
-        allBlackGrid[indexClicked] = allBlackGrid[indexClicked].filter(
-          elem => elem > rowClicked + 1 && elem < rowClicked - 1
-        )
-        allRedGrid[indexClicked] = allRedGrid[indexClicked].filter(
-          elem => elem > rowClicked + 1 && elem < rowClicked - 1
-        )
-        allBlueGrid[indexClicked] = allBlueGrid[indexClicked].filter(
-          elem => elem > rowClicked + 1 && elem < rowClicked - 1
-        )
-      }
+    if (
+      color === 'black' &&
+      allBlackGrid[indexClicked].indexOf(rowClicked) === -1
+    ) {
+      allBlackGrid[indexClicked].push(rowClicked)
+    } else if (
+      color === 'red' &&
+      allRedGrid[indexClicked].indexOf(rowClicked) === -1
+    ) {
+      allRedGrid[indexClicked].push(rowClicked)
+    } else if (
+      color === 'blue' &&
+      allBlueGrid[indexClicked].indexOf(rowClicked) === -1
+    ) {
+      allBlueGrid[indexClicked].push(rowClicked)
+    } else if (color === 'eraser') {
+      allBlackGrid[indexClicked] = allBlackGrid[indexClicked].filter(
+        elem => elem > rowClicked + 1 && elem < rowClicked - 1
+      )
+      allRedGrid[indexClicked] = allRedGrid[indexClicked].filter(
+        elem => elem > rowClicked + 1 && elem < rowClicked - 1
+      )
+      allBlueGrid[indexClicked] = allBlueGrid[indexClicked].filter(
+        elem => elem > rowClicked + 1 && elem < rowClicked - 1
+      )
     }
   }
 
   const mousePress = (x, y) => {
-    if (!isPlaying) {
-      if (isWithinBounds(x, y)) {
-        // Begin playing the correct synth
-        if (color === 'black') {
-          synth.start()
-        } else if (color === 'red') {
-          synth2.start()
-        } else if (color === 'blue') {
-          synth3.start()
-        }
-        mouseDrag(x, y)
-        // Set state to 1 so the draw() function knows to make lines and produce audio
-        state++
-        // Reset the previous mouse position
-        prevX = 0
-        prevY = 0
-      } else {
-        state = 0
-        synth.amp(0)
-        synth2.amp(0)
-        synth3.amp(0)
+    if (isWithinBounds(x, y)) {
+      // Begin playing the correct synth
+      if (color === 'black') {
+        synth.start()
+      } else if (color === 'red') {
+        synth2.start()
+      } else if (color === 'blue') {
+        synth3.start()
       }
+      mouseDrag(x, y)
+      // Set state to 1 so the draw() function knows to make lines and produce audio
+      state++
+      // Reset the previous mouse position
+      prevX = 0
+      prevY = 0
+    } else {
+      state = 0
+      synth.amp(0)
+      synth2.amp(0)
+      synth3.amp(0)
     }
   }
 
   const mouseRelease = () => {
-    if (!isPlaying) {
-      if (color === 'black') {
-        fadeOutInstrument(synth)
-      } else if (color === 'red') {
-        fadeOutInstrument(synth2)
-      } else if (color === 'blue') {
-        fadeOutInstrument(synth3)
-      }
-      state = 0
+    if (color === 'black' && isPlaying === false) {
+      fadeOutInstrument(synth)
+    } else if (color === 'red' && isPlaying === false) {
+      fadeOutInstrument(synth2)
+    } else if (color === 'blue' && isPlaying === false) {
+      fadeOutInstrument(synth3)
     }
+    state = 0
   }
 }
+
 //_______________WILL BE USED LATER________________________________________
 //
 // function LZcompressed(array) {
