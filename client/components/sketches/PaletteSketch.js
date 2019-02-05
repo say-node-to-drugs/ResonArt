@@ -216,7 +216,7 @@ const PaletteSketch = p => {
       'synth2Sound',
       (time, value) => {
         setTimeout(() => {
-          synth2.amp(value ? 0.3 : 0)
+          synth2.amp(value ? 0.2 : 0)
           synth2.freq(p.midiToFreq(value))
         }, time * 1000)
       },
@@ -226,7 +226,7 @@ const PaletteSketch = p => {
       'synth3Sound',
       (time, value) => {
         setTimeout(() => {
-          synth3.amp(value ? 0.3 : 0)
+          synth3.amp(value ? 0.5 : 0)
           synth3.freq(p.midiToFreq(value))
         }, time * 1000)
       },
@@ -410,7 +410,14 @@ const PaletteSketch = p => {
     width = p.windowWidth / 2 - 30
     height = p.windowHeight * (4 / 10)
 
-    p.resizeCanvas(width, height)
+    p.saveFrames('canvas', 'png', 1, 1, function(im) {
+      p.resizeCanvas(width, height)
+      p.loadImage(im[0].imageData, img => {
+          img.resize(width, height)
+          p.image(img, 0, 0)
+        }
+      )
+    })
   }
 
   /*
@@ -585,12 +592,12 @@ const PaletteSketch = p => {
         break
       case 'red':
         p.stroke(255, 0, 0)
-        synth2.amp(0.3)
+        synth2.amp(0.2)
         synth2.freq(frequency)
         break
       case 'blue':
         p.stroke(0, 0, 255)
-        synth3.amp(0.3)
+        synth3.amp(0.5)
         synth3.freq(frequency)
         break
       case 'eraser':
