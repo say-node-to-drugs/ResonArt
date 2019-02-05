@@ -207,6 +207,7 @@ const PaletteSketch = p => {
       'synth1Sound',
       (time, value) => {
         setTimeout(() => {
+          checkDownloadingStatus();
           synth.amp(value ? 0.5 : 0)
           synth.freq(p.midiToFreq(value))
         }, time * 1000)
@@ -227,30 +228,8 @@ const PaletteSketch = p => {
       'synth3Sound',
       (time, value) => {
         setTimeout(() => {
-          console.log(downloadCounter)
           synth3.amp(value ? 0.3 : 0)
           synth3.freq(p.midiToFreq(value))
-
-          // Logic to stop playing after one loop if download was pressed
-          if (downloading) {
-            downloadCounter++
-          }
-          if (downloading && downloadCounter >= 16) {
-            // Stop instruments, part, and recorder
-            isPlaying = false
-            fadeOutInstrument(synth)
-            fadeOutInstrument(synth2)
-            fadeOutInstrument(synth3)
-            drums.stop()
-            recorder.stop()
-
-            // Reset downloading flags
-            downloadCounter = 0
-            downloading = false
-            // Save the audio file to the browser client and re-initialize the sound file
-            p.saveSound(soundFile, 'myHorribleSound.wav')
-            soundFile = new p5.SoundFile()
-          }
         }, time * 1000)
       },
       synth3Pattern
@@ -344,6 +323,10 @@ const PaletteSketch = p => {
       downloading = true
       drums.metro.metroTicks = 0
       downloadCounter = 0
+
+      synth.start()
+      synth2.start()
+      synth3.start()
 
       // Setup and the palette to play it's audio
       loadPaletteArrangement()
@@ -515,10 +498,6 @@ const PaletteSketch = p => {
       synth3Pattern[i] = notes[getAverage(allBlueGrid[i])]
     }
 
-    // synth.start()
-    // synth2.start()
-    // synth3.start()
-
     if (drums.getPhrase('synth1Sound')) {
       drums.removePhrase('synth1Sound')
       drums.removePhrase('synth2Sound')
@@ -535,6 +514,25 @@ const PaletteSketch = p => {
                      Utility Functions
   ----------------------------------------------------------
   */
+  const checkDownloadingStatus = () => {
+    if (downloading && downloadCounter++ > 15) {
+      // Stop instruments, part, and recorder
+      isPlaying = false
+      fadeOutInstrument(synth)
+      fadeOutInstrument(synth2)
+      fadeOutInstrument(synth3)
+      drums.stop()
+      recorder.stop()
+
+      // Reset downloading flags
+      downloadCounter = 0
+      downloading = false
+      // Save the audio file to the browser client and re-initialize the sound file
+      p.saveSound(soundFile, 'myHorribleSound.wav')
+      soundFile = new p5.SoundFile()
+    }
+  }
+
   const fadeOutInstrument = instrument => {
     //instrument.fade(0, 0.5)
     instrument.amp(0)
