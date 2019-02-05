@@ -16,7 +16,7 @@ import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles'
 
 const theme = createMuiTheme({
   palette: {
-    primary: {main: '#153243'}, // Purple and green play nicely together.
+    primary: {main: '#5C374C'}, // Purple and green play nicely together.
     secondary: {main: '#F4F9E9'} // This is just green.A700 as hex.
   },
   overrides: {
@@ -75,7 +75,7 @@ function Navigation(props) {
   return (
     <AuthUserContext.Consumer>
       {authUser =>
-        (authUser ? (
+        authUser ? (
           <div className={classes.buttonDiv}>
             <Button className={classes.button} component={Link} to="/account">
               Account
@@ -99,7 +99,7 @@ function Navigation(props) {
               Sign Up
             </Button>
           </div>
-        ))
+        )
       }
     </AuthUserContext.Consumer>
   )

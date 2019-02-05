@@ -5,7 +5,7 @@ html {
 
 body {
   font-family: sans-serif;
-  background-color: #f4f9e9;
+  background-color: #faa275;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -31,6 +31,7 @@ form div {
 .app {
   width: 100vw;
   height: 100vh;
+  background-color: #faa275;
 }
 
 /* ------------PALETTE------------- */
@@ -51,22 +52,112 @@ form div {
 
 /* control buttons for palette */
 .buttonManifold {
-  padding: 30px;
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
 }
 
 .buttonSpacer {
-  height: 40vh;
+  height: 5vh;
 }
 
 .button {
-  background: 'transparent';
+  background: transparent;
   border: 1px solid #284b63;
   height: 24px;
   margin: 10px;
   box-shadow: 0 4px 8px 0 grey, 0 6px 20px 0 grey;
+}
+
+/* buttons */
+.redButton {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: white;
+  height: 36px;
+  margin: 10px;
+}
+
+.blueButton {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: white;
+  height: 36px;
+  margin: 10px;
+}
+
+.blackButton {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: white;
+  height: 36px;
+  margin: 10px;
+}
+
+.saveButton {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: white;
+  height: 36px;
+  margin: 10px;
+}
+
+.playButton {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: white;
+  height: 36px;
+  margin: 10px;
+}
+
+.stopButton {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: white;
+  height: 36px;
+  margin: 10px;
+}
+
+.eraserButton {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: white;
+  height: 36px;
+  margin: 10px;
+}
+
+.downloadButton {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: white;
+  height: 36px;
+  margin: 10px;
+}
+
+.clearButton {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: white;
+  height: 36px;
+  margin: 10px;
+}
+
+.loadButton {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: white;
+  height: 36px;
+  margin: 10px;
 }
 
 /* spacing div to left of palette */
