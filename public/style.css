@@ -5,7 +5,7 @@ html {
 
 body {
   font-family: sans-serif;
-  background-color: #eef0eb;
+  background-color: #f4f9e9;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -66,6 +66,7 @@ form div {
   border: 1px solid #284b63;
   height: 24px;
   margin: 10px;
+  box-shadow: 0 4px 8px 0 grey, 0 6px 20px 0 grey;
 }
 
 /* spacing div to left of palette */
@@ -94,7 +95,8 @@ form div {
 .drumMachine {
   display: flex;
   justify-content: center;
-  height: 20vh;
+  height: 16.666vh;
+  box-shadow: 0 4px 8px 0 grey, 0 6px 20px 0 grey;
 }
 
 /* NavBar buttons */

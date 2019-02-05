@@ -3,27 +3,16 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {logout} from '../store'
-import Firebase from '../firebase/Firebase.js'
 import {AuthUserContext} from './login-signup/SessionContext.js'
 import {
   withStyles,
   AppBar,
   Toolbar,
-  Typography,
   Button,
   IconButton,
   Avatar
 } from '@material-ui/core'
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles'
-import {
-  purple,
-  red,
-  white,
-  blueGrey,
-  yellow,
-  blue
-} from '@material-ui/core/colors'
-import MenuIcon from '@material-ui/icons/Menu'
 
 const theme = createMuiTheme({
   palette: {

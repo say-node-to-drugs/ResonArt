@@ -42,8 +42,8 @@ class Studio extends React.Component {
             spacing={16}
           />
         </Grid>
-        <Grid item sm={12} id="drumMachine" className="drumMachine" />
-        <Grid item sm={2} id="bpmCTRL" className="bpmCTRL" />
+        <Grid item sm={6} id="drumMachine" className="drumMachine" />
+        <Grid item sm={12} id="bpmCTRL" className="bpmCTRL" />
       </Grid>
     )
   }
