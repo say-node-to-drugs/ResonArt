@@ -7,13 +7,9 @@ const fireObjectToArray = (fireObject, color) => {
       if (element[key] === -1) {
         element[key] = []
       } else {
-        if (element[key] === 0) {
-          element[key] = [0]
-        } else {
-          element[key] = [element[key]]
-        }
-        newArray.push(element[key])
+        element[key] = [element[key]]
       }
+      newArray.push(element[key])
     }
     return newArray
   })
@@ -52,22 +48,6 @@ export const loadCanvasFromFirebase = p => {
           p.firebase.loaded[i].blue = fireObjectToArray(
             p.firebase.loaded[i].blue,
             'blue'
-          )
-          p.firebase.loaded[i].bass = fireObjectToArray(
-            p.firebase.loaded[i].bass,
-            'bass'
-          )
-          p.firebase.loaded[i].clap = fireObjectToArray(
-            p.firebase.loaded[i].clap,
-            'clap'
-          )
-          p.firebase.loaded[i].hh = fireObjectToArray(
-            p.firebase.loaded[i].hh,
-            'hh'
-          )
-          p.firebase.loaded[i].seq = fireObjectToArray(
-            p.firebase.loaded[i].seq,
-            'seq'
           )
         }
         console.log('VALUE FROM LOAD COMPONENT: ', p.firebase.loaded)

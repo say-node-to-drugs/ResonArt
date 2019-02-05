@@ -390,7 +390,15 @@ const PaletteSketch = p => {
         elem = [].concat.apply([], elem)
         allBlueGrid[idx] = elem
       })
-      console.log(allBlackGrid, allRedGrid, allBlueGrid)
+
+      drums.phrases[0].sequence =
+        p.firebase.loaded[p.firebase.loaded.length - 1].hh
+      drums.phrases[1].sequence =
+        p.firebase.loaded[p.firebase.loaded.length - 1].clap
+      drums.phrases[2].sequence =
+        p.firebase.loaded[p.firebase.loaded.length - 1].bass
+      drums.phrases[3].sequence =
+        p.firebase.loaded[p.firebase.loaded.length - 1].seq
     })
     load.parent('buttonManifold')
   }
