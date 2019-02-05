@@ -75,7 +75,7 @@ function Navigation(props) {
   return (
     <AuthUserContext.Consumer>
       {authUser =>
-        authUser ? (
+        (authUser ? (
           <div className={classes.buttonDiv}>
             <Button className={classes.button} component={Link} to="/account">
               Account
@@ -99,7 +99,7 @@ function Navigation(props) {
               Sign Up
             </Button>
           </div>
-        )
+        ))
       }
     </AuthUserContext.Consumer>
   )
