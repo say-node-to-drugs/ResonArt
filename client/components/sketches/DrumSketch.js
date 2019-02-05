@@ -111,8 +111,8 @@ const DrumSketch = p => {
   // Draw function
   p.drawMatrix = () => {
     p.bpmValue()
-    p.background('#284B63')
-    p.stroke('white')
+    p.background('#FF8C61')
+    p.stroke('#5C374C')
     p.strokeWeight(4)
     p.fill('white')
     for (let i = 0; i < beatLength + 1; i++) {
@@ -156,7 +156,7 @@ const DrumSketch = p => {
   }
 
   p.drawMatrixPlayhead = beatIndex => {
-    p.stroke('yellow')
+    p.stroke('#985277')
     p.fill(255, 0, 0, 150)
     p.rect((beatIndex - 1) * cellWidth, 0, cellWidth, height)
   }

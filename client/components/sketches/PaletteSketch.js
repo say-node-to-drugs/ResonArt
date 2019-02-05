@@ -2,7 +2,6 @@ import {drums} from './DrumSketch'
 import {saveCanvasToFirebase} from '../../firebase/saveCanvas.js'
 import {loadCanvasFromFirebase} from '../../firebase/loadCanvas.js'
 
-
 const PaletteSketch = p => {
   let recorder, soundFile, canvas
   let prevX, prevY
@@ -184,7 +183,7 @@ const PaletteSketch = p => {
 
     p.background(255)
     p.fill(0)
-    drawGridLines();
+    drawGridLines()
     p.strokeWeight(10)
 
     // Create instruments
@@ -205,7 +204,7 @@ const PaletteSketch = p => {
       'synth1Sound',
       (time, value) => {
         setTimeout(() => {
-          checkDownloadingStatus();
+          checkDownloadingStatus()
           synth.amp(value ? 0.5 : 0)
           synth.freq(p.midiToFreq(value))
         }, time * 1000)
@@ -247,32 +246,36 @@ const PaletteSketch = p => {
   */
 
     // RED PAINT
-    redPaint = p.createButton('Sawtooth Synth (Red)')
+    redPaint = p.createButton('Sawtooth Synth')
     redPaint.mousePressed(() => {
       color = 'red'
     })
-    redPaint.parent('buttonManifold')
+    redPaint.parent('synthButtons')
+    redPaint.class('redButton')
 
     // BLUE PAINT
-    bluePaint = p.createButton('Triangle Synth (Blue)')
+    bluePaint = p.createButton('Triangle Synth')
     bluePaint.mousePressed(() => {
       color = 'blue'
     })
-    bluePaint.parent('buttonManifold')
+    bluePaint.parent('synthButtons')
+    bluePaint.class('blueButton')
 
     // BLACK PAINT
-    blackPaint = p.createButton('Sine Synth (Black)')
+    blackPaint = p.createButton('Sine Synth')
     blackPaint.mousePressed(() => {
       color = 'black'
     })
-    blackPaint.parent('buttonManifold')
+    blackPaint.parent('synthButtons')
+    blackPaint.class('blackButton')
 
     // ERASER
     eraser = p.createButton('Eraser')
     eraser.mousePressed(() => {
       color = 'eraser'
     })
-    eraser.parent('buttonManifold')
+    eraser.parent('audioButtons')
+    eraser.class('eraserButton')
 
     // PLAY AUDIO
     play = p.createButton('Play')
@@ -287,7 +290,8 @@ const PaletteSketch = p => {
         drums.loop()
       }
     })
-    play.parent('buttonManifold')
+    play.parent('audioButtons')
+    play.class('playButton')
 
     // STOP AUDIO
     stop = p.createButton('Stop')
@@ -297,14 +301,16 @@ const PaletteSketch = p => {
       synth2.stop()
       drums.stop()
     })
-    stop.parent('buttonManifold')
+    stop.parent('audioButtons')
+    stop.class('stopButton')
 
     // SAVE IMAGE
     let saveImage = p.createButton('Save Image')
     saveImage.mousePressed(() => {
       saveCanvasToFirebase(p, allBlackGrid, allRedGrid, allBlueGrid) // This saves to Firebase
     })
-    saveImage.parent('buttonManifold')
+    saveImage.parent('saveButtons')
+    saveImage.class('saveButton')
 
     // DOWNLOAD AUDIO
     download = p.createButton('Download')
@@ -324,7 +330,8 @@ const PaletteSketch = p => {
       downloading = true
       drums.loop()
     })
-    download.parent('buttonManifold')
+    download.parent('saveButtons')
+    download.class('downloadButton')
 
     // CLEAR PALETTE
     clearCanvas = p.createButton('Clear Palette')
@@ -332,15 +339,15 @@ const PaletteSketch = p => {
       p.resizeCanvas(width, height)
       p.background(255)
       p.fill(0)
-      drawGridLines();
+      drawGridLines()
       // Reset grid arrays for each color
-      allBlackGrid = generateColorArray();
-      allRedGrid = generateColorArray();
-      allBlueGrid = generateColorArray();
-      loadPaletteArrangement();
+      allBlackGrid = generateColorArray()
+      allRedGrid = generateColorArray()
+      allBlueGrid = generateColorArray()
+      loadPaletteArrangement()
     })
-    clearCanvas.parent('buttonManifold')
-    clearCanvas.class('button')
+    clearCanvas.parent('audioButtons')
+    clearCanvas.class('clearButton')
 
     // ------------------
     // LOAD PRESET CANVAS
@@ -398,7 +405,8 @@ const PaletteSketch = p => {
         p.firebase.loaded[p.firebase.loaded.length - 1].seq
     })
 
-    load.parent('buttonManifold')
+    load.parent('saveButtons')
+    load.class('loadButton')
   }
 
   /*
@@ -516,11 +524,11 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
   const generateColorArray = () => {
-    let array = [];
-    for(let i = 0; i < 16; i++) {
+    let array = []
+    for (let i = 0; i < 16; i++) {
       array.push([])
     }
-    return array;
+    return array
   }
 
   const drawGridLines = () => {
