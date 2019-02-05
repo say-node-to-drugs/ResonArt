@@ -142,14 +142,10 @@ const PaletteSketch = p => {
     [],
     []
   ]
-  let averageBlack = []
-  let averageBlue = []
-  let averageRed = []
   let recordArrayRed = []
   let recordArrayBlack = []
   let downloading = false
   let downloadCounter = 0
-  let singleLoopTime = 0
 
   // let width = p.windowWidth / 2 - 30;
   let width = p.windowWidth / 2 - 30
@@ -233,20 +229,26 @@ const PaletteSketch = p => {
       'synth3Sound',
       (time, value) => {
         setTimeout(() => {
+          console.log(downloadCounter)
           synth3.amp(value ? 0.3 : 0)
           synth3.freq(p.midiToFreq(value))
-          if (downloading && downloadCounter++ === 15) {
+
+          // Logic to stop playing after one loop if download was pressed
+          if(downloading) {
+            downloadCounter++;
+          }
+          if (downloading && downloadCounter >= 16) {
             // Stop instruments, part, and recorder
-            synth.stop()
-            synth2.stop()
-            synth3.stop()
+            isPlaying = false
+            fadeOutInstrument(synth)
+            fadeOutInstrument(synth2)
+            fadeOutInstrument(synth3)
             drums.stop()
-            recorder.stop()
+            recorder.stop();
 
             // Reset downloading flags
             downloadCounter = 0
             downloading = false
-            isPlaying = false
             // Save the audio file to the browser client and re-initialize the sound file
             p.saveSound(soundFile, 'myHorribleSound.wav')
             soundFile = new p5.SoundFile()
@@ -315,6 +317,7 @@ const PaletteSketch = p => {
       isPlaying = false
       synth.stop()
       synth2.stop()
+      synth3.stop()
       drums.stop()
     })
     stop.parent('buttonManifold')
@@ -330,6 +333,7 @@ const PaletteSketch = p => {
     download = p.createButton('Download')
     download.mousePressed(() => {
       isPlaying = true
+      downloading = true
       drums.metro.metroTicks = 0
       downloadCounter = 0
 
@@ -337,8 +341,7 @@ const PaletteSketch = p => {
       loadPaletteArrangement()
       recorder.record(soundFile)
       // Loops just once
-      downloading = true
-      drums.loop()
+      drums.start()
     })
     download.parent('buttonManifold')
 
@@ -475,7 +478,11 @@ const PaletteSketch = p => {
     synth2.start()
     synth3.start()
 
-    //drums = new p5.Part()
+    if(drums.getPhrase('synth1Sound')) {
+      drums.removePhrase('synth1Sound')
+      drums.removePhrase('synth2Sound')
+      drums.removePhrase('synth3Sound')
+    }
     drums.addPhrase(synth1Phrase)
     drums.addPhrase(synth2Phrase)
     drums.addPhrase(synth3Phrase)
