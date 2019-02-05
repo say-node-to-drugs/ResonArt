@@ -137,17 +137,25 @@ const DrumSketch = p => {
         p.ellipse(i * cellWidth + 0.5 * cellWidth, height * 5 / 6, 10, 10, 10)
       }
     }
+
+    if (drums.loadDrums) {
+      hPat = drums.phrases[0].sequence
+      cPat = drums.phrases[1].sequence
+      bPat = drums.phrases[2].sequence
+      sPat = drums.phrases[3].sequence
+      drums.loadDrums = false
+    }
   }
 
   p.sequence = (time, beatIndex) => {
     setTimeout(() => {
       // syncs up the timing so the beats and the playhead are in sync
       p.drawMatrix()
-      p.drawPlayhead(beatIndex)
+      p.drawMatrixPlayhead(beatIndex)
     }, time * 1000)
   }
 
-  p.drawPlayhead = beatIndex => {
+  p.drawMatrixPlayhead = beatIndex => {
     p.stroke('yellow')
     p.fill(255, 0, 0, 150)
     p.rect((beatIndex - 1) * cellWidth, 0, cellWidth, height)
