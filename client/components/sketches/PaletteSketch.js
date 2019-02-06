@@ -662,7 +662,7 @@ const PaletteSketch = p => {
         )
       }
     }
-  }
+  
 
   const mousePress = (x, y) => {
     if (isWithinBounds(x, y)) {
