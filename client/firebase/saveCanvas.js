@@ -25,9 +25,24 @@ export const saveCanvasToFirebase = (p, black, red, blue) => {
     let bass = arrayBaser(drums.phrases[2].sequence)
     let seq = arrayBaser(drums.phrases[3].sequence)
 
+    let saveCanvasFilename = prompt(
+      'Please enter the name of your canvas.',
+      'My Awesome Canvas!'
+    )
+
     p.saveFrames('canvas', 'png', 1, 1, function(im) {
       userCanvas.push({
-        canvasData: {dataURL: im[0], black, red, blue, hh, clap, bass, seq}
+        canvasData: {
+          filename: saveCanvasFilename,
+          dataURL: im[0],
+          black,
+          red,
+          blue,
+          hh,
+          clap,
+          bass,
+          seq
+        }
       })
     })
 

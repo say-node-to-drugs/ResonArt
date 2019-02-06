@@ -278,6 +278,14 @@ const PaletteSketch = p => {
         p.firebase.loaded[p.firebase.loaded.length - 1].bass
       drums.phrases[3].sequence =
         p.firebase.loaded[p.firebase.loaded.length - 1].seq
+
+      isPlaying = true
+      drums.metro.metroTicks = 0
+      synth.start()
+      synth2.start()
+      synth3.start()
+      loadPaletteArrangement()
+      drums.loop()
     })
 
     load.parent('saveButtons')
@@ -504,33 +512,35 @@ const PaletteSketch = p => {
       indexClicked--
     }
 
-    if (
-      color === 'black' &&
-      allBlackGrid[indexClicked].indexOf(rowClicked) === -1
-    ) {
-      allBlackGrid[indexClicked].push(rowClicked)
-    } else if (
-      color === 'red' &&
-      allRedGrid[indexClicked].indexOf(rowClicked) === -1
-    ) {
-      allRedGrid[indexClicked].push(rowClicked)
-    } else if (
-      color === 'blue' &&
-      allBlueGrid[indexClicked].indexOf(rowClicked) === -1
-    ) {
-      allBlueGrid[indexClicked].push(rowClicked)
-    } else if (color === 'eraser') {
-      allBlackGrid[indexClicked] = allBlackGrid[indexClicked].filter(
-        elem => elem > rowClicked + 1 && elem < rowClicked - 1
-      )
-      allRedGrid[indexClicked] = allRedGrid[indexClicked].filter(
-        elem => elem > rowClicked + 1 && elem < rowClicked - 1
-      )
-      allBlueGrid[indexClicked] = allBlueGrid[indexClicked].filter(
-        elem => elem > rowClicked + 1 && elem < rowClicked - 1
-      )
+      if (
+        color === 'black' &&
+        allBlackGrid[indexClicked].indexOf(rowClicked) === -1
+      ) {
+        console.log(allBlackGrid)
+        allBlackGrid[indexClicked].push(rowClicked)
+      } else if (
+        color === 'red' &&
+        allRedGrid[indexClicked].indexOf(rowClicked) === -1
+      ) {
+        allRedGrid[indexClicked].push(rowClicked)
+      } else if (
+        color === 'blue' &&
+        allBlueGrid[indexClicked].indexOf(rowClicked) === -1
+      ) {
+        allBlueGrid[indexClicked].push(rowClicked)
+      } else if (color === 'eraser') {
+        allBlackGrid[indexClicked] = allBlackGrid[indexClicked].filter(
+          elem => elem > rowClicked + 1 || elem < rowClicked - 1
+        )
+        allRedGrid[indexClicked] = allRedGrid[indexClicked].filter(
+          elem => elem > rowClicked + 1 || elem < rowClicked - 1
+        )
+        allBlueGrid[indexClicked] = allBlueGrid[indexClicked].filter(
+          elem => elem > rowClicked + 1 || elem < rowClicked - 1
+        )
+      }
     }
-  }
+  
 
   const mousePress = (x, y) => {
     if (isWithinBounds(x, y)) {
