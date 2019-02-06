@@ -1,4 +1,6 @@
+import React from 'react'
 import preloadBlankCanvas from './preloadBlankCanvas.js'
+import {SideNav} from '../components/SideNav.js'
 
 const fireObjectToArray = (fireObject, color) => {
   return fireObject.map(element => {
@@ -52,7 +54,9 @@ export const loadCanvasFromFirebase = p => {
           )
         }
         console.log('VALUE FROM LOAD COMPONENT: ', p.firebase.loaded)
-        return p.firebase.loaded
+      })
+      .then(() => {
+        document.getElementById('Sidenav').style.width = '250px'
       })
       .catch(error => {
         console.log(error)

@@ -1,6 +1,6 @@
 import React from 'react'
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
-import {Studio, Navbar} from './components'
+import {Studio, Navbar, SideNav} from './components'
 import {Login, CreateAccount} from './components/index'
 import {SignOutIndex} from './components/login-signup/SignOutIndex'
 import {AccountIndex} from './components/login-signup/AccountIndex'
@@ -13,6 +13,7 @@ const App = props => (
   <Router>
     <div className="app">
       <Navbar firebase={props.firebase} />
+      <SideNav firebase={props.firebase} />
       <Switch>
         {/* Routes placed here are available to all visitors */}
         <Route path="/account" component={AccountIndex} />

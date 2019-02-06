@@ -1,4 +1,5 @@
 import {drums} from '../components/sketches/DrumSketch'
+import toastr from 'toastr'
 
 const arrayBaser = array => {
   return array.map(element => {
@@ -45,6 +46,8 @@ export const saveCanvasToFirebase = (p, black, red, blue) => {
         }
       })
     })
+
+    toastr.info('Your file has been saved!')
 
     //------------------------------------------------------------------
     //THIS FUNCTION BELOW EXISTS ONLY FOR THE CONSOLE LOG, AND CAN EVENTUALLY BE REMOVED.
