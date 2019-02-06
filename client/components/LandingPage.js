@@ -5,8 +5,6 @@ import {withStyles, Typography, Paper} from '@material-ui/core'
 import { compose } from 'recompose';
 import PropTypes from 'prop-types'
 
-let example
-let loaded = false;
 const styles = theme => ({
   root: {
     width: 'auto',
@@ -32,7 +30,8 @@ const styles = theme => ({
 })
 
 const INITIAL_STATE = {
-  palettes: []
+  palettes: [],
+  loadPreset: false
 }
 
 class LandingPage extends Component {
@@ -42,9 +41,9 @@ class LandingPage extends Component {
   }
   async componentDidMount() {
     this.setState({
-      palettes: await loadCanvasFromFirebase(this.props.firebase)})
-    loaded = true;
+      palettes: await loadCanvasFirebase(this.props.firebase)})
   }
+
   render() {
     const {classes} = this.props
     console.log(this.state)
@@ -53,7 +52,11 @@ class LandingPage extends Component {
       return (
         <div>
           <Paper className={classes.paper}>
-            <Link to='/studio' {...this.props}>
+            <Link to='/studio' {...this.props} onClick={() => {
+              this.props.firebase.loaded[0].loadPreset = true;
+              console.log('in landing page component')
+              console.log(this.props.firebase.loaded[0])
+            }}>
               <img src={preset1} width='300px' height='200px'/>
               <Typography>{this.state.palettes[0].filename}</Typography>
             </Link>
@@ -67,7 +70,7 @@ class LandingPage extends Component {
 
 
 
-export const loadCanvasFromFirebase = async (firebase) => {
+export const loadCanvasFirebase = async (firebase) => {
     firebase.loaded = []
     let newObjectArray = []
 
