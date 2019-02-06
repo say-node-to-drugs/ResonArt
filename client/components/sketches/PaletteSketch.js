@@ -634,32 +634,33 @@ const PaletteSketch = p => {
       indexClicked--
     }
 
-    if (
-      color === 'black' &&
-      allBlackGrid[indexClicked].indexOf(rowClicked) === -1
-    ) {
-      console.log(allBlackGrid)
-      allBlackGrid[indexClicked].push(rowClicked)
-    } else if (
-      color === 'red' &&
-      allRedGrid[indexClicked].indexOf(rowClicked) === -1
-    ) {
-      allRedGrid[indexClicked].push(rowClicked)
-    } else if (
-      color === 'blue' &&
-      allBlueGrid[indexClicked].indexOf(rowClicked) === -1
-    ) {
-      allBlueGrid[indexClicked].push(rowClicked)
-    } else if (color === 'eraser') {
-      allBlackGrid[indexClicked] = allBlackGrid[indexClicked].filter(
-        elem => elem > rowClicked + 1 && elem < rowClicked - 1
-      )
-      allRedGrid[indexClicked] = allRedGrid[indexClicked].filter(
-        elem => elem > rowClicked + 1 && elem < rowClicked - 1
-      )
-      allBlueGrid[indexClicked] = allBlueGrid[indexClicked].filter(
-        elem => elem > rowClicked + 1 && elem < rowClicked - 1
-      )
+      if (
+        color === 'black' &&
+        allBlackGrid[indexClicked].indexOf(rowClicked) === -1
+      ) {
+        console.log(allBlackGrid)
+        allBlackGrid[indexClicked].push(rowClicked)
+      } else if (
+        color === 'red' &&
+        allRedGrid[indexClicked].indexOf(rowClicked) === -1
+      ) {
+        allRedGrid[indexClicked].push(rowClicked)
+      } else if (
+        color === 'blue' &&
+        allBlueGrid[indexClicked].indexOf(rowClicked) === -1
+      ) {
+        allBlueGrid[indexClicked].push(rowClicked)
+      } else if (color === 'eraser') {
+        allBlackGrid[indexClicked] = allBlackGrid[indexClicked].filter(
+          elem => elem > rowClicked + 1 || elem < rowClicked - 1
+        )
+        allRedGrid[indexClicked] = allRedGrid[indexClicked].filter(
+          elem => elem > rowClicked + 1 || elem < rowClicked - 1
+        )
+        allBlueGrid[indexClicked] = allBlueGrid[indexClicked].filter(
+          elem => elem > rowClicked + 1 || elem < rowClicked - 1
+        )
+      }
     }
   }
 
