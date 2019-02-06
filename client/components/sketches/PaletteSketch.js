@@ -403,14 +403,6 @@ const PaletteSketch = p => {
         p.firebase.loaded[p.firebase.loaded.length - 1].bass
       drums.phrases[3].sequence =
         p.firebase.loaded[p.firebase.loaded.length - 1].seq
-
-      isPlaying = true
-      drums.metro.metroTicks = 0
-      synth.start()
-      synth2.start()
-      synth3.start()
-      loadPaletteArrangement()
-      drums.loop()
     })
 
     load.parent('saveButtons')
