@@ -1,8 +1,8 @@
 import React from 'react'
-import {DrumSketch, drums} from './sketches/DrumSketch'
+import {DrumSketch} from './sketches/DrumSketch'
 import PaletteSketch from './sketches/PaletteSketch'
 import PropTypes from 'prop-types'
-import {withStyles, Button, Paper, Grid} from '@material-ui/core'
+import {withStyles, Grid} from '@material-ui/core'
 
 let styles = () => ({
   root: {
@@ -16,7 +16,7 @@ class Studio extends React.Component {
   constructor(props) {
     super(props)
     this.state = {}
-    this.startRecord = React.createRef()
+    this.bpm = React.createRef()
   }
   componentDidMount() {
     this.drum = new window.p5(DrumSketch, 'drumP5Wrapper')
@@ -25,7 +25,6 @@ class Studio extends React.Component {
   }
 
   render() {
-    console.log(drums)
     const {classes} = this.props
     var appUser = this.props.firebase.auth.currentUser
     return (
@@ -42,9 +41,9 @@ class Studio extends React.Component {
             className="buttonManifold"
             spacing={16}
           >
-            <Grid item id="synthButtons" className="synthButtons" />
-            <Grid item id="audioButtons" className="audioButtons" />
-            <Grid item id="saveButtons" className="saveButtons" />
+            <Grid item sm={4} id="synthButtons" className="synthButtons" />
+            <Grid item sm={4} id="audioButtons" className="audioButtons" />
+            <Grid item sm={4} id="saveButtons" className="saveButtons" />
           </Grid>
         </Grid>
       </Grid>

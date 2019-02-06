@@ -10,60 +10,9 @@ const PaletteSketch = p => {
   let color = 'black'
   let synth1Phrase, synth2Phrase, synth3Phrase
   let isPlaying = false
-  let synth1Pattern = [
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined
-  ]
-  let synth2Pattern = [
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined
-  ]
-  let synth3Pattern = [
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined
-  ]
+  let synth1Pattern = new Array(16).fill(undefined)
+  let synth2Pattern = new Array(16).fill(undefined)
+  let synth3Pattern = new Array(16).fill(undefined)
   let synth1Sound, synth2Sound, synth3Sound
   const notes = [
     38,
@@ -88,60 +37,10 @@ const PaletteSketch = p => {
     71
   ]
   let scaleDifference = notes[notes.length - 1] - notes[0]
-  let allBlackGrid = [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    []
-  ]
-  let allRedGrid = [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    []
-  ]
-  let allBlueGrid = [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    []
-  ]
+  let allBlackGrid = new Array(16).fill([])
+  let allRedGrid = new Array(16).fill([])
+  let allBlueGrid = new Array(16).fill([])
+
   let averageBlack = []
   let averageBlue = []
   let averageRed = []
@@ -156,15 +55,7 @@ const PaletteSketch = p => {
   let height = p.windowHeight * (4 / 10)
 
   // buttons
-  let redPaint,
-    bluePaint,
-    blackPaint,
-    play,
-    stop,
-    download,
-    clearCanvas,
-    load,
-    eraser
+  let play, stop, download, clearCanvas, load, eraser, radio
 
   p.preload = () => {
     synth1Sound = new p5.SoundFile()
@@ -173,8 +64,6 @@ const PaletteSketch = p => {
   }
 
   p.setup = () => {
-    p.userStartAudio()
-
     // Create our canvas
     canvas = p.createCanvas(width, height)
     canvas.parent('sketchPad')
@@ -245,29 +134,15 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
 
-    // RED PAINT
-    redPaint = p.createButton('Sawtooth Synth')
-    redPaint.mousePressed(() => {
-      color = 'red'
-    })
-    redPaint.parent('synthButtons')
-    redPaint.class('redButton')
+    // RADIO FOR COLOR SELECT BUTTONS
+    radio = p.createRadio('colorRadio')
+    radio.parent('synthButtons')
+    radio.class('radio')
 
-    // BLUE PAINT
-    bluePaint = p.createButton('Triangle Synth')
-    bluePaint.mousePressed(() => {
-      color = 'blue'
-    })
-    bluePaint.parent('synthButtons')
-    bluePaint.class('blueButton')
-
-    // BLACK PAINT
-    blackPaint = p.createButton('Sine Synth')
-    blackPaint.mousePressed(() => {
-      color = 'black'
-    })
-    blackPaint.parent('synthButtons')
-    blackPaint.class('blackButton')
+    radio.option('Sawtooth', 'red')
+    radio.option('Triangle', 'blue')
+    radio.option('Sine', 'black')
+    radio.value('black')
 
     // ERASER
     eraser = p.createButton('Eraser')
@@ -305,7 +180,7 @@ const PaletteSketch = p => {
     stop.class('stopButton')
 
     // SAVE IMAGE
-    let saveImage = p.createButton('Save Image')
+    let saveImage = p.createButton('Save Canvas')
     saveImage.mousePressed(() => {
       saveCanvasToFirebase(p, allBlackGrid, allRedGrid, allBlueGrid) // This saves to Firebase
     })
@@ -334,7 +209,7 @@ const PaletteSketch = p => {
     download.class('downloadButton')
 
     // CLEAR PALETTE
-    clearCanvas = p.createButton('Clear Palette')
+    clearCanvas = p.createButton('Clear Canvas')
     clearCanvas.mousePressed(() => {
       p.resizeCanvas(width, height)
       p.background(255)
@@ -352,7 +227,7 @@ const PaletteSketch = p => {
     // ------------------
     // LOAD PRESET CANVAS
     // ------------------
-    load = p.createButton('Load Preset Image')
+    load = p.createButton('Load Canvas')
     load.mousePressed(async () => {
       // This pulls a saved canvas from firebase
 
@@ -421,10 +296,9 @@ const PaletteSketch = p => {
     p.saveFrames('canvas', 'png', 1, 1, function(im) {
       p.resizeCanvas(width, height)
       p.loadImage(im[0].imageData, img => {
-          img.resize(width, height)
-          p.image(img, 0, 0)
-        }
-      )
+        img.resize(width, height)
+        p.image(img, 0, 0)
+      })
     })
   }
 
@@ -446,6 +320,9 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
   p.draw = () => {
+    // Sets color according to radio button value
+    color = radio.value()
+
     // Set previous mouse position correctly if starting a new line
     if (prevX === 0) {
       prevX = p.mouseX
@@ -619,78 +496,77 @@ const PaletteSketch = p => {
   }
 
   const mouseDrag = (x, y) => {
-      // Calculate (x, y) value of the grid cell being dragged over
-      let rowClicked = 20 - p.floor(21 * (y / p.height))
-      let indexClicked = p.floor(16 * x / p.width)
+    // Calculate (x, y) value of the grid cell being dragged over
+    let rowClicked = 20 - p.floor(21 * (y / p.height))
+    let indexClicked = p.floor(16 * x / p.width)
 
-      if (indexClicked === 16) {
-        indexClicked--
-      }
-
-      if (
-        color === 'black' &&
-        allBlackGrid[indexClicked].indexOf(rowClicked) === -1
-      ) {
-        console.log(allBlackGrid)
-        allBlackGrid[indexClicked].push(rowClicked)
-      } else if (
-        color === 'red' &&
-        allRedGrid[indexClicked].indexOf(rowClicked) === -1
-      ) {
-        allRedGrid[indexClicked].push(rowClicked)
-      } else if (
-        color === 'blue' &&
-        allBlueGrid[indexClicked].indexOf(rowClicked) === -1
-      ) {
-        allBlueGrid[indexClicked].push(rowClicked)
-      } else if (color === 'eraser') {
-        allBlackGrid[indexClicked] = allBlackGrid[indexClicked].filter(
-          elem => elem > rowClicked + 1 && elem < rowClicked - 1
-        )
-        allRedGrid[indexClicked] = allRedGrid[indexClicked].filter(
-          elem => elem > rowClicked + 1 && elem < rowClicked - 1
-        )
-        allBlueGrid[indexClicked] = allBlueGrid[indexClicked].filter(
-          elem => elem > rowClicked + 1 && elem < rowClicked - 1
-        )
-      }
+    if (indexClicked === 16) {
+      indexClicked--
     }
 
-  const mousePress = (x, y) => {
-      if (isWithinBounds(x, y)) {
-        // Begin playing the correct synth
-        if (color === 'black') {
-          synth.start()
-        } else if (color === 'red') {
-          synth2.start()
-        } else if (color === 'blue') {
-          synth3.start()
-        }
-        mouseDrag(x, y)
-        // Set state to 1 so the draw() function knows to make lines and produce audio
-        state++
-        // Reset the previous mouse position
-        prevX = 0
-        prevY = 0
-      } else {
-        state = 0
-        synth.amp(0)
-        synth2.amp(0)
-        synth3.amp(0)
-      }
-    }
-
-  const mouseRelease = () => {
-      if (color === 'black' && isPlaying===false) {
-        fadeOutInstrument(synth)
-      } else if (color === 'red' && isPlaying===false) {
-        fadeOutInstrument(synth2)
-      } else if (color === 'blue' && isPlaying===false) {
-        fadeOutInstrument(synth3)
-      }
-      state = 0
+    if (
+      color === 'black' &&
+      allBlackGrid[indexClicked].indexOf(rowClicked) === -1
+    ) {
+      allBlackGrid[indexClicked].push(rowClicked)
+    } else if (
+      color === 'red' &&
+      allRedGrid[indexClicked].indexOf(rowClicked) === -1
+    ) {
+      allRedGrid[indexClicked].push(rowClicked)
+    } else if (
+      color === 'blue' &&
+      allBlueGrid[indexClicked].indexOf(rowClicked) === -1
+    ) {
+      allBlueGrid[indexClicked].push(rowClicked)
+    } else if (color === 'eraser') {
+      allBlackGrid[indexClicked] = allBlackGrid[indexClicked].filter(
+        elem => elem > rowClicked + 1 && elem < rowClicked - 1
+      )
+      allRedGrid[indexClicked] = allRedGrid[indexClicked].filter(
+        elem => elem > rowClicked + 1 && elem < rowClicked - 1
+      )
+      allBlueGrid[indexClicked] = allBlueGrid[indexClicked].filter(
+        elem => elem > rowClicked + 1 && elem < rowClicked - 1
+      )
     }
   }
+
+  const mousePress = (x, y) => {
+    if (isWithinBounds(x, y)) {
+      // Begin playing the correct synth
+      if (color === 'black') {
+        synth.start()
+      } else if (color === 'red') {
+        synth2.start()
+      } else if (color === 'blue') {
+        synth3.start()
+      }
+      mouseDrag(x, y)
+      // Set state to 1 so the draw() function knows to make lines and produce audio
+      state++
+      // Reset the previous mouse position
+      prevX = 0
+      prevY = 0
+    } else {
+      state = 0
+      synth.amp(0)
+      synth2.amp(0)
+      synth3.amp(0)
+    }
+  }
+
+  const mouseRelease = () => {
+    if (color === 'black' && isPlaying === false) {
+      fadeOutInstrument(synth)
+    } else if (color === 'red' && isPlaying === false) {
+      fadeOutInstrument(synth2)
+    } else if (color === 'blue' && isPlaying === false) {
+      fadeOutInstrument(synth3)
+    }
+    state = 0
+  }
+}
 //_______________WILL BE USED LATER________________________________________
 //
 // function LZcompressed(array) {

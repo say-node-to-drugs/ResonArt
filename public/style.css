@@ -69,21 +69,56 @@ form div {
   box-shadow: 0 4px 8px 0 grey, 0 6px 20px 0 grey;
 }
 
+.synthButtons {
+  display: flex;
+  align-items: center;
+}
+
+.audioButtons {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.saveButtons {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.radio {
+  display: flex;
+  justify-content: space-evenly;
+  width: 90%;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
 /* buttons */
 .redButton {
-  background: transparent;
+  /* background: transparent;
   border: 1px solid white;
   border-radius: 10px;
-  color: white;
+  color: red;
   height: 36px;
   margin: 10px;
+  font-size: 15px; */
+  color: red;
 }
+
+/* .redButton:target {
+  background: white;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: red;
+  height: 36px;
+  margin: 10px;
+  font-size: 15px;
+} */
 
 .blueButton {
   background: transparent;
   border: 1px solid white;
   border-radius: 10px;
-  color: white;
+  color: blue;
   height: 36px;
   margin: 10px;
 }
@@ -92,7 +127,7 @@ form div {
   background: transparent;
   border: 1px solid white;
   border-radius: 10px;
-  color: white;
+  color: black;
   height: 36px;
   margin: 10px;
 }
@@ -101,7 +136,7 @@ form div {
   background: transparent;
   border: 1px solid white;
   border-radius: 10px;
-  color: white;
+  color: #5c374c;
   height: 36px;
   margin: 10px;
 }
@@ -110,7 +145,7 @@ form div {
   background: transparent;
   border: 1px solid white;
   border-radius: 10px;
-  color: white;
+  color: green;
   height: 36px;
   margin: 10px;
 }
@@ -119,7 +154,7 @@ form div {
   background: transparent;
   border: 1px solid white;
   border-radius: 10px;
-  color: white;
+  color: red;
   height: 36px;
   margin: 10px;
 }
@@ -137,7 +172,7 @@ form div {
   background: transparent;
   border: 1px solid white;
   border-radius: 10px;
-  color: white;
+  color: #985277;
   height: 36px;
   margin: 10px;
 }
@@ -155,7 +190,7 @@ form div {
   background: transparent;
   border: 1px solid white;
   border-radius: 10px;
-  color: white;
+  color: #ce6a85;
   height: 36px;
   margin: 10px;
 }
