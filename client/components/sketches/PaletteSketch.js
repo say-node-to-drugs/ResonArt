@@ -1,6 +1,7 @@
 import {drums} from './DrumSketch'
 import {saveCanvasToFirebase} from '../../firebase/saveCanvas.js'
 import {loadCanvasFromFirebase} from '../../firebase/loadCanvas.js'
+import {loadCanvasFirebase} from '../LandingPage.js'
 
 const PaletteSketch = p => {
   let recorder, soundFile, canvas
@@ -10,9 +11,7 @@ const PaletteSketch = p => {
   let color = 'black'
   let synth1Phrase, synth2Phrase, synth3Phrase
   let isPlaying = false
-  let synth1Pattern = new Array(16).fill(undefined)
-  let synth2Pattern = new Array(16).fill(undefined)
-  let synth3Pattern = new Array(16).fill(undefined)
+  let synth1Pattern, synth2Pattern, synth3Pattern
   let synth1Sound, synth2Sound, synth3Sound
   const notes = [
     38,
@@ -37,18 +36,9 @@ const PaletteSketch = p => {
     71
   ]
   let scaleDifference = notes[notes.length - 1] - notes[0]
-  let allBlackGrid = new Array(16).fill([])
-  let allRedGrid = new Array(16).fill([])
-  let allBlueGrid = new Array(16).fill([])
-
-  let averageBlack = []
-  let averageBlue = []
-  let averageRed = []
-  let recordArrayRed = []
-  let recordArrayBlack = []
+  let allBlackGrid, allRedGrid, allBlueGrid
   let downloading = false
   let downloadCounter = 0
-  let singleLoopTime = 0
 
   // let width = p.windowWidth / 2 - 30;
   let width = p.windowWidth / 2 - 30
@@ -61,19 +51,34 @@ const PaletteSketch = p => {
     synth1Sound = new p5.SoundFile()
     synth2Sound = new p5.SoundFile()
     synth3Sound = new p5.SoundFile()
+
+    allBlackGrid = generateColorArray()
+    allRedGrid = generateColorArray()
+    allBlueGrid = generateColorArray()
+
+    synth1Pattern = generateSynthPattern();
+    synth2Pattern = generateSynthPattern();
+    synth3Pattern = generateSynthPattern();
   }
 
   p.setup = () => {
+    console.log('in palette sketch')
+    console.log(p)
     // Create our canvas
+
+    //loadPresetPalette();
+
     canvas = p.createCanvas(width, height)
     canvas.parent('sketchPad')
     canvas.style('display', 'block')
     canvas.class('palette')
 
+  
     p.background(255)
     p.fill(0)
     drawGridLines()
     p.strokeWeight(10)
+    
 
     // Create instruments
     synth = new p5.Oscillator()
@@ -230,6 +235,9 @@ const PaletteSketch = p => {
     load = p.createButton('Load Canvas')
     load.mousePressed(async () => {
       // This pulls a saved canvas from firebase
+
+      console.log('IN LOAD PRESET BUTTON')
+      console.log(p.firebase)
 
       await loadCanvasFromFirebase(p)
 
@@ -416,6 +424,14 @@ const PaletteSketch = p => {
     return array
   }
 
+  const generateSynthPattern = () => {
+    let array = []
+    for (let i = 0; i < 16; i++) {
+      array.push(undefined)
+    }
+    return array
+  }
+
   const drawGridLines = () => {
     // Draw grid lines
     for (let x = 0; x < width; x += width / 16) {
@@ -533,6 +549,12 @@ const PaletteSketch = p => {
       }
     }
   
+  const loadPresetPalette = async () => {
+    if(p.firebase.loaded[0].loadPreset) {
+      let preset = await loadCanvasFirebase(p.firebase)
+      console.log(preset)
+    }
+  }
 
   const mousePress = (x, y) => {
     if (isWithinBounds(x, y)) {
