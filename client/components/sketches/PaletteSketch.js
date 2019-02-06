@@ -645,13 +645,13 @@ const PaletteSketch = p => {
         allBlueGrid[indexClicked].push(rowClicked)
       } else if (color === 'eraser') {
         allBlackGrid[indexClicked] = allBlackGrid[indexClicked].filter(
-          elem => elem > rowClicked + 1 && elem < rowClicked - 1
+          elem => elem > rowClicked + 1 || elem < rowClicked - 1
         )
         allRedGrid[indexClicked] = allRedGrid[indexClicked].filter(
-          elem => elem > rowClicked + 1 && elem < rowClicked - 1
+          elem => elem > rowClicked + 1 || elem < rowClicked - 1
         )
         allBlueGrid[indexClicked] = allBlueGrid[indexClicked].filter(
-          elem => elem > rowClicked + 1 && elem < rowClicked - 1
+          elem => elem > rowClicked + 1 || elem < rowClicked - 1
         )
       }
     }
