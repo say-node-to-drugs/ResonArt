@@ -403,6 +403,14 @@ const PaletteSketch = p => {
         p.firebase.loaded[p.firebase.loaded.length - 1].bass
       drums.phrases[3].sequence =
         p.firebase.loaded[p.firebase.loaded.length - 1].seq
+
+      isPlaying = true
+      drums.metro.metroTicks = 0
+      synth.start()
+      synth2.start()
+      synth3.start()
+      loadPaletteArrangement()
+      drums.loop()
     })
 
     load.parent('saveButtons')
@@ -421,10 +429,9 @@ const PaletteSketch = p => {
     p.saveFrames('canvas', 'png', 1, 1, function(im) {
       p.resizeCanvas(width, height)
       p.loadImage(im[0].imageData, img => {
-          img.resize(width, height)
-          p.image(img, 0, 0)
-        }
-      )
+        img.resize(width, height)
+        p.image(img, 0, 0)
+      })
     })
   }
 
@@ -619,13 +626,13 @@ const PaletteSketch = p => {
   }
 
   const mouseDrag = (x, y) => {
-      // Calculate (x, y) value of the grid cell being dragged over
-      let rowClicked = 20 - p.floor(21 * (y / p.height))
-      let indexClicked = p.floor(16 * x / p.width)
+    // Calculate (x, y) value of the grid cell being dragged over
+    let rowClicked = 20 - p.floor(21 * (y / p.height))
+    let indexClicked = p.floor(16 * x / p.width)
 
-      if (indexClicked === 16) {
-        indexClicked--
-      }
+    if (indexClicked === 16) {
+      indexClicked--
+    }
 
       if (
         color === 'black' &&
@@ -655,42 +662,43 @@ const PaletteSketch = p => {
         )
       }
     }
+  }
 
   const mousePress = (x, y) => {
-      if (isWithinBounds(x, y)) {
-        // Begin playing the correct synth
-        if (color === 'black') {
-          synth.start()
-        } else if (color === 'red') {
-          synth2.start()
-        } else if (color === 'blue') {
-          synth3.start()
-        }
-        mouseDrag(x, y)
-        // Set state to 1 so the draw() function knows to make lines and produce audio
-        state++
-        // Reset the previous mouse position
-        prevX = 0
-        prevY = 0
-      } else {
-        state = 0
-        synth.amp(0)
-        synth2.amp(0)
-        synth3.amp(0)
+    if (isWithinBounds(x, y)) {
+      // Begin playing the correct synth
+      if (color === 'black') {
+        synth.start()
+      } else if (color === 'red') {
+        synth2.start()
+      } else if (color === 'blue') {
+        synth3.start()
       }
-    }
-
-  const mouseRelease = () => {
-      if (color === 'black' && isPlaying===false) {
-        fadeOutInstrument(synth)
-      } else if (color === 'red' && isPlaying===false) {
-        fadeOutInstrument(synth2)
-      } else if (color === 'blue' && isPlaying===false) {
-        fadeOutInstrument(synth3)
-      }
+      mouseDrag(x, y)
+      // Set state to 1 so the draw() function knows to make lines and produce audio
+      state++
+      // Reset the previous mouse position
+      prevX = 0
+      prevY = 0
+    } else {
       state = 0
+      synth.amp(0)
+      synth2.amp(0)
+      synth3.amp(0)
     }
   }
+
+  const mouseRelease = () => {
+    if (color === 'black' && isPlaying === false) {
+      fadeOutInstrument(synth)
+    } else if (color === 'red' && isPlaying === false) {
+      fadeOutInstrument(synth2)
+    } else if (color === 'blue' && isPlaying === false) {
+      fadeOutInstrument(synth3)
+    }
+    state = 0
+  }
+}
 //_______________WILL BE USED LATER________________________________________
 //
 // function LZcompressed(array) {
