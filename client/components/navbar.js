@@ -26,8 +26,8 @@ const theme = createMuiTheme({
       text: {
         // Some CSS
         background: 'transparent',
-        borderRadius: 3,
-        border: '2px solid white',
+        borderRadius: 10,
+        border: '1px solid white',
         color: 'white',
         height: 48,
         padding: '0 10px'

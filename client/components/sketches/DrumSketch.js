@@ -1,4 +1,6 @@
 let drums = new p5.Part()
+let bpmCTRL
+let hPat, cPat, bPat, sPat
 
 const DrumSketch = p => {
   // Set height and width of canvas
@@ -13,10 +15,8 @@ const DrumSketch = p => {
   let hh
   let clap
   let bass
-  let hPat, cPat, bPat, sPat
+
   let hPhrase, cPhrase, bPhrase
-  let bpmCTRL
-  let bpmValue
 
   p.preload = () => {
     hh = p.loadSound('drumSamples/hh_sample.mp3', () => {})
@@ -26,8 +26,6 @@ const DrumSketch = p => {
 
   // Setup function
   p.setup = () => {
-    p.userStartAudio()
-
     canvas = p.createCanvas(width, height)
     canvas.parent('drumMachine')
     canvas.mousePressed(p.canvasPressed)
@@ -66,7 +64,7 @@ const DrumSketch = p => {
     drums.addPhrase(bPhrase)
     drums.addPhrase('seq', p.sequence, sPat)
 
-    bpmCTRL = p.createSlider(30, 200, 80, 1)
+    bpmCTRL = p.createSlider(30, 150, 80, 1)
     bpmCTRL.input(() => {
       drums.setBPM(bpmCTRL.value())
     })
@@ -83,11 +81,6 @@ const DrumSketch = p => {
     cellWidth = width / beatLength
     p.resizeCanvas(width, height)
     p.drawMatrix()
-  }
-
-  p.bpmValue = () => {
-    p.fill(0)
-    p.text('ichi', 100, 100)
   }
 
   p.canvasPressed = () => {
@@ -110,7 +103,6 @@ const DrumSketch = p => {
 
   // Draw function
   p.drawMatrix = () => {
-    p.bpmValue()
     p.background('#FF8C61')
     p.stroke('#5C374C')
     p.strokeWeight(4)
