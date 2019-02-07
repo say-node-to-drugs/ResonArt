@@ -94,8 +94,8 @@ const CanvasRender = ({classes, props}) => {
                 to="/studio"
                 {...props}
                 onClick={() => {
-                  singleCanvas.loadPreset = true
                   props.firebase.loaded.selectedNumber = index
+                  props.firebase.loadPreset = singleCanvas
                   singleCanvas.black = fireObjectToArray(
                     singleCanvas.black,
                     'black'
