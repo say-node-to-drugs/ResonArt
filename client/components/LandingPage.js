@@ -54,8 +54,6 @@ class LandingPage extends Component {
           <Paper className={classes.paper}>
             <Link to='/studio' {...this.props} onClick={() => {
               this.props.firebase.loaded[0].loadPreset = true;
-              console.log('in landing page component')
-              console.log(this.props.firebase.loaded[0])
             }}>
               <img src={preset1} width='300px' height='200px'/>
               <Typography>{this.state.palettes[0].filename}</Typography>
