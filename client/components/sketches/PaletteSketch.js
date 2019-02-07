@@ -224,6 +224,14 @@ const PaletteSketch = p => {
 
       await loadCanvasFromFirebase(p)
 
+      /*  THIS WILL EVENTUALLY REPLACE ALL THE OTHER LOGIC IN THIS BUTTON
+
+    function greet() {
+      window.location.href = '/account'
+    }
+    load.mousePressed(greet)
+    --------------------------------------------------------------------*/
+
       console.log('GET VALUE FROM BUTTON PRESSED: ', p.firebase.loaded)
       console.log(
         'GET LATEST VALUE FROM BUTTON PRESSED: ',
