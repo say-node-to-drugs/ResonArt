@@ -106,7 +106,7 @@ function Navigation(props) {
             </Button>
             <Button className={classes.button} component={Link} to="/signin">
               Login
-            </Button>{' '}
+            </Button>
             <Button className={classes.button} component={Link} to="/signup">
               Sign Up
             </Button>

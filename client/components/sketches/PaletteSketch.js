@@ -1,6 +1,5 @@
 import {DrumSketch, drums} from './DrumSketch'
 import {saveCanvasToFirebase} from '../../firebase/saveCanvas.js'
-import {loadCanvasFromFirebase} from '../../firebase/loadCanvas.js'
 import toastr from 'toastr'
 import {loadCanvasFirebase} from '../LandingPage.js'
 
@@ -270,13 +269,13 @@ const PaletteSketch = p => {
   p.draw = async () => {
     // Sets color according to radio button value
     color = radio.value()
-    
+
     // Set previous mouse position correctly if starting a new line
     if (prevX === 0) {
       prevX = p.mouseX
       prevY = p.mouseY
     }
-    
+
     if (drawState) {
       // Gives us a value between 30 and  80 (good audible frequencies)
       if (isWithinBounds(p.mouseX, p.mouseY)) {
@@ -300,7 +299,7 @@ const PaletteSketch = p => {
     }
     loadPaletteArrangement()
   }
-  
+
   /*
   ----------------------------------------------------------
                      Key Press Handler
@@ -497,9 +496,6 @@ const PaletteSketch = p => {
   }
 
   const loadPresetPalette = async preset => {
-    console.log("YEEEEAAAAAHHHH BOIIIIII")
-    console.log(preset)
-
     drums.loadDrums = preset.loadDrums
     p.loadImage(preset.dataURL.imageData, img => {
       img.resize(width, height)
@@ -509,18 +505,13 @@ const PaletteSketch = p => {
     allRedGrid = preset.red
     allBlueGrid = preset.blue
 
-    if (drums.getPhrase('hh')) {
-      drums.removePhrase('hh')
-      drums.removePhrase('clap')
-      drums.removePhrase('bass')
-      drums.removePhrase('seq')
-    }
-    drums.addPhrase('hh', (time) => {hh.play(time)}, preset.hh)
-    drums.addPhrase('clap', (time) => {clap.play(time)}, preset.clap)
-    drums.addPhrase('bass', (time) => {bass.play(time)}, preset.bass)
-    drums.addPhrase('seq', (time) => {p.sequence}, preset.seq)
+    hPhrase.sequence = preset.hh
+    cPhrase.sequence = preset.clap
+    bPhrase.sequence = preset.bass
 
-    console.log(drums)
+    updatePatterns(preset.hh, preset.clap, preset.bass)
+
+    console.log(drums.phrases)
 
     doneLoadingPreset = true
   }

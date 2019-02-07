@@ -8,6 +8,11 @@ import {PasswordForgetForm} from './PasswordForget.js'
 import PasswordChangeForm from './PasswordChange.js'
 import {withAuthorization} from '../login-signup/withAuthorization.js'
 import {AuthUserContext} from '../login-signup/SessionContext.js'
+import toastr from 'toastr'
+
+toastr.options = {
+  timeOut: 2000
+}
 
 const styles = theme => ({
   root: {
@@ -78,7 +83,7 @@ export const loadCanvasFirebase = async firebase => {
       return firebase.loaded
     })
     .catch(error => {
-      console.log(error)
+      toastr.error(error)
     })
 }
 
