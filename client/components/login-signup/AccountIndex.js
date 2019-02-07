@@ -20,14 +20,22 @@ const styles = theme => ({
     }
   },
   paper: {
-    width: 80,
-    marginTop: theme.spacing.unit * 8,
+    width: 60,
+    height: 110,
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-      .spacing.unit * 3}px`
+      .spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+    margin: `${theme.spacing.unit}px`
+  },
+  accountContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    paddingTop: 'inherit',
+    margin: `${theme.spacing.unit * 3}px`
   }
 })
 
@@ -75,7 +83,7 @@ export const loadCanvasFirebase = async firebase => {
 
 const CanvasRender = ({classes, props, state, preset}) => {
   return (
-    <div>
+    <div className={classes.accountContainer}>
       {props.firebase.loaded.map((singleCanvas, index) => {
         return (
           <div key={'CNV' + index}>
@@ -102,9 +110,11 @@ const CanvasRender = ({classes, props, state, preset}) => {
                 <img
                   src={singleCanvas.dataURL.imageData}
                   width="80px"
-                  height="80px"
+                  height="60px"
                 />
-                <Typography>{singleCanvas.filename}</Typography>
+                <Typography>
+                  <h6>{singleCanvas.filename}</h6>
+                </Typography>
               </Link>
             </Paper>
           </div>
