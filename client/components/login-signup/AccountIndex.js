@@ -31,7 +31,7 @@ const styles = theme => ({
   }
 })
 
-const fireObjectToArray = (fireObject, color) => {
+const fireObjectToArray = fireObject => {
   return fireObject.map(element => {
     let newArray = []
     for (let key in element) {
@@ -42,15 +42,13 @@ const fireObjectToArray = (fireObject, color) => {
       }
       newArray.push(element[key])
     }
-    return newArray
+    return element.flat()
   })
 }
 
 export const loadCanvasFirebase = async firebase => {
   firebase.loaded = []
   let newObjectArray = []
-
-  console.log('USER: ', firebase.auth.currentUser)
 
   const userCanvas = firebase
     .user(firebase.auth.currentUser.uid)
@@ -68,7 +66,6 @@ export const loadCanvasFirebase = async firebase => {
       for (let i = 0; i < newObjectArray.length; i++) {
         firebase.loaded.push(newObjectArray[i].canvasData)
       }
-      console.log('VALUE FROM LOAD COMPONENT: ', firebase.loaded)
       return firebase.loaded
     })
     .catch(error => {
@@ -98,7 +95,8 @@ const CanvasRender = ({classes, props, state, preset}) => {
                     'blue'
                   )
                   singleCanvas.red = fireObjectToArray(singleCanvas.red, 'red')
-                  console.log(singleCanvas)
+
+                  console.log('SELECTED CANVAS DATA: ', singleCanvas)
                 }}
               >
                 <img
