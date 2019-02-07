@@ -1,20 +1,20 @@
-import {drums} from './DrumSketch'
+import {DrumSketch, drums} from './DrumSketch'
 import {saveCanvasToFirebase} from '../../firebase/saveCanvas.js'
 import {loadCanvasFromFirebase} from '../../firebase/loadCanvas.js'
 import toastr from 'toastr'
+import {loadCanvasFirebase} from '../LandingPage.js'
 
 const PaletteSketch = p => {
   let recorder, soundFile, canvas
   let prevX, prevY
-  let state = 0
+  let drawState = 0
   let synth, synth2, synth3
   let color = 'black'
   let synth1Phrase, synth2Phrase, synth3Phrase
   let isPlaying = false
-  let synth1Pattern = new Array(16).fill(undefined)
-  let synth2Pattern = new Array(16).fill(undefined)
-  let synth3Pattern = new Array(16).fill(undefined)
+  let synth1Pattern, synth2Pattern, synth3Pattern
   let synth1Sound, synth2Sound, synth3Sound
+  let doneLoadingPreset = false
   const notes = [
     38,
     40,
@@ -38,18 +38,9 @@ const PaletteSketch = p => {
     71
   ]
   let scaleDifference = notes[notes.length - 1] - notes[0]
-  let allBlackGrid = new Array(16).fill([])
-  let allRedGrid = new Array(16).fill([])
-  let allBlueGrid = new Array(16).fill([])
-
-  let averageBlack = []
-  let averageBlue = []
-  let averageRed = []
-  let recordArrayRed = []
-  let recordArrayBlack = []
+  let allBlackGrid, allRedGrid, allBlueGrid
   let downloading = false
   let downloadCounter = 0
-  let singleLoopTime = 0
 
   // let width = p.windowWidth / 2 - 30;
   let width = p.windowWidth / 2 - 30
@@ -62,10 +53,17 @@ const PaletteSketch = p => {
     synth1Sound = new p5.SoundFile()
     synth2Sound = new p5.SoundFile()
     synth3Sound = new p5.SoundFile()
+
+    allBlackGrid = generateColorArray()
+    allRedGrid = generateColorArray()
+    allBlueGrid = generateColorArray()
+
+    synth1Pattern = generateSynthPattern()
+    synth2Pattern = generateSynthPattern()
+    synth3Pattern = generateSynthPattern()
   }
 
   p.setup = () => {
-    // Create our canvas
     canvas = p.createCanvas(width, height)
     canvas.parent('sketchPad')
     canvas.style('display', 'block')
@@ -130,8 +128,8 @@ const PaletteSketch = p => {
     soundFile = new p5.SoundFile()
 
     /*
-  ----------------------------------------------------------
-                    Buttons
+    ----------------------------------------------------------
+    Buttons
   ----------------------------------------------------------
   */
 
@@ -143,15 +141,8 @@ const PaletteSketch = p => {
     radio.option('Sawtooth', 'red')
     radio.option('Triangle', 'blue')
     radio.option('Sine', 'black')
+    radio.option('Eraser', 'eraser')
     radio.value('black')
-
-    // ERASER
-    eraser = p.createButton('Eraser')
-    eraser.mousePressed(() => {
-      color = 'eraser'
-    })
-    eraser.parent('audioButtons')
-    eraser.class('eraserButton')
 
     // PLAY AUDIO
     play = p.createButton('Play')
@@ -321,7 +312,14 @@ const PaletteSketch = p => {
                      Draw Function
   ----------------------------------------------------------
   */
-  p.draw = () => {
+  p.draw = async () => {
+    if (p.loadPreset && !doneLoadingPreset) {
+      try {
+        await loadPresetPalette(p.loadPreset)
+      } catch (error) {
+        console.log(error)
+      }
+    }
     // Sets color according to radio button value
     color = radio.value()
 
@@ -331,7 +329,7 @@ const PaletteSketch = p => {
       prevY = p.mouseY
     }
 
-    if (state) {
+    if (drawState) {
       // Gives us a value between 30 and  80 (good audible frequencies)
       if (isWithinBounds(p.mouseX, p.mouseY)) {
         // Start stroke and play audio based on color
@@ -414,6 +412,14 @@ const PaletteSketch = p => {
     let array = []
     for (let i = 0; i < 16; i++) {
       array.push([])
+    }
+    return array
+  }
+
+  const generateSynthPattern = () => {
+    let array = []
+    for (let i = 0; i < 16; i++) {
+      array.push(undefined)
     }
     return array
   }
@@ -535,6 +541,28 @@ const PaletteSketch = p => {
     }
   }
 
+  const loadPresetPalette = async preset => {
+    console.log(preset)
+
+    drums.loadDrums = preset.loadDrums
+    p.loadImage(preset.dataURL.imageData, img => {
+      img.resize(width, height)
+      p.image(img, 0, 0)
+    })
+    allBlackGrid = preset.black
+    allRedGrid = preset.red
+    allBlueGrid = preset.blue
+
+    drums.phrases[0].sequence = preset.hh
+    drums.phrases[1].sequence = preset.clap
+    drums.phrases[2].sequence = preset.bass
+    drums.phrases[3].sequence = preset.seq
+
+    console.log(drums.phrases)
+
+    doneLoadingPreset = true
+  }
+
   const mousePress = (x, y) => {
     if (isWithinBounds(x, y)) {
       // Begin playing the correct synth
@@ -546,13 +574,13 @@ const PaletteSketch = p => {
         synth3.start()
       }
       mouseDrag(x, y)
-      // Set state to 1 so the draw() function knows to make lines and produce audio
-      state++
+      // Set drawState to 1 so the draw() function knows to make lines and produce audio
+      drawState++
       // Reset the previous mouse position
       prevX = 0
       prevY = 0
     } else {
-      state = 0
+      drawState = 0
       synth.amp(0)
       synth2.amp(0)
       synth3.amp(0)
@@ -567,24 +595,8 @@ const PaletteSketch = p => {
     } else if (color === 'blue' && isPlaying === false) {
       fadeOutInstrument(synth3)
     }
-    state = 0
+    drawState = 0
   }
 }
-//_______________WILL BE USED LATER________________________________________
-//
-// function LZcompressed(array) {
-//   var string = String.fromCharCode.apply(null, array);
-//   var compressed = LZString.compress(string);
-//   var decompressed = LZString.decompress(compressed);
-//   var dearray = [];
-//   for (var i = 0; i < decompressed.length; i++) {
-//     dearray[i] = decompressed.charCodeAt(i);
-//   }
-//   console.log('LZ - ORIG. ARRAY: ', array.length, array);
-//   console.log('LZ - ARRAY TO STRING: ', string.length, string);
-//   console.log('LZ - COMPRESSED: ', compressed.length, compressed);
-//   console.log('LZ - DECOMPRESSED: ', decompressed.length, decompressed);
-//   console.log('LZ - DECOMP. ARRAY: ', dearray.length, dearray);
-// }
 
 export default PaletteSketch

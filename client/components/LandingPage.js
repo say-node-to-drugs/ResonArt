@@ -2,11 +2,9 @@ import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
 import {withFirebase} from '../firebase/FirebaseContext'
 import {withStyles, Typography, Paper} from '@material-ui/core'
-import { compose } from 'recompose';
+import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 
-let example
-let loaded = false;
 const styles = theme => ({
   root: {
     width: 'auto',
@@ -32,7 +30,8 @@ const styles = theme => ({
 })
 
 const INITIAL_STATE = {
-  palettes: []
+  palettes: [],
+  loadPreset: false
 }
 
 class LandingPage extends Component {
@@ -42,61 +41,68 @@ class LandingPage extends Component {
   }
   async componentDidMount() {
     this.setState({
-      palettes: await loadCanvasFromFirebase(this.props.firebase)})
-    loaded = true;
+      palettes: await loadCanvasFirebase(this.props.firebase)
+    })
   }
+
   render() {
     const {classes} = this.props
     console.log(this.state)
-    if(this.state.palettes.length) {
+    if (this.state.palettes.length) {
       let preset1 = this.state.palettes[0].dataURL.imageData
       return (
         <div>
           <Paper className={classes.paper}>
-            <Link to='/studio' {...this.props}>
-              <img src={preset1} width='300px' height='200px'/>
+            <Link
+              to="/studio"
+              {...this.props}
+              onClick={() => {
+                this.props.firebase.loaded[0].loadPreset = true
+              }}
+            >
+              <img src={preset1} width="300px" height="200px" />
               <Typography>{this.state.palettes[0].filename}</Typography>
             </Link>
           </Paper>
         </div>
       )
     }
-    return (<div>Loading...</div>)
+    return <div>Loading...</div>
   }
 }
 
+export const loadCanvasFirebase = async firebase => {
+  firebase.loaded = []
+  let newObjectArray = []
 
+  const userCanvas = firebase
+    .user('9s3CSIwdJFPLJsHCDysduRClZ7i1')
+    .child('canvas')
 
-export const loadCanvasFromFirebase = async (firebase) => {
-    firebase.loaded = []
-    let newObjectArray = []
-
-    const userCanvas = firebase
-      .user('9s3CSIwdJFPLJsHCDysduRClZ7i1')
-      .child('canvas')
-
-    return userCanvas
-      .once('value', async function(snapshot) {
-        let snapshotObject = await snapshot.val()
-        for (let key in snapshotObject) {
-          newObjectArray.push(snapshotObject[key])
-        }
-        return newObjectArray
-      })
-      .then(() => {
-        for (let i = 0; i < newObjectArray.length; i++) {
-         firebase.loaded.push(newObjectArray[i].canvasData)
-        }
-        console.log('VALUE FROM LOAD COMPONENT: ', firebase.loaded)
-        return firebase.loaded
-      })
-      .catch(error => {
-        console.log(error)
-      })
+  return userCanvas
+    .once('value', async function(snapshot) {
+      let snapshotObject = await snapshot.val()
+      for (let key in snapshotObject) {
+        newObjectArray.push(snapshotObject[key])
+      }
+      return newObjectArray
+    })
+    .then(() => {
+      for (let i = 0; i < newObjectArray.length; i++) {
+        firebase.loaded.push(newObjectArray[i].canvasData)
+      }
+      console.log('VALUE FROM LOAD COMPONENT: ', firebase.loaded)
+      return firebase.loaded
+    })
+    .catch(error => {
+      console.log(error)
+    })
 }
 
 LandingPage.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default compose(withRouter, withFirebase, withStyles(styles))(LandingPage)
+export default compose(withRouter, withFirebase, withStyles(styles))(
+  LandingPage
+)
