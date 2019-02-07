@@ -1,7 +1,16 @@
 import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
 import {withFirebase} from '../../firebase/FirebaseContext'
-import {withStyles, Typography, Paper} from '@material-ui/core'
+import {
+  withStyles,
+  Button,
+  Paper,
+  FormControl,
+  Input,
+  InputLabel,
+  CssBaseline,
+  Typography
+} from '@material-ui/core'
 import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 import {PasswordForgetForm} from './PasswordForget.js'
@@ -22,8 +31,19 @@ const styles = theme => ({
     }
   },
   paper: {
-    width: 60,
-    height: 110,
+    width: 140,
+    height: 140,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+    margin: `${theme.spacing.unit}px`
+  },
+  password: {
+    width: 600,
+    height: 140,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -35,7 +55,8 @@ const styles = theme => ({
   accountContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    alignItems: 'center',
+    justifyContent: 'flex-center',
     paddingTop: 'inherit',
     margin: `${theme.spacing.unit * 3}px`
   }
@@ -111,11 +132,11 @@ const CanvasRender = ({classes, props}) => {
               >
                 <img
                   src={singleCanvas.dataURL.imageData}
-                  width="80px"
-                  height="60px"
+                  width="100px"
+                  height="80px"
                 />
                 <Typography component="span">
-                  <h6>{singleCanvas.filename}</h6>
+                  <p2>{singleCanvas.filename}</p2>
                 </Typography>
               </Link>
             </Paper>
@@ -124,6 +145,14 @@ const CanvasRender = ({classes, props}) => {
       })}
     </div>
   )
+}
+
+const callName = user => {
+  if (user) {
+    return user.email
+  } else {
+    return user.email
+  }
 }
 
 const INITIAL_STATE = {
@@ -144,19 +173,22 @@ class AccountIndex extends Component {
 
   render() {
     const {classes} = this.props
-    console.log(this.state)
+    console.log(this.props)
+    console.log('ACCOUNT NAME: ', this.props.firebase.auth)
     if (this.state.palettes.length) {
       return (
         <AuthUserContext.Consumer>
           {authUser => (
             <div>
               <div>
-                <h1>
-                  Account: Welcome, {this.props.firebase.auth.currentUser.email},
-                  you cheeky monkey!
-                </h1>
-                <PasswordForgetForm />
-                <PasswordChangeForm />
+                <br />
+                <Typography component="h1" variant="h3">
+                  Welcome, {callName(this.props.firebase.auth.currentUser)}
+                </Typography>
+                <br />
+                <div style={{textAlign: 'flex-center'}}>
+                  <PasswordForgetForm classes={classes} />
+                </div>
               </div>
               <div>
                 <CanvasRender classes={classes} props={this.props} />

@@ -67,7 +67,7 @@ const styles = {
   button: {
     paddingLeft: 5,
     paddingRight: 5,
-    width: '8vw'
+    width: '14vw'
   },
   toolbar: {
     display: 'flex',

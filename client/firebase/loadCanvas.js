@@ -1,5 +1,3 @@
-import preloadBlankCanvas from './preloadBlankCanvas.js'
-
 const fireObjectToArray = (fireObject, color) => {
   return fireObject.map(element => {
     let newArray = []

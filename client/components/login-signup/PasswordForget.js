@@ -1,5 +1,15 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
+import {
+  withStyles,
+  Button,
+  Paper,
+  FormControl,
+  Input,
+  InputLabel,
+  CssBaseline,
+  Typography
+} from '@material-ui/core'
 
 import {withFirebase} from '../../firebase/FirebaseContext.js'
 
@@ -45,24 +55,44 @@ class PasswordForgetFormBase extends Component {
 
   render() {
     const {email, error} = this.state
+    const {classes} = this.props
 
     const isInvalid = email === ''
 
     return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          name="email"
-          value={this.state.email}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Email Address"
-        />
-        <button disabled={isInvalid} type="submit">
-          Reset My Password
-        </button>
-
-        {error && <p>{error.message}</p>}
-      </form>
+      <div className={classes.root}>
+        <CssBaseline />
+        <Paper className={classes.password}>
+          <Typography component="h1" variant="h5">
+            Password Reset
+          </Typography>
+          <form onSubmit={this.onSubmit}>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="email">Email</InputLabel>
+              <Input
+                id="email"
+                name="email"
+                type="text"
+                placeholder="Email Address"
+                value={this.state.email}
+                onChange={this.onChange}
+                autoFocus
+              />
+            </FormControl>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              disabled={isInvalid}
+            >
+              Reset My Password
+            </Button>
+            {error && <p>{error.message}</p>}
+          </form>
+        </Paper>
+      </div>
     )
   }
 }
