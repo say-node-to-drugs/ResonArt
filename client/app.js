@@ -3,12 +3,12 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import {Studio, Navbar} from './components'
 import {Login, CreateAccount} from './components/index'
 import {SignOutIndex} from './components/login-signup/SignOutIndex'
-import {AccountIndex} from './components/login-signup/AccountIndex'
+import AccountIndex from './components/login-signup/AccountIndex'
 import {PasswordForgetPage} from './components/login-signup/PasswordForget.js'
 import {AdminIndex} from './components/admin/AdminIndex'
 import {withAuthentication} from './components/login-signup/withAuthentication.js'
 import {AuthUserContext} from './components/login-signup/SessionContext.js'
-import LandingPage from './components/LandingPage';
+import LandingPage from './components/LandingPage'
 
 const App = props => (
   <Router>
@@ -16,7 +16,10 @@ const App = props => (
       <Navbar firebase={props.firebase} />
       <Switch>
         {/* Routes placed here are available to all visitors */}
-        <Route path="/account" component={AccountIndex} />
+        <Route
+          path="/account"
+          render={() => <AccountIndex {...props} firebase={props.firebase} />}
+        />
         <Route path="/signup" component={CreateAccount} />
         <Route path="/signin" component={Login} />
         <Route
