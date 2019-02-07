@@ -48,24 +48,21 @@ class LandingPage extends Component {
 
   render() {
     const {classes} = this.props
-    console.log(this.state)
     if (this.state.palettes.length) {
       let presets = this.state.palettes;
-      console.log(presets)
       return (
         <div>
-          <div className='presetList'>
-            <Avatar src='soundWave.jpg' width='200px' height='200px' />
+          <div className='presetList' width='600px'>
             <Typography variant='display1' align='center'>
               Welcome to ResonArt! 
             </Typography>
             <Typography variant='body1'>  
-              Drawing never sounded so good.
-              Get started by clicking 'New Canvas' in the navigation bar, or click on one of the presets below!
+              "Drawing never sounded so good."
+              Get started by clicking 'New Canvas' in the navigation bar, or click on one of the presets below! Each palette represents notes on a scale (Y-axis) playing over time (X-axis). Simply draw with three different colors along the plane and fill in the drum machine grid to create a melody!
             </Typography>
           </div>
           <Typography variant='headline'>
-            Canvas Presets
+            Canvas Examples
           </Typography>
           <div className='presetList'>
             {
