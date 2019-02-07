@@ -20,7 +20,7 @@ const styles = theme => ({
     }
   },
   paper: {
-    width: 300,
+    width: 80,
     marginTop: theme.spacing.unit * 8,
     display: 'flex',
     flexDirection: 'column',
@@ -30,6 +30,21 @@ const styles = theme => ({
       .spacing.unit * 3}px`
   }
 })
+
+const fireObjectToArray = (fireObject, color) => {
+  return fireObject.map(element => {
+    let newArray = []
+    for (let key in element) {
+      if (element[key] === -1) {
+        element[key] = []
+      } else {
+        element[key] = [element[key]]
+      }
+      newArray.push(element[key])
+    }
+    return newArray
+  })
+}
 
 export const loadCanvasFirebase = async firebase => {
   firebase.loaded = []
@@ -74,6 +89,16 @@ const CanvasRender = ({classes, props, state, preset}) => {
                 onClick={() => {
                   singleCanvas.loadPreset = true
                   props.firebase.loaded.selectedNumber = index
+                  singleCanvas.black = fireObjectToArray(
+                    singleCanvas.black,
+                    'black'
+                  )
+                  singleCanvas.blue = fireObjectToArray(
+                    singleCanvas.blue,
+                    'blue'
+                  )
+                  singleCanvas.red = fireObjectToArray(singleCanvas.red, 'red')
+                  console.log(singleCanvas)
                 }}
               >
                 <img
