@@ -41,6 +41,7 @@ const PaletteSketch = p => {
   let allBlackGrid, allRedGrid, allBlueGrid
   let downloading = false
   let downloadCounter = 0
+  let hh, clap, bass, seq
 
   // let width = p.windowWidth / 2 - 30;
   let width = p.windowWidth / 2 - 30
@@ -53,6 +54,10 @@ const PaletteSketch = p => {
     synth1Sound = new p5.SoundFile()
     synth2Sound = new p5.SoundFile()
     synth3Sound = new p5.SoundFile()
+
+    hh = p.loadSound('drumSamples/hh_sample.mp3', () => {})
+    clap = p.loadSound('drumSamples/clap_sample.mp3', () => {})
+    bass = p.loadSound('drumSamples/bass_sample.mp3', () => {})
 
     allBlackGrid = generateColorArray()
     allRedGrid = generateColorArray()
@@ -263,22 +268,15 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
   p.draw = async () => {
-    if (p.loadPreset && !doneLoadingPreset) {
-      try {
-        await loadPresetPalette(p.loadPreset)
-      } catch (error) {
-        console.log(error)
-      }
-    }
     // Sets color according to radio button value
     color = radio.value()
-
+    
     // Set previous mouse position correctly if starting a new line
     if (prevX === 0) {
       prevX = p.mouseX
       prevY = p.mouseY
     }
-
+    
     if (drawState) {
       // Gives us a value between 30 and  80 (good audible frequencies)
       if (isWithinBounds(p.mouseX, p.mouseY)) {
@@ -293,9 +291,16 @@ const PaletteSketch = p => {
       prevX = p.mouseX
       prevY = p.mouseY
     }
+    if (p.loadPreset && !doneLoadingPreset && drums.phrases.length > 4) {
+      try {
+        await loadPresetPalette(p.loadPreset)
+      } catch (error) {
+        console.log(error)
+      }
+    }
     loadPaletteArrangement()
   }
-
+  
   /*
   ----------------------------------------------------------
                      Key Press Handler
@@ -492,6 +497,7 @@ const PaletteSketch = p => {
   }
 
   const loadPresetPalette = async preset => {
+    console.log("YEEEEAAAAAHHHH BOIIIIII")
     console.log(preset)
 
     drums.loadDrums = preset.loadDrums
@@ -503,12 +509,18 @@ const PaletteSketch = p => {
     allRedGrid = preset.red
     allBlueGrid = preset.blue
 
-    drums.phrases[0].sequence = preset.hh
-    drums.phrases[1].sequence = preset.clap
-    drums.phrases[2].sequence = preset.bass
-    drums.phrases[3].sequence = preset.seq
+    if (drums.getPhrase('hh')) {
+      drums.removePhrase('hh')
+      drums.removePhrase('clap')
+      drums.removePhrase('bass')
+      drums.removePhrase('seq')
+    }
+    drums.addPhrase('hh', (time) => {hh.play(time)}, preset.hh)
+    drums.addPhrase('clap', (time) => {clap.play(time)}, preset.clap)
+    drums.addPhrase('bass', (time) => {bass.play(time)}, preset.bass)
+    drums.addPhrase('seq', (time) => {p.sequence}, preset.seq)
 
-    console.log(drums.phrases)
+    console.log(drums)
 
     doneLoadingPreset = true
   }
