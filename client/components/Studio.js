@@ -24,9 +24,7 @@ class Studio extends React.Component {
     this.palette.firebase = this.props.firebase
 
     if (this.props.firebase.loaded) {
-      this.palette.loadPreset = this.props.firebase.loaded[
-        this.props.firebase.loaded.selectedNumber
-      ]
+      this.palette.loadPreset = this.props.firebase.loadPreset
       console.log('IN STUDIO')
       console.log(this.palette.loadPreset)
     }

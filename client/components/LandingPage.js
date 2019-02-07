@@ -21,7 +21,7 @@ const styles = theme => ({
     width: 300,
     marginTop: theme.spacing.unit * 8,
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
@@ -51,30 +51,38 @@ class LandingPage extends Component {
     if (this.state.palettes.length) {
       this.props.firebase.loaded.selectedNumber = 0
       //Bradley, I made this change so that I could pass the index value from the Account Loading page/ I'm setting this to '0' here so that I don't mess up your Landing page.
-      let preset1 = this.state.palettes[
-        this.props.firebase.loaded.selectedNumber
-      ].dataURL.imageData
+      let presets = this.state.palettes;
+      console.log(presets)
       return (
         <div>
-          <Paper className={classes.paper}>
-            <Link
-              to="/studio"
-              {...this.props}
-              onClick={() => {
-                this.props.firebase.loaded[
-                  this.props.firebase.loaded.selectedNumber
-                ].loadPreset = true
-              }}
-            >
-              <img src={preset1} width="300px" height="200px" />
-              <Typography>
-                {
-                  this.state.palettes[this.props.firebase.loaded.selectedNumber]
-                    .filename
-                }
-              </Typography>
-            </Link>
-          </Paper>
+          <div className='presetList'>
+            <img src='soundWave.jpg' width='400px' />
+            <Typography variant='headline'>
+              Welcome to ResonArt! 
+            </Typography>
+            <Typography variant='body1'>  
+              Drawing never sounded so good.
+              Get started by clicking 'New Canvas' in the navigation bar, or click on one of the presets below!
+            </Typography>
+          </div>
+          <Typography variant='display2'>
+            Canvas Presets
+          </Typography>
+          <div className='presetList'>
+            {
+              presets.map((preset, index) => (
+                <Paper className={classes.paper}>
+                  <Link to="/studio" {...this.props} onClick={() => {
+                    this.props.firebase.selectedNumber = index;
+                    this.props.firebase.loadPreset = preset;
+                  }}>
+                    <img src={preset.dataURL.imageData} width="300px" height="200px" />
+                    <Typography align='center' variant='title'>{ preset.filename }</Typography>
+                  </Link>
+                </Paper>
+              ))
+            }
+          </div>
         </div>
       )
     }
