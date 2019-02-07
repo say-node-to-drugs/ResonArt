@@ -102,8 +102,6 @@ const DrumSketch = p => {
 
   // Draw function
   p.drawMatrix = () => {
-    console.log('about to draw matrix')
-    console.log(cPhrase)
     p.background('#FF8C61')
     p.stroke('#5C374C')
     p.strokeWeight(4)
@@ -142,7 +140,6 @@ const DrumSketch = p => {
 
   p.sequence = (time, beatIndex) => {
     setTimeout(() => {
-      console.log('drawing the matrix')
       // syncs up the timing so the beats and the playhead are in sync
       p.drawMatrix()
       p.drawMatrixPlayhead(beatIndex)
@@ -163,9 +160,6 @@ const updatePatterns = (newHPattern, newCPattern, newBPattern) => {
 
   drums.start()
   drums.stop()
-
-  console.log('UPDATED SEQUENCES')
-  console.log(cPhrase)
 }
 
 export {DrumSketch, drums, hPhrase, cPhrase, bPhrase, updatePatterns}

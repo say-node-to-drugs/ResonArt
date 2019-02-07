@@ -1,6 +1,5 @@
 import {drums, hPhrase, cPhrase, bPhrase, updatePatterns} from './DrumSketch'
 import {saveCanvasToFirebase} from '../../firebase/saveCanvas.js'
-import {loadCanvasFromFirebase} from '../../firebase/loadCanvas.js'
 import toastr from 'toastr'
 
 const PaletteSketch = p => {
@@ -171,7 +170,7 @@ const PaletteSketch = p => {
     stop.class('stopButton')
 
     // SAVE IMAGE
-    let saveImage = p.createButton('Save Canvas')
+    let saveImage = p.createButton('Save')
     saveImage.mousePressed(() => {
       saveCanvasToFirebase(p, allBlackGrid, allRedGrid, allBlueGrid) // This saves to Firebase
     })
@@ -201,7 +200,7 @@ const PaletteSketch = p => {
     download.class('downloadButton')
 
     // CLEAR PALETTE
-    clearCanvas = p.createButton('Clear Canvas')
+    clearCanvas = p.createButton('Clear')
     clearCanvas.mousePressed(() => {
       function greet() {
         window.location.href = '/studio'
@@ -214,7 +213,7 @@ const PaletteSketch = p => {
     // ------------------
     // LOAD PRESET CANVAS
     // ------------------
-    load = p.createButton('Load Canvas')
+    load = p.createButton('Load')
     load.mousePressed(() => {
       function greet() {
         window.location.href = '/account'

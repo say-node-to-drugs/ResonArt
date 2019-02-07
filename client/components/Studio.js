@@ -25,14 +25,11 @@ class Studio extends React.Component {
 
     if (this.props.firebase.loaded) {
       this.palette.loadPreset = this.props.firebase.loadPreset
-      console.log('IN STUDIO')
-      console.log(this.palette.loadPreset)
     }
   }
 
   render() {
     const {classes} = this.props
-    var appUser = this.props.firebase.auth.currentUser
     return (
       <Grid container className={classes.root} justify="center">
         <Grid item sm={3} id="spacer" className="spacer" />
