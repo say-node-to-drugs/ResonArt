@@ -202,15 +202,10 @@ const PaletteSketch = p => {
     // CLEAR PALETTE
     clearCanvas = p.createButton('Clear Canvas')
     clearCanvas.mousePressed(() => {
-      p.resizeCanvas(width, height)
-      p.background(255)
-      p.fill(0)
-      drawGridLines()
-      // Reset grid arrays for each color
-      allBlackGrid = generateColorArray()
-      allRedGrid = generateColorArray()
-      allBlueGrid = generateColorArray()
-      loadPaletteArrangement()
+      function greet() {
+        window.location.href = '/studio'
+      }
+      greet()
     })
     clearCanvas.parent('audioButtons')
     clearCanvas.class('clearButton')
