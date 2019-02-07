@@ -53,7 +53,6 @@ const PaletteSketch = p => {
     synth2Sound = new p5.SoundFile()
     synth3Sound = new p5.SoundFile()
 
-
     allBlackGrid = generateColorArray()
     allRedGrid = generateColorArray()
     allBlueGrid = generateColorArray()
@@ -265,13 +264,13 @@ const PaletteSketch = p => {
   p.draw = async () => {
     // Sets color according to radio button value
     color = radio.value()
-    
+
     // Set previous mouse position correctly if starting a new line
     if (prevX === 0) {
       prevX = p.mouseX
       prevY = p.mouseY
     }
-    
+
     if (drawState) {
       // Gives us a value between 30 and  80 (good audible frequencies)
       if (isWithinBounds(p.mouseX, p.mouseY)) {
@@ -295,7 +294,7 @@ const PaletteSketch = p => {
     }
     loadPaletteArrangement()
   }
-  
+
   /*
   ----------------------------------------------------------
                      Key Press Handler
@@ -492,7 +491,6 @@ const PaletteSketch = p => {
   }
 
   const loadPresetPalette = async preset => {
-
     drums.loadDrums = preset.loadDrums
     p.loadImage(preset.dataURL.imageData, img => {
       img.resize(width, height)

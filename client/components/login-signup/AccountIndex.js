@@ -105,46 +105,53 @@ export const loadCanvasFirebase = async firebase => {
 }
 
 const CanvasRender = ({classes, props}) => {
-  return (
-    <div className={classes.accountContainer}>
-      {props.firebase.loaded.map((singleCanvas, index) => {
-        return (
-          <div key={'CNV' + index}>
-            <Paper className={classes.paper}>
-              <Link
-                to="/studio"
-                {...props}
-                onClick={() => {
-                  props.firebase.loaded.selectedNumber = index
-                  props.firebase.loadPreset = singleCanvas
-                  singleCanvas.black = fireObjectToArray(
-                    singleCanvas.black,
-                    'black'
-                  )
-                  singleCanvas.blue = fireObjectToArray(
-                    singleCanvas.blue,
-                    'blue'
-                  )
-                  singleCanvas.red = fireObjectToArray(singleCanvas.red, 'red')
+  if (props.firebase.loaded < 1) {
+    return <div />
+  } else {
+    return (
+      <div className={classes.accountContainer}>
+        {props.firebase.loaded.map((singleCanvas, index) => {
+          return (
+            <div key={'CNV' + index}>
+              <Paper className={classes.paper}>
+                <Link
+                  to="/studio"
+                  {...props}
+                  onClick={() => {
+                    props.firebase.loaded.selectedNumber = index
+                    props.firebase.loadPreset = singleCanvas
+                    singleCanvas.black = fireObjectToArray(
+                      singleCanvas.black,
+                      'black'
+                    )
+                    singleCanvas.blue = fireObjectToArray(
+                      singleCanvas.blue,
+                      'blue'
+                    )
+                    singleCanvas.red = fireObjectToArray(
+                      singleCanvas.red,
+                      'red'
+                    )
 
-                  console.log('SELECTED CANVAS DATA: ', singleCanvas)
-                }}
-              >
-                <img
-                  src={singleCanvas.dataURL.imageData}
-                  width="100px"
-                  height="80px"
-                />
-                <Typography component="span">
-                  <p2>{singleCanvas.filename}</p2>
-                </Typography>
-              </Link>
-            </Paper>
-          </div>
-        )
-      })}
-    </div>
-  )
+                    console.log('SELECTED CANVAS DATA: ', singleCanvas)
+                  }}
+                >
+                  <img
+                    src={singleCanvas.dataURL.imageData}
+                    width="100px"
+                    height="80px"
+                  />
+                  <Typography component="span">
+                    <p2>{singleCanvas.filename}</p2>
+                  </Typography>
+                </Link>
+              </Paper>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
 }
 
 const callName = user => {
@@ -182,14 +189,23 @@ class AccountIndex extends Component {
             <div>
               <div>
                 <br />
-                <Typography component="h1" variant="h3">
+                <Typography component="h1" variant="h5" align="center">
                   Welcome, {callName(this.props.firebase.auth.currentUser)}
                 </Typography>
                 <br />
-                <div style={{textAlign: 'flex-center'}}>
-                  <PasswordForgetForm classes={classes} />
+                <div>
+                  <PasswordForgetForm
+                    alignItems="center"
+                    justify="center"
+                    classes={classes}
+                  />
                 </div>
               </div>
+              <br />
+              <br />
+              <Typography component="h1" variant="h5" align="center">
+                Select a saved canvas:
+              </Typography>
               <div>
                 <CanvasRender classes={classes} props={this.props} />
               </div>
@@ -197,8 +213,31 @@ class AccountIndex extends Component {
           )}
         </AuthUserContext.Consumer>
       )
+    } else {
+      return (
+        <AuthUserContext.Consumer>
+          {authUser => (
+            <div>
+              <div>
+                <br />
+                <Typography component="h1" variant="h4">
+                  Welcome, {callName(this.props.firebase.auth.currentUser)}
+                </Typography>
+                <br />
+                <div style={{textAlign: 'flex-center'}}>
+                  <PasswordForgetForm classes={classes} />
+                </div>
+              </div>
+              <br />
+              <br />
+              <Typography component="h1" variant="h5">
+                No canvases currently saved.
+              </Typography>
+            </div>
+          )}
+        </AuthUserContext.Consumer>
+      )
     }
-    return <div>Loading...</div>
   }
 }
 

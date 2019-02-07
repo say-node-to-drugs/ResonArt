@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
 import {withFirebase} from '../firebase/FirebaseContext'
 import {withStyles, Typography, Paper} from '@material-ui/core'
-import Avatar from '@material-ui/core/Avatar';
+import Avatar from '@material-ui/core/Avatar'
 import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 
@@ -49,35 +49,44 @@ class LandingPage extends Component {
   render() {
     const {classes} = this.props
     if (this.state.palettes.length) {
-      let presets = this.state.palettes;
+      let presets = this.state.palettes
       return (
         <div>
-          <div className='presetList' width='600px'>
-            <Typography variant='display1' align='center'>
-              Welcome to ResonArt! 
+          <div className="presetList" width="600px">
+            <Typography variant="display1" align="center">
+              Welcome to ResonArt!
             </Typography>
-            <Typography variant='body1'>  
-              "Drawing never sounded so good."
-              Get started by clicking 'New Canvas' in the navigation bar, or click on one of the presets below! Each palette represents notes on a scale (Y-axis) playing over time (X-axis). Simply draw with three different colors along the plane and fill in the drum machine grid to create a melody!
+            <Typography variant="body1">
+              "Drawing never sounded so good." Get started by clicking 'New
+              Canvas' in the navigation bar, or click on one of the presets
+              below! Each palette represents notes on a scale (Y-axis) playing
+              over time (X-axis). Simply draw with three different colors along
+              the plane and fill in the drum machine grid to create a melody!
             </Typography>
           </div>
-          <Typography variant='headline'>
-            Canvas Examples
-          </Typography>
-          <div className='presetList'>
-            {
-              presets.map((preset, index) => (
-                <Paper className={classes.paper}>
-                  <Link to="/studio" {...this.props} onClick={() => {
-                    this.props.firebase.selectedNumber = index;
-                    this.props.firebase.loadPreset = preset;
-                  }}>
-                    <img src={preset.dataURL.imageData} width="300px" height="200px" />
-                    <Typography align='center' variant='title'>{ preset.filename }</Typography>
-                  </Link>
-                </Paper>
-              ))
-            }
+          <Typography variant="headline">Canvas Examples</Typography>
+          <div className="presetList">
+            {presets.map((preset, index) => (
+              <Paper className={classes.paper}>
+                <Link
+                  to="/studio"
+                  {...this.props}
+                  onClick={() => {
+                    this.props.firebase.selectedNumber = index
+                    this.props.firebase.loadPreset = preset
+                  }}
+                >
+                  <img
+                    src={preset.dataURL.imageData}
+                    width="300px"
+                    height="200px"
+                  />
+                  <Typography align="center" variant="title">
+                    {preset.filename}
+                  </Typography>
+                </Link>
+              </Paper>
+            ))}
           </div>
         </div>
       )

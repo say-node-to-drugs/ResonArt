@@ -17,7 +17,6 @@ const DrumSketch = p => {
   let clap
   let bass
 
-
   p.preload = () => {
     hh = p.loadSound('drumSamples/hh_sample.mp3', () => {})
     clap = p.loadSound('drumSamples/clap_sample.mp3', () => {})
@@ -158,14 +157,14 @@ const DrumSketch = p => {
 }
 
 const updatePatterns = (newHPattern, newCPattern, newBPattern) => {
-  hPhrase.sequence = newHPattern;
-  cPhrase.sequence = newCPattern;
-  bPhrase.sequence = newBPattern;
+  hPhrase.sequence = newHPattern
+  cPhrase.sequence = newCPattern
+  bPhrase.sequence = newBPattern
 
   drums.start()
   drums.stop()
 
-  console.log("UPDATED SEQUENCES")
+  console.log('UPDATED SEQUENCES')
   console.log(cPhrase)
 }
 
