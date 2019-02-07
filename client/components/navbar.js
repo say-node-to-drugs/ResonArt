@@ -62,7 +62,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '20vw'
+    width: '30vw'
   },
   button: {
     paddingLeft: 5,
@@ -80,8 +80,11 @@ function Navigation(props) {
   return (
     <AuthUserContext.Consumer>
       {authUser =>
-        (authUser ? (
+        authUser ? (
           <div className={classes.buttonDiv}>
+            <Button className={classes.button} component={Link} to="/studio">
+              Studio
+            </Button>
             <Button className={classes.button} component={Link} to="/account">
               Account
             </Button>
@@ -98,6 +101,9 @@ function Navigation(props) {
           </div>
         ) : (
           <div className={classes.buttonDiv}>
+            <Button className={classes.button} component={Link} to="/studio">
+              Studio
+            </Button>
             <Button className={classes.button} component={Link} to="/signin">
               Login
             </Button>{' '}
@@ -105,7 +111,7 @@ function Navigation(props) {
               Sign Up
             </Button>
           </div>
-        ))
+        )
       }
     </AuthUserContext.Consumer>
   )

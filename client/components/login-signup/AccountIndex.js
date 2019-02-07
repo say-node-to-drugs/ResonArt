@@ -26,7 +26,6 @@ const styles = theme => ({
     height: 110,
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px ${theme.spacing.unit * 3}px`,

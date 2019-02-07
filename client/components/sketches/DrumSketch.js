@@ -103,6 +103,7 @@ const DrumSketch = p => {
 
   // Draw function
   p.drawMatrix = () => {
+    console.log('DRAW MATRIX', hPat, cPat, bPat, sPat)
     p.background('#FF8C61')
     p.stroke('#5C374C')
     p.strokeWeight(4)
