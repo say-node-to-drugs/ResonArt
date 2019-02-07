@@ -231,3 +231,11 @@ form div {
   flex-direction: row;
   justify-content: space-between;
 }
+
+/* List of preset canvases on landing page */
+.presetList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: space-around;
+}
