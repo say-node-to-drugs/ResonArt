@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
 import {withFirebase} from '../firebase/FirebaseContext'
 import {withStyles, Typography, Paper} from '@material-ui/core'
+import Avatar from '@material-ui/core/Avatar';
 import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 
@@ -19,7 +20,7 @@ const styles = theme => ({
   },
   paper: {
     width: 300,
-    marginTop: theme.spacing.unit * 8,
+    marginTop: 0,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -49,15 +50,13 @@ class LandingPage extends Component {
     const {classes} = this.props
     console.log(this.state)
     if (this.state.palettes.length) {
-      this.props.firebase.loaded.selectedNumber = 0
-      //Bradley, I made this change so that I could pass the index value from the Account Loading page/ I'm setting this to '0' here so that I don't mess up your Landing page.
       let presets = this.state.palettes;
       console.log(presets)
       return (
         <div>
           <div className='presetList'>
-            <img src='soundWave.jpg' width='400px' />
-            <Typography variant='headline'>
+            <Avatar src='soundWave.jpg' width='200px' height='200px' />
+            <Typography variant='display1' align='center'>
               Welcome to ResonArt! 
             </Typography>
             <Typography variant='body1'>  
@@ -65,7 +64,7 @@ class LandingPage extends Component {
               Get started by clicking 'New Canvas' in the navigation bar, or click on one of the presets below!
             </Typography>
           </div>
-          <Typography variant='display2'>
+          <Typography variant='headline'>
             Canvas Presets
           </Typography>
           <div className='presetList'>
