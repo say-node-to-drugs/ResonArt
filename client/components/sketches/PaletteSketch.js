@@ -13,7 +13,7 @@ const PaletteSketch = p => {
   let isPlaying = false
   let synth1Pattern, synth2Pattern, synth3Pattern
   let synth1Sound, synth2Sound, synth3Sound
-  let doneLoadingPreset = false;
+  let doneLoadingPreset = false
   const notes = [
     38,
     40,
@@ -57,30 +57,27 @@ const PaletteSketch = p => {
     allRedGrid = generateColorArray()
     allBlueGrid = generateColorArray()
 
-    synth1Pattern = generateSynthPattern();
-    synth2Pattern = generateSynthPattern();
-    synth3Pattern = generateSynthPattern();
+    synth1Pattern = generateSynthPattern()
+    synth2Pattern = generateSynthPattern()
+    synth3Pattern = generateSynthPattern()
   }
 
   p.setup = () => {
-
     canvas = p.createCanvas(width, height)
     canvas.parent('sketchPad')
     canvas.style('display', 'block')
     canvas.class('palette')
-    
-    
+
     p.background(255)
     p.fill(0)
     drawGridLines()
     p.strokeWeight(10)
-    
-    
+
     // Create instruments
     synth = new p5.Oscillator()
     synth.setType('sine')
     synth.freq(0)
-    
+
     synth2 = new p5.Oscillator()
     synth2.setType('sawtooth')
     synth2.freq(0)
@@ -88,7 +85,7 @@ const PaletteSketch = p => {
     synth3 = new p5.Oscillator()
     synth3.setType('triangle')
     synth3.freq(0)
-    
+
     // Setup phrases to loop
     synth1Phrase = new p5.Phrase(
       'synth1Sound',
@@ -121,9 +118,9 @@ const PaletteSketch = p => {
       },
       synth3Pattern
     )
-    
+
     drums.setBPM('80')
-    
+
     // create a sound recorder
     recorder = new p5.SoundRecorder()
     recorder.setInput()
@@ -205,15 +202,10 @@ const PaletteSketch = p => {
     // CLEAR PALETTE
     clearCanvas = p.createButton('Clear Canvas')
     clearCanvas.mousePressed(() => {
-      p.resizeCanvas(width, height)
-      p.background(255)
-      p.fill(0)
-      drawGridLines()
-      // Reset grid arrays for each color
-      allBlackGrid = generateColorArray()
-      allRedGrid = generateColorArray()
-      allBlueGrid = generateColorArray()
-      loadPaletteArrangement()
+      function greet() {
+        window.location.href = '/studio'
+      }
+      greet()
     })
     clearCanvas.parent('audioButtons')
     clearCanvas.class('clearButton')
@@ -226,6 +218,14 @@ const PaletteSketch = p => {
       // This pulls a saved canvas from firebase
 
       await loadCanvasFromFirebase(p)
+
+      /*  THIS WILL EVENTUALLY REPLACE ALL THE OTHER LOGIC IN THIS BUTTON
+
+    function greet() {
+      window.location.href = '/account'
+    }
+    load.mousePressed(greet)
+    --------------------------------------------------------------------*/
 
       console.log('GET VALUE FROM BUTTON PRESSED: ', p.firebase.loaded)
       console.log(
@@ -314,11 +314,10 @@ const PaletteSketch = p => {
   ----------------------------------------------------------
   */
   p.draw = async () => {
-    
-    if(p.loadPreset && !doneLoadingPreset) {
+    if (p.loadPreset && !doneLoadingPreset) {
       try {
         await loadPresetPalette(p.loadPreset)
-      } catch(error) {
+      } catch (error) {
         console.log(error)
       }
     }
@@ -514,58 +513,55 @@ const PaletteSketch = p => {
       indexClicked--
     }
 
-      if (
-        color === 'black' &&
-        allBlackGrid[indexClicked].indexOf(rowClicked) === -1
-      ) {
-        console.log(allBlackGrid)
-        allBlackGrid[indexClicked].push(rowClicked)
-      } else if (
-        color === 'red' &&
-        allRedGrid[indexClicked].indexOf(rowClicked) === -1
-      ) {
-        allRedGrid[indexClicked].push(rowClicked)
-      } else if (
-        color === 'blue' &&
-        allBlueGrid[indexClicked].indexOf(rowClicked) === -1
-      ) {
-        allBlueGrid[indexClicked].push(rowClicked)
-      } else if (color === 'eraser') {
-        allBlackGrid[indexClicked] = allBlackGrid[indexClicked].filter(
-          elem => elem > rowClicked + 1 || elem < rowClicked - 1
-        )
-        allRedGrid[indexClicked] = allRedGrid[indexClicked].filter(
-          elem => elem > rowClicked + 1 || elem < rowClicked - 1
-        )
-        allBlueGrid[indexClicked] = allBlueGrid[indexClicked].filter(
-          elem => elem > rowClicked + 1 || elem < rowClicked - 1
-        )
-      }
-    }
-  
-  const loadPresetPalette = async (preset) => {
-      console.log(preset)
-
-      drums.loadDrums = preset.loadDrums
-      p.loadImage(
-        preset.dataURL.imageData,
-        img => {
-          img.resize(width, height)
-          p.image(img, 0, 0)
-        }
+    if (
+      color === 'black' &&
+      allBlackGrid[indexClicked].indexOf(rowClicked) === -1
+    ) {
+      console.log(allBlackGrid)
+      allBlackGrid[indexClicked].push(rowClicked)
+    } else if (
+      color === 'red' &&
+      allRedGrid[indexClicked].indexOf(rowClicked) === -1
+    ) {
+      allRedGrid[indexClicked].push(rowClicked)
+    } else if (
+      color === 'blue' &&
+      allBlueGrid[indexClicked].indexOf(rowClicked) === -1
+    ) {
+      allBlueGrid[indexClicked].push(rowClicked)
+    } else if (color === 'eraser') {
+      allBlackGrid[indexClicked] = allBlackGrid[indexClicked].filter(
+        elem => elem > rowClicked + 1 || elem < rowClicked - 1
       )
-      allBlackGrid = preset.black
-      allRedGrid = preset.red
-      allBlueGrid = preset.blue
+      allRedGrid[indexClicked] = allRedGrid[indexClicked].filter(
+        elem => elem > rowClicked + 1 || elem < rowClicked - 1
+      )
+      allBlueGrid[indexClicked] = allBlueGrid[indexClicked].filter(
+        elem => elem > rowClicked + 1 || elem < rowClicked - 1
+      )
+    }
+  }
 
-      drums.phrases[0].sequence = preset.hh
-      drums.phrases[1].sequence = preset.clap
-      drums.phrases[2].sequence = preset.bass
-      drums.phrases[3].sequence = preset.seq
+  const loadPresetPalette = async preset => {
+    console.log(preset)
 
-      console.log(drums.phrases)
+    drums.loadDrums = preset.loadDrums
+    p.loadImage(preset.dataURL.imageData, img => {
+      img.resize(width, height)
+      p.image(img, 0, 0)
+    })
+    allBlackGrid = preset.black
+    allRedGrid = preset.red
+    allBlueGrid = preset.blue
 
-      doneLoadingPreset = true;
+    drums.phrases[0].sequence = preset.hh
+    drums.phrases[1].sequence = preset.clap
+    drums.phrases[2].sequence = preset.bass
+    drums.phrases[3].sequence = preset.seq
+
+    console.log(drums.phrases)
+
+    doneLoadingPreset = true
   }
 
   const mousePress = (x, y) => {
