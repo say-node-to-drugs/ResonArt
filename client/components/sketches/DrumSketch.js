@@ -1,6 +1,7 @@
 let drums = new p5.Part()
 let bpmCTRL
 let hPat, cPat, bPat, sPat
+let hPhrase, cPhrase, bPhrase
 
 const DrumSketch = p => {
   // Set height and width of canvas
@@ -15,8 +16,6 @@ const DrumSketch = p => {
   let hh
   let clap
   let bass
-
-  let hPhrase, cPhrase, bPhrase
 
   p.preload = () => {
     hh = p.loadSound('drumSamples/hh_sample.mp3', () => {})
@@ -87,11 +86,11 @@ const DrumSketch = p => {
     let rowClicked = p.floor(3 * p.mouseY / height)
     let indexClicked = p.floor(16 * p.mouseX / width)
     if (rowClicked === 0) {
-      hPat[indexClicked] = p.invert(hPat[indexClicked])
+      hPhrase.sequence[indexClicked] = p.invert(hPhrase.sequence[indexClicked])
     } else if (rowClicked === 1) {
-      cPat[indexClicked] = p.invert(cPat[indexClicked])
+      cPhrase.sequence[indexClicked] = p.invert(cPhrase.sequence[indexClicked])
     } else if (rowClicked === 2) {
-      bPat[indexClicked] = p.invert(bPat[indexClicked])
+      bPhrase.sequence[indexClicked] = p.invert(bPhrase.sequence[indexClicked])
     }
 
     p.drawMatrix()
@@ -103,7 +102,8 @@ const DrumSketch = p => {
 
   // Draw function
   p.drawMatrix = () => {
-    console.log('DRAW MATRIX', hPat, cPat, bPat, sPat)
+    console.log('about to draw matrix')
+    console.log(cPhrase)
     p.background('#FF8C61')
     p.stroke('#5C374C')
     p.strokeWeight(4)
@@ -120,13 +120,13 @@ const DrumSketch = p => {
     p.noStroke()
 
     for (let i = 0; i < beatLength; i++) {
-      if (hPat[i] === 1) {
+      if (hPhrase.sequence[i] === 1) {
         p.ellipse(i * cellWidth + 0.5 * cellWidth, height / 6, 10, 10, 10)
       }
-      if (cPat[i] === 1) {
+      if (cPhrase.sequence[i] === 1) {
         p.ellipse(i * cellWidth + 0.5 * cellWidth, height / 2, 10, 10, 10)
       }
-      if (bPat[i] === 1) {
+      if (bPhrase.sequence[i] === 1) {
         p.ellipse(i * cellWidth + 0.5 * cellWidth, height * 5 / 6, 10, 10, 10)
       }
     }
@@ -142,6 +142,7 @@ const DrumSketch = p => {
 
   p.sequence = (time, beatIndex) => {
     setTimeout(() => {
+      console.log('drawing the matrix')
       // syncs up the timing so the beats and the playhead are in sync
       p.drawMatrix()
       p.drawMatrixPlayhead(beatIndex)
@@ -155,4 +156,16 @@ const DrumSketch = p => {
   }
 }
 
-export {DrumSketch, drums}
+const updatePatterns = (newHPattern, newCPattern, newBPattern) => {
+  hPhrase.sequence = newHPattern
+  cPhrase.sequence = newCPattern
+  bPhrase.sequence = newBPattern
+
+  drums.start()
+  drums.stop()
+
+  console.log('UPDATED SEQUENCES')
+  console.log(cPhrase)
+}
+
+export {DrumSketch, drums, hPhrase, cPhrase, bPhrase, updatePatterns}

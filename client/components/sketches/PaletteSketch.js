@@ -1,7 +1,6 @@
-import {DrumSketch, drums} from './DrumSketch'
+import {drums, hPhrase, cPhrase, bPhrase, updatePatterns} from './DrumSketch'
 import {saveCanvasToFirebase} from '../../firebase/saveCanvas.js'
 import toastr from 'toastr'
-import {loadCanvasFirebase} from '../LandingPage.js'
 
 const PaletteSketch = p => {
   let recorder, soundFile, canvas
@@ -40,7 +39,6 @@ const PaletteSketch = p => {
   let allBlackGrid, allRedGrid, allBlueGrid
   let downloading = false
   let downloadCounter = 0
-  let hh, clap, bass, seq
 
   // let width = p.windowWidth / 2 - 30;
   let width = p.windowWidth / 2 - 30
@@ -53,10 +51,6 @@ const PaletteSketch = p => {
     synth1Sound = new p5.SoundFile()
     synth2Sound = new p5.SoundFile()
     synth3Sound = new p5.SoundFile()
-
-    hh = p.loadSound('drumSamples/hh_sample.mp3', () => {})
-    clap = p.loadSound('drumSamples/clap_sample.mp3', () => {})
-    bass = p.loadSound('drumSamples/bass_sample.mp3', () => {})
 
     allBlackGrid = generateColorArray()
     allRedGrid = generateColorArray()
