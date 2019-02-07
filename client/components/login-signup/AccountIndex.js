@@ -4,6 +4,8 @@ import {withFirebase} from '../../firebase/FirebaseContext'
 import {withStyles, Typography, Paper} from '@material-ui/core'
 import {compose} from 'recompose'
 import PropTypes from 'prop-types'
+import {PasswordForgetForm} from './PasswordForget.js'
+import PasswordChangeForm from './PasswordChange.js'
 import {withAuthorization} from '../login-signup/withAuthorization.js'
 import {AuthUserContext} from '../login-signup/SessionContext.js'
 
@@ -112,7 +114,7 @@ const CanvasRender = ({classes, props, state, preset}) => {
                   width="80px"
                   height="60px"
                 />
-                <Typography>
+                <Typography component="span">
                   <h6>{singleCanvas.filename}</h6>
                 </Typography>
               </Link>
@@ -149,12 +151,22 @@ class AccountIndex extends Component {
         <AuthUserContext.Consumer>
           {authUser => (
             <div>
-              <CanvasRender
-                classes={classes}
-                props={this.props}
-                state={this.state}
-                preset={preset1}
-              />
+              <div>
+                <h1>
+                  Account: Welcome, {this.props.firebase.auth.currentUser.email},
+                  you cheeky monkey!
+                </h1>
+                <PasswordForgetForm />
+                <PasswordChangeForm />
+              </div>
+              <div>
+                <CanvasRender
+                  classes={classes}
+                  props={this.props}
+                  state={this.state}
+                  preset={preset1}
+                />
+              </div>
             </div>
           )}
         </AuthUserContext.Consumer>
