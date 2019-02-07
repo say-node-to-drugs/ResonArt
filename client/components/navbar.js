@@ -67,7 +67,7 @@ const styles = {
   button: {
     paddingLeft: 5,
     paddingRight: 5,
-    width: '8vw'
+    width: '14vw'
   },
   toolbar: {
     display: 'flex',
@@ -80,7 +80,7 @@ function Navigation(props) {
   return (
     <AuthUserContext.Consumer>
       {authUser =>
-        authUser ? (
+        (authUser ? (
           <div className={classes.buttonDiv}>
             <Button className={classes.button} component={Link} to="/studio">
               Studio
@@ -111,7 +111,7 @@ function Navigation(props) {
               Sign Up
             </Button>
           </div>
-        )
+        ))
       }
     </AuthUserContext.Consumer>
   )
