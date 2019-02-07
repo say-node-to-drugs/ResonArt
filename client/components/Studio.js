@@ -22,6 +22,12 @@ class Studio extends React.Component {
     this.drum = new window.p5(DrumSketch, 'drumP5Wrapper')
     this.palette = new window.p5(PaletteSketch, 'paletteP5Wrapper')
     this.palette.firebase = this.props.firebase
+
+    if(this.props.firebase.loaded) {
+      this.palette.loadPreset = this.props.firebase.loaded[0]
+      console.log("IN STUDIO")
+      console.log(this.palette.loadPreset)
+    }
   }
 
   render() {

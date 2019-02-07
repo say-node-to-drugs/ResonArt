@@ -1,4 +1,4 @@
-import {drums} from './DrumSketch'
+import {DrumSketch, drums} from './DrumSketch'
 import {saveCanvasToFirebase} from '../../firebase/saveCanvas.js'
 import {loadCanvasFromFirebase} from '../../firebase/loadCanvas.js'
 import {loadCanvasFirebase} from '../LandingPage.js'
@@ -6,13 +6,14 @@ import {loadCanvasFirebase} from '../LandingPage.js'
 const PaletteSketch = p => {
   let recorder, soundFile, canvas
   let prevX, prevY
-  let state = 0
+  let drawState = 0
   let synth, synth2, synth3
   let color = 'black'
   let synth1Phrase, synth2Phrase, synth3Phrase
   let isPlaying = false
   let synth1Pattern, synth2Pattern, synth3Pattern
   let synth1Sound, synth2Sound, synth3Sound
+  let doneLoadingPreset = false;
   const notes = [
     38,
     40,
@@ -62,29 +63,24 @@ const PaletteSketch = p => {
   }
 
   p.setup = () => {
-    console.log('in palette sketch')
-    console.log(p)
-    // Create our canvas
-
-    //loadPresetPalette();
 
     canvas = p.createCanvas(width, height)
     canvas.parent('sketchPad')
     canvas.style('display', 'block')
     canvas.class('palette')
-
-  
+    
+    
     p.background(255)
     p.fill(0)
     drawGridLines()
     p.strokeWeight(10)
     
-
+    
     // Create instruments
     synth = new p5.Oscillator()
     synth.setType('sine')
     synth.freq(0)
-
+    
     synth2 = new p5.Oscillator()
     synth2.setType('sawtooth')
     synth2.freq(0)
@@ -92,7 +88,7 @@ const PaletteSketch = p => {
     synth3 = new p5.Oscillator()
     synth3.setType('triangle')
     synth3.freq(0)
-
+    
     // Setup phrases to loop
     synth1Phrase = new p5.Phrase(
       'synth1Sound',
@@ -125,17 +121,17 @@ const PaletteSketch = p => {
       },
       synth3Pattern
     )
-
+    
     drums.setBPM('80')
-
+    
     // create a sound recorder
     recorder = new p5.SoundRecorder()
     recorder.setInput()
     soundFile = new p5.SoundFile()
 
     /*
-  ----------------------------------------------------------
-                    Buttons
+    ----------------------------------------------------------
+    Buttons
   ----------------------------------------------------------
   */
 
@@ -147,15 +143,8 @@ const PaletteSketch = p => {
     radio.option('Sawtooth', 'red')
     radio.option('Triangle', 'blue')
     radio.option('Sine', 'black')
+    radio.option('Eraser', 'eraser')
     radio.value('black')
-
-    // ERASER
-    eraser = p.createButton('Eraser')
-    eraser.mousePressed(() => {
-      color = 'eraser'
-    })
-    eraser.parent('audioButtons')
-    eraser.class('eraserButton')
 
     // PLAY AUDIO
     play = p.createButton('Play')
@@ -235,9 +224,6 @@ const PaletteSketch = p => {
     load = p.createButton('Load Canvas')
     load.mousePressed(async () => {
       // This pulls a saved canvas from firebase
-
-      console.log('IN LOAD PRESET BUTTON')
-      console.log(p.firebase)
 
       await loadCanvasFromFirebase(p)
 
@@ -327,7 +313,15 @@ const PaletteSketch = p => {
                      Draw Function
   ----------------------------------------------------------
   */
-  p.draw = () => {
+  p.draw = async () => {
+    
+    if(p.loadPreset && !doneLoadingPreset) {
+      try {
+        await loadPresetPalette(p.loadPreset)
+      } catch(error) {
+        console.log(error)
+      }
+    }
     // Sets color according to radio button value
     color = radio.value()
 
@@ -337,7 +331,7 @@ const PaletteSketch = p => {
       prevY = p.mouseY
     }
 
-    if (state) {
+    if (drawState) {
       // Gives us a value between 30 and  80 (good audible frequencies)
       if (isWithinBounds(p.mouseX, p.mouseY)) {
         // Start stroke and play audio based on color
@@ -549,11 +543,29 @@ const PaletteSketch = p => {
       }
     }
   
-  const loadPresetPalette = async () => {
-    if(p.firebase.loaded[0].loadPreset) {
-      let preset = await loadCanvasFirebase(p.firebase)
+  const loadPresetPalette = async (preset) => {
       console.log(preset)
-    }
+
+      drums.loadDrums = preset.loadDrums
+      p.loadImage(
+        preset.dataURL.imageData,
+        img => {
+          img.resize(width, height)
+          p.image(img, 0, 0)
+        }
+      )
+      allBlackGrid = preset.black
+      allRedGrid = preset.red
+      allBlueGrid = preset.blue
+
+      drums.phrases[0].sequence = preset.hh
+      drums.phrases[1].sequence = preset.clap
+      drums.phrases[2].sequence = preset.bass
+      drums.phrases[3].sequence = preset.seq
+
+      console.log(drums.phrases)
+
+      doneLoadingPreset = true;
   }
 
   const mousePress = (x, y) => {
@@ -567,13 +579,13 @@ const PaletteSketch = p => {
         synth3.start()
       }
       mouseDrag(x, y)
-      // Set state to 1 so the draw() function knows to make lines and produce audio
-      state++
+      // Set drawState to 1 so the draw() function knows to make lines and produce audio
+      drawState++
       // Reset the previous mouse position
       prevX = 0
       prevY = 0
     } else {
-      state = 0
+      drawState = 0
       synth.amp(0)
       synth2.amp(0)
       synth3.amp(0)
@@ -588,24 +600,8 @@ const PaletteSketch = p => {
     } else if (color === 'blue' && isPlaying === false) {
       fadeOutInstrument(synth3)
     }
-    state = 0
+    drawState = 0
   }
 }
-//_______________WILL BE USED LATER________________________________________
-//
-// function LZcompressed(array) {
-//   var string = String.fromCharCode.apply(null, array);
-//   var compressed = LZString.compress(string);
-//   var decompressed = LZString.decompress(compressed);
-//   var dearray = [];
-//   for (var i = 0; i < decompressed.length; i++) {
-//     dearray[i] = decompressed.charCodeAt(i);
-//   }
-//   console.log('LZ - ORIG. ARRAY: ', array.length, array);
-//   console.log('LZ - ARRAY TO STRING: ', string.length, string);
-//   console.log('LZ - COMPRESSED: ', compressed.length, compressed);
-//   console.log('LZ - DECOMPRESSED: ', decompressed.length, decompressed);
-//   console.log('LZ - DECOMP. ARRAY: ', dearray.length, dearray);
-// }
 
 export default PaletteSketch
