@@ -2,13 +2,12 @@ import React from 'react'
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import {Studio, Navbar} from './components'
 import {Login, CreateAccount} from './components/index'
-import {SignOutIndex} from './components/login-signup/SignOutIndex'
 import {AccountIndex} from './components/login-signup/AccountIndex'
 import {PasswordForgetPage} from './components/login-signup/PasswordForget.js'
 import {AdminIndex} from './components/admin/AdminIndex'
 import {withAuthentication} from './components/login-signup/withAuthentication.js'
 import {AuthUserContext} from './components/login-signup/SessionContext.js'
-import LandingPage from './components/LandingPage';
+import LandingPage from './components/LandingPage'
 
 const App = props => (
   <Router>
@@ -27,7 +26,6 @@ const App = props => (
           path="/home"
           render={() => <LandingPage {...props} firebase={props.firebase} />}
         />
-        <Route path="/signout" component={SignOutIndex} />
         <Route path="/forgot" component={PasswordForgetPage} />
         <Route path="/admin" component={AdminIndex} />
         {/* Displays our Login component as a fallback */}

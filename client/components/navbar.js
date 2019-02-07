@@ -13,6 +13,11 @@ import {
   Avatar
 } from '@material-ui/core'
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles'
+import toastr from 'toastr'
+
+toastr.options = {
+  timeOut: 2000
+}
 
 const theme = createMuiTheme({
   palette: {
@@ -83,6 +88,7 @@ function Navigation(props) {
             <Button
               onClick={() => {
                 firebase.doSignOut()
+                toastr.success('AND NEVER COME BACK')
               }}
               to="/home"
               className={classes.button}
