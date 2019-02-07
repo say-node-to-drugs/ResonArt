@@ -216,64 +216,11 @@ const PaletteSketch = p => {
     // LOAD PRESET CANVAS
     // ------------------
     load = p.createButton('Load Canvas')
-    load.mousePressed(async () => {
-      // This pulls a saved canvas from firebase
-
-      await loadCanvasFromFirebase(p)
-
-      /*  THIS WILL EVENTUALLY REPLACE ALL THE OTHER LOGIC IN THIS BUTTON
-
-    function greet() {
-      window.location.href = '/account'
-    }
-    load.mousePressed(greet)
-    --------------------------------------------------------------------*/
-
-      console.log('GET VALUE FROM BUTTON PRESSED: ', p.firebase.loaded)
-      console.log(
-        'GET LATEST VALUE FROM BUTTON PRESSED: ',
-        p.firebase.loaded[p.firebase.loaded.length - 1]
-      )
-      console.log('DRUMS LOAD: ', drums.phrases)
-      drums.loadDrums = p.firebase.loadDrums
-
-      console.log('DRUMS LOAD: ', drums.loadDrums)
-      /*
-      THIS IS ALL A PLACEHOLDER FOR CODE ONCE WE KNOW HOW WE WILL USE THIS DATA
-      */
-      p.loadImage(
-        p.firebase.loaded[p.firebase.loaded.length - 1].dataURL.imageData,
-        img => {
-          img.resize(width, height)
-          p.image(img, 0, 0)
-        }
-      )
-      allBlackGrid = p.firebase.loaded[p.firebase.loaded.length - 1].black
-      allBlackGrid.forEach(function(elem, idx) {
-        elem = [].concat.apply([], elem)
-        allBlackGrid[idx] = elem
-      })
-
-      allRedGrid = p.firebase.loaded[p.firebase.loaded.length - 1].red
-      allRedGrid.forEach(function(elem, idx) {
-        elem = [].concat.apply([], elem)
-        allRedGrid[idx] = elem
-      })
-
-      allBlueGrid = p.firebase.loaded[p.firebase.loaded.length - 1].blue
-      allBlueGrid.forEach(function(elem, idx) {
-        elem = [].concat.apply([], elem)
-        allBlueGrid[idx] = elem
-      })
-
-      drums.phrases[0].sequence =
-        p.firebase.loaded[p.firebase.loaded.length - 1].hh
-      drums.phrases[1].sequence =
-        p.firebase.loaded[p.firebase.loaded.length - 1].clap
-      drums.phrases[2].sequence =
-        p.firebase.loaded[p.firebase.loaded.length - 1].bass
-      drums.phrases[3].sequence =
-        p.firebase.loaded[p.firebase.loaded.length - 1].seq
+    load.mousePressed(() => {
+      function greet() {
+        window.location.href = '/account'
+      }
+      greet()
     })
 
     load.parent('saveButtons')

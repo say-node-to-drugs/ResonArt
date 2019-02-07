@@ -83,7 +83,7 @@ export const loadCanvasFirebase = async firebase => {
     })
 }
 
-const CanvasRender = ({classes, props, state, preset}) => {
+const CanvasRender = ({classes, props}) => {
   return (
     <div className={classes.accountContainer}>
       {props.firebase.loaded.map((singleCanvas, index) => {
@@ -146,7 +146,6 @@ class AccountIndex extends Component {
     const {classes} = this.props
     console.log(this.state)
     if (this.state.palettes.length) {
-      let preset1 = this.state.palettes[1].dataURL.imageData
       return (
         <AuthUserContext.Consumer>
           {authUser => (
@@ -160,12 +159,7 @@ class AccountIndex extends Component {
                 <PasswordChangeForm />
               </div>
               <div>
-                <CanvasRender
-                  classes={classes}
-                  props={this.props}
-                  state={this.state}
-                  preset={preset1}
-                />
+                <CanvasRender classes={classes} props={this.props} />
               </div>
             </div>
           )}
