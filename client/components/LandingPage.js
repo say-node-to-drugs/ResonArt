@@ -49,7 +49,11 @@ class LandingPage extends Component {
     const {classes} = this.props
     console.log(this.state)
     if (this.state.palettes.length) {
-      let preset1 = this.state.palettes[0].dataURL.imageData
+      this.props.firebase.loaded.selectedNumber = 0
+      //Bradley, I made this change so that I could pass the index value from the Account Loading page/ I'm setting this to '0' here so that I don't mess up your Landing page.
+      let preset1 = this.state.palettes[
+        this.props.firebase.loaded.selectedNumber
+      ].dataURL.imageData
       return (
         <div>
           <Paper className={classes.paper}>
@@ -57,11 +61,18 @@ class LandingPage extends Component {
               to="/studio"
               {...this.props}
               onClick={() => {
-                this.props.firebase.loaded[0].loadPreset = true
+                this.props.firebase.loaded[
+                  this.props.firebase.loaded.selectedNumber
+                ].loadPreset = true
               }}
             >
               <img src={preset1} width="300px" height="200px" />
-              <Typography>{this.state.palettes[0].filename}</Typography>
+              <Typography>
+                {
+                  this.state.palettes[this.props.firebase.loaded.selectedNumber]
+                    .filename
+                }
+              </Typography>
             </Link>
           </Paper>
         </div>
