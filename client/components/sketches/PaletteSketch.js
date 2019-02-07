@@ -1,6 +1,7 @@
 import {DrumSketch, drums} from './DrumSketch'
 import {saveCanvasToFirebase} from '../../firebase/saveCanvas.js'
 import {loadCanvasFromFirebase} from '../../firebase/loadCanvas.js'
+import toastr from 'toastr'
 import {loadCanvasFirebase} from '../LandingPage.js'
 
 const PaletteSketch = p => {
@@ -181,6 +182,7 @@ const PaletteSketch = p => {
     // DOWNLOAD AUDIO
     download = p.createButton('Download')
     download.mousePressed(() => {
+      toastr.success('nice!')
       isPlaying = true
       drums.metro.metroTicks = 0
       downloadCounter = 0

@@ -21,6 +21,11 @@ import {
   Typography
 } from '@material-ui/core'
 import PropTypes from 'prop-types'
+import toastr from 'toastr'
+
+toastr.options = {
+  timeOut: 2000
+}
 
 const styles = theme => ({
   root: {
@@ -75,7 +80,8 @@ class SignInForm extends Component {
       .doSignInWithEmailAndPassword(email, password)
       .then(() => {
         this.setState({...INITIAL_STATE})
-        this.props.history.push('/home')
+        this.props.history.push('/studio')
+        toastr.success('Welcome')
       })
       .catch(error => {
         this.setState({error})
