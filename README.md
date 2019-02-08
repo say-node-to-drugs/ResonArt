@@ -20,10 +20,8 @@ Schema Design - https://bit.ly/2S0p1OP
 **Full Features**
 
 * Social media features.
-* Social Media games and competitions.
-* Social Media collaborative canvases and Projects.
+* Collaborative canvases and Projects.
 * Social media games, like a "Words With Friends" implementation where each person adds a chunk to the canvas.
-* Users can purchase saved drawings from other users with the site's virtual currency.
 * Able to extend the length of the canvas.
 * BPM control.
 * Public canvases are open to all users.
@@ -33,10 +31,6 @@ Schema Design - https://bit.ly/2S0p1OP
 **TECH STACK**
 
 * React.js
-* Redux.js
 * P5.js (audio)
-* Tone.js (audio)
 * Firebase (back-end)
 * Material.ui (css styling)
-* three.js / paper.js (optional visualizer)
-* React Native (optional if we have time)
