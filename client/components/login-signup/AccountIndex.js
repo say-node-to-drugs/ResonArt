@@ -22,8 +22,8 @@ const styles = theme => ({
     }
   },
   paper: {
-    width: 60,
-    height: 110,
+    width: 200,
+    height: 125,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -94,8 +94,10 @@ const CanvasRender = ({classes, props}) => {
                 to="/studio"
                 {...props}
                 onClick={() => {
+                  console.log(singleCanvas)
                   singleCanvas.loadPreset = true
                   props.firebase.loaded.selectedNumber = index
+                  props.firebase.loadPreset = singleCanvas
                   singleCanvas.black = fireObjectToArray(
                     singleCanvas.black,
                     'black'
@@ -111,8 +113,8 @@ const CanvasRender = ({classes, props}) => {
               >
                 <img
                   src={singleCanvas.dataURL.imageData}
-                  width="80px"
-                  height="60px"
+                  width="200px"
+                  height="125px"
                 />
                 <Typography component="span">
                   <h6>{singleCanvas.filename}</h6>
@@ -144,7 +146,7 @@ class AccountIndex extends Component {
 
   render() {
     const {classes} = this.props
-    console.log(this.state)
+    //console.log(this.state)
     if (this.state.palettes.length) {
       return (
         <AuthUserContext.Consumer>

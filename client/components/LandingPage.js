@@ -19,10 +19,17 @@ const styles = theme => ({
     }
   },
   paper: {
-    width: 300,
-    marginTop: 0,
+    width: 200,
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px`
+  },
+  paperHeader: {
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
@@ -53,15 +60,17 @@ class LandingPage extends Component {
       return (
         <div>
           <div className='presetList' width='600px'>
-            <Typography variant='display1' align='center'>
-              Welcome to ResonArt! 
-            </Typography>
-            <Typography variant='body1'>  
-              "Drawing never sounded so good."
-              Get started by clicking 'New Canvas' in the navigation bar, or click on one of the presets below! Each palette represents notes on a scale (Y-axis) playing over time (X-axis). Simply draw with three different colors along the plane and fill in the drum machine grid to create a melody!
-            </Typography>
+            <Paper className={classes.paperHeader}>
+              <Typography variant='display1' align='center'>
+                Welcome to ResonArt! 
+              </Typography>
+              <Typography variant='body1'>  
+                "Drawing never sounded so good."
+                Get started by clicking 'New Canvas' in the navigation bar, or click on one of the presets below! Each palette represents notes on a scale (Y-axis) playing over time (X-axis). Simply draw with three different colors along the plane and fill in the drum machine grid to create a melody!
+              </Typography>
+            </Paper>
           </div>
-          <Typography variant='headline'>
+          <Typography variant='headline' className="landingHeader" align='center' margin='20px'>
             Canvas Examples
           </Typography>
           <div className='presetList'>
@@ -71,8 +80,9 @@ class LandingPage extends Component {
                   <Link to="/studio" {...this.props} onClick={() => {
                     this.props.firebase.selectedNumber = index;
                     this.props.firebase.loadPreset = preset;
+                    this.props.firebase.loaded = true;
                   }}>
-                    <img src={preset.dataURL.imageData} width="300px" height="200px" />
+                    <img src={preset.dataURL.imageData} width="200px" height="125px" />
                     <Typography align='center' variant='title'>{ preset.filename }</Typography>
                   </Link>
                 </Paper>

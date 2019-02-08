@@ -14,7 +14,7 @@ const PaletteSketch = p => {
   let synth1Pattern, synth2Pattern, synth3Pattern
   let synth1Sound, synth2Sound, synth3Sound
   let doneLoadingPreset = false
-  const notes = [
+  const cMajorScale = [
     38,
     40,
     42,
@@ -36,6 +36,51 @@ const PaletteSketch = p => {
     69,
     71
   ]
+  let notes = cMajorScale;
+  let pentatonicScale = [
+    38,
+    40,
+    43,
+    45,
+    48,
+    50,
+    52,
+    55,
+    57,
+    60,
+    62,
+    64,
+    67,
+    69, 
+    72,
+    74,
+    76,
+    79,
+    81,
+    84
+  ]
+  let dMajorScale = [
+    50,
+    52,
+    54,
+    55,
+    57,
+    59,
+    61,
+    62,
+    64,
+    66,
+    67,
+    69,
+    71,
+    73,
+    74,
+    74,
+    76,
+    78,
+    79,
+    81
+  ]
   let scaleDifference = notes[notes.length - 1] - notes[0]
   let allBlackGrid, allRedGrid, allBlueGrid
   let downloading = false
@@ -46,7 +91,7 @@ const PaletteSketch = p => {
   let height = p.windowHeight * (4 / 10)
 
   // buttons
-  let play, stop, download, clearCanvas, load, eraser, radio
+  let play, stop, download, clearCanvas, load, eraser, radio, pScale, dScale, cScale
 
   p.preload = () => {
     synth1Sound = new p5.SoundFile()
@@ -166,6 +211,7 @@ const PaletteSketch = p => {
       isPlaying = false
       synth.stop()
       synth2.stop()
+      synth3.stop()
       drums.stop()
     })
     stop.parent('audioButtons')
@@ -205,6 +251,11 @@ const PaletteSketch = p => {
     clearCanvas = p.createButton('Clear Canvas')
     clearCanvas.mousePressed(() => {
       function greet() {
+        isPlaying = false
+        synth.stop()
+        synth2.stop()
+        synth3.stop()
+        drums.stop()
         window.location.href = '/studio'
       }
       greet()
@@ -212,12 +263,42 @@ const PaletteSketch = p => {
     clearCanvas.parent('audioButtons')
     clearCanvas.class('clearButton')
 
+    // Buttons for different scales
+    pScale = p.createButton('Pentatonic Scale')
+    pScale.mousePressed(() => {
+      notes = pentatonicScale;
+      loadPaletteArrangement();
+    })
+    pScale.parent('audioButtons')
+    pScale.class('loadButton')
+
+    dScale = p.createButton('D Major Scale')
+    dScale.mousePressed(() => {
+      notes = dMajorScale;
+      loadPaletteArrangement();
+    })
+    dScale.parent('audioButtons')
+    dScale.class('loadButton')
+
+    cScale = p.createButton('C Major Scale')
+    cScale.mousePressed(() => {
+      notes = cMajorScale;
+      loadPaletteArrangement();
+    })
+    cScale.parent('audioButtons')
+    cScale.class('loadButton')
+
     // ------------------
     // LOAD PRESET CANVAS
     // ------------------
     load = p.createButton('Load Canvas')
     load.mousePressed(() => {
       function greet() {
+        isPlaying = false
+        synth.stop()
+        synth2.stop()
+        synth3.stop()
+        drums.stop()
         window.location.href = '/account'
       }
       greet()

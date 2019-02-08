@@ -25,9 +25,11 @@ class Studio extends React.Component {
 
     if (this.props.firebase.loaded) {
       this.palette.loadPreset = this.props.firebase.loadPreset
-      console.log('IN STUDIO')
-      console.log(this.palette.loadPreset)
     }
+  }
+  componentWillUnmount() {
+    this.palette.loadPreset = [];
+    this.props.firebase.loaded = false;
   }
 
   render() {
