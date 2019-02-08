@@ -2,7 +2,7 @@
 
 **Description**
 
-Creating music from paint canvases for all ages!
+ResonArt is a web app that translates paint strokes on a canvas into music. It features multiple synth instruments, a drum rack, BPM control, several music scales, and user accounts that allow for saving drawings/songs to our database. 
 
 Wireframes - https://bit.ly/2S4XUlA <br />
 Schema Design - https://bit.ly/2S0p1OP
