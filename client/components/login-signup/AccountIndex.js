@@ -1,13 +1,27 @@
 import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
 import {withFirebase} from '../../firebase/FirebaseContext'
-import {withStyles, Typography, Paper} from '@material-ui/core'
+import {
+  withStyles,
+  Button,
+  Paper,
+  FormControl,
+  Input,
+  InputLabel,
+  CssBaseline,
+  Typography
+} from '@material-ui/core'
 import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 import {PasswordForgetForm} from './PasswordForget.js'
 import PasswordChangeForm from './PasswordChange.js'
 import {withAuthorization} from '../login-signup/withAuthorization.js'
 import {AuthUserContext} from '../login-signup/SessionContext.js'
+import toastr from 'toastr'
+
+toastr.options = {
+  timeOut: 2000
+}
 
 const styles = theme => ({
   root: {
@@ -32,10 +46,21 @@ const styles = theme => ({
       .spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
     margin: `${theme.spacing.unit}px`
   },
+  password: {
+    width: 600,
+    height: 140,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+    margin: `${theme.spacing.unit}px`
+  },
   accountContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    alignItems: 'center',
+    justifyContent: 'flex-center',
     paddingTop: 'inherit',
     margin: `${theme.spacing.unit * 3}px`
   }
@@ -79,53 +104,66 @@ export const loadCanvasFirebase = async firebase => {
       return firebase.loaded
     })
     .catch(error => {
-      console.log(error)
+      toastr.error(error)
     })
 }
 
 const CanvasRender = ({classes, props}) => {
-  return (
-    <div className={classes.accountContainer}>
-      {props.firebase.loaded.map((singleCanvas, index) => {
-        return (
-          <div key={'CNV' + index}>
-            <Paper className={classes.paper}>
-              <Link
-                to="/studio"
-                {...props}
-                onClick={() => {
-                  console.log(singleCanvas)
-                  singleCanvas.loadPreset = true
-                  props.firebase.loaded.selectedNumber = index
-                  props.firebase.loadPreset = singleCanvas
-                  singleCanvas.black = fireObjectToArray(
-                    singleCanvas.black,
-                    'black'
-                  )
-                  singleCanvas.blue = fireObjectToArray(
-                    singleCanvas.blue,
-                    'blue'
-                  )
-                  singleCanvas.red = fireObjectToArray(singleCanvas.red, 'red')
+  if (props.firebase.loaded < 1) {
+    return <div />
+  } else {
+    return (
+      <div className={classes.accountContainer}>
+        {props.firebase.loaded.map((singleCanvas, index) => {
+          return (
+            <div key={'CNV' + index}>
+              <Paper className={classes.paper}>
+                <Link
+                  to="/studio"
+                  {...props}
+                  onClick={() => {
+                    props.firebase.loaded.selectedNumber = index
+                    props.firebase.loadPreset = singleCanvas
+                    singleCanvas.black = fireObjectToArray(
+                      singleCanvas.black,
+                      'black'
+                    )
+                    singleCanvas.blue = fireObjectToArray(
+                      singleCanvas.blue,
+                      'blue'
+                    )
+                    singleCanvas.red = fireObjectToArray(
+                      singleCanvas.red,
+                      'red'
+                    )
 
-                  console.log('SELECTED CANVAS DATA: ', singleCanvas)
-                }}
-              >
-                <img
-                  src={singleCanvas.dataURL.imageData}
-                  width="200px"
-                  height="125px"
-                />
-                <Typography component="span">
-                  <h6>{singleCanvas.filename}</h6>
-                </Typography>
-              </Link>
-            </Paper>
-          </div>
-        )
-      })}
-    </div>
-  )
+                    console.log('SELECTED CANVAS DATA: ', singleCanvas)
+                  }}
+                >
+                  <img
+                    src={singleCanvas.dataURL.imageData}
+                    width="100px"
+                    height="80px"
+                  />
+                  <Typography component="span">
+                    <p2>{singleCanvas.filename}</p2>
+                  </Typography>
+                </Link>
+              </Paper>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+}
+
+const callName = user => {
+  if (user) {
+    return user.email
+  } else {
+    return user.email
+  }
 }
 
 const INITIAL_STATE = {
@@ -146,20 +184,32 @@ class AccountIndex extends Component {
 
   render() {
     const {classes} = this.props
-    //console.log(this.state)
+    console.log(this.props)
+    console.log('ACCOUNT NAME: ', this.props.firebase.auth)
     if (this.state.palettes.length) {
       return (
         <AuthUserContext.Consumer>
           {authUser => (
             <div>
               <div>
-                <h1>
-                  Account: Welcome, {this.props.firebase.auth.currentUser.email},
-                  you cheeky monkey!
-                </h1>
-                <PasswordForgetForm />
-                <PasswordChangeForm />
+                <br />
+                <Typography component="h1" variant="h5" align="center">
+                  Welcome, {callName(this.props.firebase.auth.currentUser)}
+                </Typography>
+                <br />
+                <div>
+                  <PasswordForgetForm
+                    alignItems="center"
+                    justify="center"
+                    classes={classes}
+                  />
+                </div>
               </div>
+              <br />
+              <br />
+              <Typography component="h1" variant="h5" align="center">
+                Select a saved canvas:
+              </Typography>
               <div>
                 <CanvasRender classes={classes} props={this.props} />
               </div>
@@ -167,8 +217,31 @@ class AccountIndex extends Component {
           )}
         </AuthUserContext.Consumer>
       )
+    } else {
+      return (
+        <AuthUserContext.Consumer>
+          {authUser => (
+            <div>
+              <div>
+                <br />
+                <Typography component="h1" variant="h4">
+                  Welcome, {callName(this.props.firebase.auth.currentUser)}
+                </Typography>
+                <br />
+                <div style={{textAlign: 'flex-center'}}>
+                  <PasswordForgetForm classes={classes} />
+                </div>
+              </div>
+              <br />
+              <br />
+              <Typography component="h1" variant="h5">
+                No canvases currently saved.
+              </Typography>
+            </div>
+          )}
+        </AuthUserContext.Consumer>
+      )
     }
-    return <div>Loading...</div>
   }
 }
 

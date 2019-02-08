@@ -1,6 +1,5 @@
 import {drums, hPhrase, cPhrase, bPhrase, updatePatterns} from './DrumSketch'
 import {saveCanvasToFirebase} from '../../firebase/saveCanvas.js'
-import {loadCanvasFromFirebase} from '../../firebase/loadCanvas.js'
 import toastr from 'toastr'
 
 const PaletteSketch = p => {
@@ -97,7 +96,6 @@ const PaletteSketch = p => {
     synth1Sound = new p5.SoundFile()
     synth2Sound = new p5.SoundFile()
     synth3Sound = new p5.SoundFile()
-
 
     allBlackGrid = generateColorArray()
     allRedGrid = generateColorArray()
@@ -218,7 +216,7 @@ const PaletteSketch = p => {
     stop.class('stopButton')
 
     // SAVE IMAGE
-    let saveImage = p.createButton('Save Canvas')
+    let saveImage = p.createButton('Save')
     saveImage.mousePressed(() => {
       saveCanvasToFirebase(p, allBlackGrid, allRedGrid, allBlueGrid) // This saves to Firebase
     })
@@ -248,7 +246,7 @@ const PaletteSketch = p => {
     download.class('downloadButton')
 
     // CLEAR PALETTE
-    clearCanvas = p.createButton('Clear Canvas')
+    clearCanvas = p.createButton('Clear')
     clearCanvas.mousePressed(() => {
       function greet() {
         isPlaying = false
@@ -291,7 +289,7 @@ const PaletteSketch = p => {
     // ------------------
     // LOAD PRESET CANVAS
     // ------------------
-    load = p.createButton('Load Canvas')
+    load = p.createButton('Load')
     load.mousePressed(() => {
       function greet() {
         isPlaying = false
@@ -346,13 +344,13 @@ const PaletteSketch = p => {
   p.draw = async () => {
     // Sets color according to radio button value
     color = radio.value()
-    
+
     // Set previous mouse position correctly if starting a new line
     if (prevX === 0) {
       prevX = p.mouseX
       prevY = p.mouseY
     }
-    
+
     if (drawState) {
       // Gives us a value between 30 and  80 (good audible frequencies)
       if (isWithinBounds(p.mouseX, p.mouseY)) {
@@ -376,7 +374,7 @@ const PaletteSketch = p => {
     }
     loadPaletteArrangement()
   }
-  
+
   /*
   ----------------------------------------------------------
                      Key Press Handler
@@ -573,7 +571,6 @@ const PaletteSketch = p => {
   }
 
   const loadPresetPalette = async preset => {
-
     drums.loadDrums = preset.loadDrums
     p.loadImage(preset.dataURL.imageData, img => {
       img.resize(width, height)

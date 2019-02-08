@@ -132,11 +132,11 @@ form div {
   margin: 10px;
 }
 
-.saveButton {
+.eraserButton {
   background: transparent;
   border: 1px solid white;
   border-radius: 10px;
-  color: #5c374c;
+  color: white;
   height: 36px;
   margin: 10px;
 }
@@ -147,7 +147,9 @@ form div {
   border-radius: 10px;
   color: green;
   height: 36px;
+  width: 50px;
   margin: 10px;
+  box-shadow: 0 4px 8px 0 grey, 0 6px 20px 0 grey;
 }
 
 .stopButton {
@@ -156,25 +158,9 @@ form div {
   border-radius: 10px;
   color: red;
   height: 36px;
+  width: 50px;
   margin: 10px;
-}
-
-.eraserButton {
-  background: transparent;
-  border: 1px solid white;
-  border-radius: 10px;
-  color: white;
-  height: 36px;
-  margin: 10px;
-}
-
-.downloadButton {
-  background: transparent;
-  border: 1px solid white;
-  border-radius: 10px;
-  color: #985277;
-  height: 36px;
-  margin: 10px;
+  box-shadow: 0 4px 8px 0 grey, 0 6px 20px 0 grey;
 }
 
 .clearButton {
@@ -183,6 +169,28 @@ form div {
   border-radius: 10px;
   color: white;
   height: 36px;
+  width: 50px;
+  margin: 10px;
+  box-shadow: 0 4px 8px 0 grey, 0 6px 20px 0 grey;
+}
+
+.saveButton {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: black;
+  height: 36px;
+  width: 75px;
+  margin: 10px;
+}
+
+.downloadButton {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: black;
+  height: 36px;
+  width: 75px;
   margin: 10px;
 }
 
@@ -190,8 +198,9 @@ form div {
   background: transparent;
   border: 1px solid white;
   border-radius: 10px;
-  color: #ce6a85;
+  color: black;
   height: 36px;
+  width: 75px;
   margin: 10px;
 }
 

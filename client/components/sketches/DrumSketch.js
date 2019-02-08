@@ -17,7 +17,6 @@ const DrumSketch = p => {
   let clap
   let bass
 
-
   p.preload = () => {
     hh = p.loadSound('drumSamples/hh_sample.mp3', () => {})
     clap = p.loadSound('drumSamples/clap_sample.mp3', () => {})
@@ -103,8 +102,6 @@ const DrumSketch = p => {
 
   // Draw function
   p.drawMatrix = () => {
-    console.log('about to draw matrix')
-    console.log(cPhrase)
     p.background('#FF8C61')
     p.stroke('#5C374C')
     p.strokeWeight(4)
@@ -143,7 +140,6 @@ const DrumSketch = p => {
 
   p.sequence = (time, beatIndex) => {
     setTimeout(() => {
-      console.log('drawing the matrix')
       // syncs up the timing so the beats and the playhead are in sync
       p.drawMatrix()
       p.drawMatrixPlayhead(beatIndex)
@@ -158,15 +154,12 @@ const DrumSketch = p => {
 }
 
 const updatePatterns = (newHPattern, newCPattern, newBPattern) => {
-  hPhrase.sequence = newHPattern;
-  cPhrase.sequence = newCPattern;
-  bPhrase.sequence = newBPattern;
+  hPhrase.sequence = newHPattern
+  cPhrase.sequence = newCPattern
+  bPhrase.sequence = newBPattern
 
   drums.start()
   drums.stop()
-
-  console.log("UPDATED SEQUENCES")
-  console.log(cPhrase)
 }
 
 export {DrumSketch, drums, hPhrase, cPhrase, bPhrase, updatePatterns}

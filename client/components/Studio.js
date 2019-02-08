@@ -34,7 +34,6 @@ class Studio extends React.Component {
 
   render() {
     const {classes} = this.props
-    var appUser = this.props.firebase.auth.currentUser
     return (
       <Grid container className={classes.root} justify="center">
         <Grid item sm={3} id="spacer" className="spacer" />

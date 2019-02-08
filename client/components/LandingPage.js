@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
 import {withFirebase} from '../firebase/FirebaseContext'
 import {withStyles, Typography, Paper} from '@material-ui/core'
-import Avatar from '@material-ui/core/Avatar';
+import Avatar from '@material-ui/core/Avatar'
 import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 
@@ -56,9 +56,10 @@ class LandingPage extends Component {
   render() {
     const {classes} = this.props
     if (this.state.palettes.length) {
-      let presets = this.state.palettes;
+      let presets = this.state.palettes
       return (
         <div>
+
           <div className='presetList' width='600px'>
             <Paper className={classes.paperHeader}>
               <Typography variant='display1' align='center'>
@@ -88,6 +89,7 @@ class LandingPage extends Component {
                 </Paper>
               ))
             }
+
           </div>
         </div>
       )

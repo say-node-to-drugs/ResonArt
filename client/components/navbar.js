@@ -62,12 +62,12 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '20vw'
+    width: '30vw'
   },
   button: {
     paddingLeft: 5,
     paddingRight: 5,
-    width: '8vw'
+    width: '14vw'
   },
   toolbar: {
     display: 'flex',
@@ -82,6 +82,9 @@ function Navigation(props) {
       {authUser =>
         (authUser ? (
           <div className={classes.buttonDiv}>
+            <Button className={classes.button} component={Link} to="/studio">
+              Studio
+            </Button>
             <Button className={classes.button} component={Link} to="/account">
               Account
             </Button>
@@ -98,9 +101,12 @@ function Navigation(props) {
           </div>
         ) : (
           <div className={classes.buttonDiv}>
+            <Button className={classes.button} component={Link} to="/studio">
+              Studio
+            </Button>
             <Button className={classes.button} component={Link} to="/signin">
               Login
-            </Button>{' '}
+            </Button>
             <Button className={classes.button} component={Link} to="/signup">
               Sign Up
             </Button>
