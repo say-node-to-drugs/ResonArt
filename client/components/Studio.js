@@ -27,6 +27,10 @@ class Studio extends React.Component {
       this.palette.loadPreset = this.props.firebase.loadPreset
     }
   }
+  componentWillUnmount() {
+    this.palette.loadPreset = [];
+    this.props.firebase.loaded = false;
+  }
 
   render() {
     const {classes} = this.props

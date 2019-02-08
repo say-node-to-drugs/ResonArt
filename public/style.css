@@ -248,3 +248,9 @@ form div {
   justify-content: center;
   align-content: space-around;
 }
+
+.landingHeader {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+}

@@ -36,8 +36,8 @@ const styles = theme => ({
     }
   },
   paper: {
-    width: 140,
-    height: 140,
+    width: 200,
+    height: 125,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
