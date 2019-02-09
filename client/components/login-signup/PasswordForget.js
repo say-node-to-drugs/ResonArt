@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
+import PropTypes from 'prop-types'
 import {
   withStyles,
   Button,
@@ -13,10 +14,10 @@ import {
 
 import {withFirebase} from '../../firebase/FirebaseContext.js'
 
-export const PasswordForgetPage = () => (
+export const PasswordForgetPage = props => (
   <div>
-    <h1>PasswordForget</h1>
-    <PasswordForgetForm />
+    <h1 align="center">I forgot My Password!</h1>
+    <PasswordForgetForm props={props} />
   </div>
 )
 
@@ -34,9 +35,6 @@ class PasswordForgetFormBase extends Component {
 
   onSubmit = event => {
     const {email} = this.state
-
-    console.log('PASSWORD RESET')
-
     this.props.firebase
       .doPasswordReset(email)
       .then(() => {
@@ -55,16 +53,14 @@ class PasswordForgetFormBase extends Component {
 
   render() {
     const {email, error} = this.state
-    const {classes} = this.props
-
     const isInvalid = email === ''
 
     return (
-      <div className={classes.root}>
+      <div align="center">
         <CssBaseline />
-        <Paper className={classes.password}>
-          <Typography component="h1" variant="h5">
-            Password Reset
+        <Paper>
+          <Typography component="h1" variant="h5" align="center">
+            We will email you a link to reset it
           </Typography>
           <form onSubmit={this.onSubmit}>
             <FormControl margin="normal" required fullWidth>
@@ -84,7 +80,6 @@ class PasswordForgetFormBase extends Component {
               fullWidth
               variant="contained"
               color="primary"
-              className={classes.submit}
               disabled={isInvalid}
             >
               Reset My Password
@@ -104,5 +99,9 @@ const PasswordForgetLink = () => (
 )
 
 const PasswordForgetForm = withFirebase(PasswordForgetFormBase)
+
+PasswordForgetForm.propTypes = {
+  classes: PropTypes.object.isRequired
+}
 
 export {PasswordForgetForm, PasswordForgetLink}

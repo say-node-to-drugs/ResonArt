@@ -30,6 +30,12 @@ const App = props => (
           render={() => <LandingPage {...props} firebase={props.firebase} />}
         />
         <Route path="/forgot" component={PasswordForgetPage} />
+        <Route
+          path="/forgot"
+          render={() => (
+            <PasswordForgetPage {...props} firebase={props.firebase} />
+          )}
+        />
         <Route path="/admin" component={AdminIndex} />
         {/* Displays our Login component as a fallback */}
         <Route render={() => <Studio {...props} firebase={props.firebase} />} />
