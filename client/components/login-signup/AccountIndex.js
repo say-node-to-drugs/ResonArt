@@ -205,6 +205,13 @@ class AccountIndex extends Component {
                   Welcome, {callName(this.props.firebase.auth.currentUser)}
                 </Typography>
                 <br />
+                <Typography component="h1" variant="h5" align="center">
+                  Select a saved canvas:
+                </Typography>
+                <div>
+                  <CanvasRender classes={classes} props={this.props} />
+                </div>
+                <br />
                 <div>
                   <PasswordChangeForm
                     alignItems="center"
@@ -212,14 +219,6 @@ class AccountIndex extends Component {
                     classes={classes}
                   />
                 </div>
-              </div>
-              <br />
-              <br />
-              <Typography component="h1" variant="h5" align="center">
-                Select a saved canvas:
-              </Typography>
-              <div>
-                <CanvasRender classes={classes} props={this.props} />
               </div>
             </div>
           )}
@@ -236,15 +235,14 @@ class AccountIndex extends Component {
                   Welcome, {callName(this.props.firebase.auth.currentUser)}
                 </Typography>
                 <br />
+                <Typography component="h1" variant="h5">
+                  No canvases currently saved.
+                </Typography>
+                <br />
                 <div style={{textAlign: 'flex-center'}}>
                   <PasswordForgetForm classes={classes} />
                 </div>
               </div>
-              <br />
-              <br />
-              <Typography component="h1" variant="h5">
-                No canvases currently saved.
-              </Typography>
             </div>
           )}
         </AuthUserContext.Consumer>
