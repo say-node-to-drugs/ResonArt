@@ -48,10 +48,20 @@ const styles = theme => ({
   },
   password: {
     width: 600,
-    height: 140,
+    height: 280,
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 2}px ${theme
+      .spacing.unit * 2}px ${theme.spacing.unit * 2}px`,
+    margin: `${theme.spacing.unit}px`
+  },
+  passwordReset: {
+    width: 600,
+    height: 140,
+    // display: 'flex',
+    // flexDirection: 'row',
+    // justifyContent: 'center',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
     margin: `${theme.spacing.unit}px`
@@ -184,8 +194,6 @@ class AccountIndex extends Component {
 
   render() {
     const {classes} = this.props
-    console.log(this.props)
-    console.log('ACCOUNT NAME: ', this.props.firebase.auth)
     if (this.state.palettes.length) {
       return (
         <AuthUserContext.Consumer>
@@ -198,7 +206,7 @@ class AccountIndex extends Component {
                 </Typography>
                 <br />
                 <div>
-                  <PasswordForgetForm
+                  <PasswordChangeForm
                     alignItems="center"
                     justify="center"
                     classes={classes}

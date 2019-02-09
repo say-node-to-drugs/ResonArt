@@ -1,4 +1,15 @@
 import React, {Component} from 'react'
+import {Link} from 'react-router-dom'
+import {
+  withStyles,
+  Button,
+  Paper,
+  FormControl,
+  Input,
+  InputLabel,
+  CssBaseline,
+  Typography
+} from '@material-ui/core'
 
 import {withFirebase} from '../../firebase/FirebaseContext.js'
 
@@ -36,31 +47,57 @@ class PasswordChangeForm extends Component {
 
   render() {
     const {passwordOne, passwordTwo, error} = this.state
-
+    const {classes} = this.props
     const isInvalid = passwordOne !== passwordTwo || passwordOne === ''
 
     return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          name="passwordOne"
-          value={passwordOne}
-          onChange={this.onChange}
-          type="password"
-          placeholder="New Password"
-        />
-        <input
-          name="passwordTwo"
-          value={passwordTwo}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Confirm New Password"
-        />
-        <button disabled={isInvalid} type="submit">
-          Reset My Password
-        </button>
-
-        {error && <p>{error.message}</p>}
-      </form>
+      <div align="center">
+        <CssBaseline />
+        <Paper className={classes.password}>
+          <br />
+          <Typography component="h1" variant="h5" align="center">
+            Change Your Password?
+          </Typography>
+          <form onSubmit={this.onSubmit}>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="new-password">New password</InputLabel>
+              <Input
+                id="new-password"
+                name="new-password"
+                type="text"
+                placeholder="New Password"
+                value={passwordOne}
+                onChange={this.onChange}
+                autoFocus
+              />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="retype-password">Retype password</InputLabel>
+              <Input
+                id="retype-password"
+                name="retype-password"
+                type="text"
+                placeholder="Retype Password"
+                value={passwordOne}
+                onChange={this.onChange}
+                autoFocus
+              />
+            </FormControl>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              disabled={isInvalid}
+            >
+              Change My Password
+            </Button>
+            <br />
+            {error && <p>{error.message}</p>}
+          </form>
+        </Paper>
+      </div>
     )
   }
 }
