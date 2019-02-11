@@ -271,15 +271,16 @@ const PaletteSketch = p => {
     // CLEAR PALETTE
     clearCanvas = p.createButton('Clear')
     clearCanvas.mousePressed(() => {
-      function greet() {
         isPlaying = false
         synth.stop()
         synth2.stop()
         synth3.stop()
         drums.stop()
-        window.location.href = '/studio'
-      }
-      greet()
+        allBlackGrid = generateColorArray()
+        allBlueGrid = generateColorArray()
+        allRedGrid = generateColorArray()
+        loadPaletteArrangement();
+        drawGridLines();
     })
     clearCanvas.parent('audioButtons')
     clearCanvas.class('clearButton')
@@ -485,6 +486,8 @@ const PaletteSketch = p => {
 
   const drawGridLines = () => {
     // Draw grid lines
+    p.background(255)
+    p.fill(0)
     for (let x = 0; x < width; x += width / 16) {
       for (let y = 0; y < height; y += height / 14) {
         p.stroke(200)
