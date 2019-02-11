@@ -93,7 +93,7 @@ form div {
 .radio {
   display: flex;
   justify-content: space-around;
-  width: 80%;
+  width: 85%;
   font-weight: bold;
   -webkit-appearance: none;
   -moz-appearance: none;
