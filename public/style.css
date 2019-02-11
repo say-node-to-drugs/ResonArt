@@ -71,23 +71,30 @@ form div {
 
 .synthButtons {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-evenly;
+  font-weight: bold;
 }
 
 .audioButtons {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-evenly;
+  font-weight: bold;
 }
 
 .saveButtons {
   display: flex;
   justify-content: space-evenly;
+  font-weight: bold;
 }
 
 .radio {
   display: flex;
-  justify-content: space-evenly;
-  width: 90%;
+  justify-content: space-around;
+  width: 80%;
+  font-weight: bold;
   -webkit-appearance: none;
   -moz-appearance: none;
 }
@@ -120,7 +127,7 @@ form div {
   border-radius: 10px;
   color: blue;
   height: 36px;
-  margin: 10px;
+  margin: 2px;
 }
 
 .blackButton {
@@ -129,7 +136,8 @@ form div {
   border-radius: 10px;
   color: black;
   height: 36px;
-  margin: 10px;
+  margin: 2px;
+  font-weight: bold;
 }
 
 .eraserButton {
@@ -138,7 +146,8 @@ form div {
   border-radius: 10px;
   color: white;
   height: 36px;
-  margin: 10px;
+  margin: 2px;
+  font-weight: bold;
 }
 
 .playButton {
@@ -148,8 +157,9 @@ form div {
   color: green;
   height: 36px;
   width: 50px;
-  margin: 10px;
+  margin: 2px;
   box-shadow: 0 4px 8px 0 grey, 0 6px 20px 0 grey;
+  font-weight: bold;
 }
 
 .stopButton {
@@ -159,7 +169,8 @@ form div {
   color: red;
   height: 36px;
   width: 50px;
-  margin: 10px;
+  margin: 2px;
+  font-weight: bold;
   box-shadow: 0 4px 8px 0 grey, 0 6px 20px 0 grey;
 }
 
@@ -170,7 +181,8 @@ form div {
   color: white;
   height: 36px;
   width: 50px;
-  margin: 10px;
+  margin: 2px;
+  font-weight: bold;
   box-shadow: 0 4px 8px 0 grey, 0 6px 20px 0 grey;
 }
 
@@ -181,7 +193,8 @@ form div {
   color: black;
   height: 36px;
   width: 75px;
-  margin: 10px;
+  margin: 2px;
+  font-weight: bold;
 }
 
 .downloadButton {
@@ -191,7 +204,8 @@ form div {
   color: black;
   height: 36px;
   width: 75px;
-  margin: 10px;
+  margin: 2px;
+  font-weight: bold;
 }
 
 .loadButton {
@@ -201,7 +215,19 @@ form div {
   color: black;
   height: 36px;
   width: 75px;
-  margin: 10px;
+  margin: 2px;
+  font-weight: bold;
+}
+
+.scaleButton {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: rgb(107, 32, 228);
+  height: 36px;
+  width: 84px;
+  margin: 2px;
+  font-weight: bold;
 }
 
 /* spacing div to left of palette */

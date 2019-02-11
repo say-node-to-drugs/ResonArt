@@ -1,5 +1,6 @@
 import {drums, hPhrase, cPhrase, bPhrase, updatePatterns} from './DrumSketch'
 import {saveCanvasToFirebase} from '../../firebase/saveCanvas.js'
+import Select from '@material-ui/core/Select';
 import toastr from 'toastr'
 
 const PaletteSketch = p => {
@@ -36,28 +37,6 @@ const PaletteSketch = p => {
     71
   ]
   let notes = cMajorScale;
-  let pentatonicScale = [
-    38,
-    40,
-    43,
-    45,
-    48,
-    50,
-    52,
-    55,
-    57,
-    60,
-    62,
-    64,
-    67,
-    69, 
-    72,
-    74,
-    76,
-    79,
-    81,
-    84
-  ]
   let dMajorScale = [
     50,
     52,
@@ -80,6 +59,50 @@ const PaletteSketch = p => {
     79,
     81
   ]
+  let aMajorScale = [
+    47,
+    49,
+    50,
+    52,
+    54,
+    56,
+    57,
+    59,
+    61,
+    62,
+    64,
+    66,
+    68,
+    69,
+    71,
+    73,
+    74,
+    76,
+    78,
+    80
+  ]
+  let bMinorScale = [
+    49,
+    50,
+    52,
+    54,
+    55,
+    57, 
+    59,
+    61,
+    62,
+    64,
+    66,
+    67,
+    69,
+    71,
+    73,
+    74,
+    76,
+    78,
+    79,
+    81,
+  ]
   let scaleDifference = notes[notes.length - 1] - notes[0]
   let allBlackGrid, allRedGrid, allBlueGrid
   let downloading = false
@@ -90,7 +113,7 @@ const PaletteSketch = p => {
   let height = p.windowHeight * (4 / 10)
 
   // buttons
-  let play, stop, download, clearCanvas, load, eraser, radio, pScale, dScale, cScale
+  let play, stop, download, clearCanvas, load, eraser, radio, pScale, dScale, cScale, aMajor, bMinor
 
   p.preload = () => {
     synth1Sound = new p5.SoundFile()
@@ -262,30 +285,37 @@ const PaletteSketch = p => {
     clearCanvas.class('clearButton')
 
     // Buttons for different scales
-    pScale = p.createButton('Pentatonic Scale')
-    pScale.mousePressed(() => {
-      notes = pentatonicScale;
+    aMajor = p.createButton('A-Major')
+    aMajor.mousePressed(() => {
+      notes = aMajorScale;
       loadPaletteArrangement();
     })
-    pScale.parent('audioButtons')
-    pScale.class('loadButton')
-
-    dScale = p.createButton('D Major Scale')
-    dScale.mousePressed(() => {
-      notes = dMajorScale;
+    aMajor.parent('synthButtons')
+    aMajor.class('scaleButton')
+    
+    bMinor = p.createButton('B-Minor')
+    bMinor.mousePressed(() => {
+      notes = bMinorScale;
       loadPaletteArrangement();
     })
-    dScale.parent('audioButtons')
-    dScale.class('loadButton')
-
-    cScale = p.createButton('C Major Scale')
+    bMinor.parent('synthButtons')
+    bMinor.class('scaleButton')
+    
+    cScale = p.createButton('C-Major')
     cScale.mousePressed(() => {
       notes = cMajorScale;
       loadPaletteArrangement();
     })
-    cScale.parent('audioButtons')
-    cScale.class('loadButton')
+    cScale.parent('synthButtons')
+    cScale.class('scaleButton')
 
+    dScale = p.createButton('D-Major')
+    dScale.mousePressed(() => {
+      notes = dMajorScale;
+      loadPaletteArrangement();
+    })
+    dScale.parent('synthButtons')
+    dScale.class('scaleButton')
     // ------------------
     // LOAD PRESET CANVAS
     // ------------------
