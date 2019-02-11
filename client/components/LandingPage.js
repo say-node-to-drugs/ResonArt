@@ -34,6 +34,10 @@ const styles = theme => ({
     justifyContent: 'center',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
       .spacing.unit * 3}px`
+  },
+  center: {
+    display: 'flex',
+    justifyContent: 'center'
   }
 })
 
@@ -58,38 +62,59 @@ class LandingPage extends Component {
     if (this.state.palettes.length) {
       let presets = this.state.palettes
       return (
-        <div>
-
-          <div className='presetList' width='600px'>
-            <Paper className={classes.paperHeader}>
-              <Typography variant='display1' align='center'>
-                Welcome to ResonArt! 
-              </Typography>
-              <Typography variant='body1'>  
-                "Drawing never sounded so good."
-                Get started by clicking 'New Canvas' in the navigation bar, or click on one of the presets below! Each palette represents notes on a scale (Y-axis) playing over time (X-axis). Simply draw with three different colors along the plane and fill in the drum machine grid to create a melody!
-              </Typography>
-            </Paper>
+        <div className="center">
+          {/* <div className='landingPageTitle'> */}
+          <div className="landingPageHeader">
+            <h1 className="titleFont">Welcome to ResonArt</h1>
           </div>
-          <Typography variant='headline' className="landingHeader" align='center' margin='20px'>
-            Canvas Examples
+          <Paper className={classes.paperHeader}>
+            {/* <Typography variant='headline' align='center'>
+                Welcome to ResonArt! 
+              </Typography> */}
+            <Typography variant="h6">
+              "Drawing never sounded so good." Get started by clicking 'New
+              Canvas' in the navigation bar, or click on one of the presets
+              below! Each palette represents notes on a scale (Y-axis) playing
+              over time (X-axis). Simply draw with three different colors along
+              the plane and fill in the drum machine grid to create a melody!
+            </Typography>
+          </Paper>
+          {/* </div> */}
+          <br />
+          <br />
+          <Typography
+            variant="headline"
+            className="landingHeader"
+            align="center"
+            margin="20px"
+          >
+            Select a Canvas Example!
           </Typography>
-          <div className='presetList'>
-            {
-              presets.map((preset, index) => (
-                <Paper className={classes.paper}>
-                  <Link to="/studio" {...this.props} onClick={() => {
-                    this.props.firebase.selectedNumber = index;
-                    this.props.firebase.loadPreset = preset;
-                    this.props.firebase.loaded = true;
-                  }}>
-                    <img src={preset.dataURL.imageData} width="200px" height="125px" />
-                    <Typography align='center' variant='title'>{ preset.filename }</Typography>
-                  </Link>
-                </Paper>
-              ))
-            }
-
+          <br />
+          <br />
+          <div className="presetList">
+            {presets.map((preset, index) => (
+              <Paper className={classes.paper}>
+                <Link
+                  to="/studio"
+                  {...this.props}
+                  onClick={() => {
+                    this.props.firebase.selectedNumber = index
+                    this.props.firebase.loadPreset = preset
+                    this.props.firebase.loaded = true
+                  }}
+                >
+                  <img
+                    src={preset.dataURL.imageData}
+                    width="200px"
+                    height="125px"
+                  />
+                  <Typography align="center" variant="title">
+                    {preset.filename}
+                  </Typography>
+                </Link>
+              </Paper>
+            ))}
           </div>
         </div>
       )
