@@ -119,9 +119,7 @@ class LandingPage extends Component {
           <br />
           <br />
           <div className="landingPageHeader">
-            <Typography className="quote" variant="h6">
-              "Drawing never sounded so good"
-            </Typography>
+            <div className="quote">"Drawing never sounded so good"</div>
           </div>
         </div>
       )
