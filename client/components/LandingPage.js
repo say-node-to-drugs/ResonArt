@@ -72,11 +72,11 @@ class LandingPage extends Component {
                 Welcome to ResonArt! 
               </Typography> */}
             <Typography variant="h6">
-              "Drawing never sounded so good." Get started by clicking 'New
-              Canvas' in the navigation bar, or click on one of the presets
-              below! Each palette represents notes on a scale (Y-axis) playing
-              over time (X-axis). Simply draw with three different colors along
-              the plane and fill in the drum machine grid to create a melody!
+              Get started by clicking 'New Canvas' in the navigation bar, or
+              click on one of the presets below! Each palette represents notes
+              on a scale (Y-axis) playing over time (X-axis). Simply draw with
+              three different colors along the plane and fill in the drum
+              machine grid to create a melody!
             </Typography>
           </Paper>
           {/* </div> */}
@@ -115,6 +115,13 @@ class LandingPage extends Component {
                 </Link>
               </Paper>
             ))}
+          </div>
+          <br />
+          <br />
+          <div className="landingPageHeader">
+            <Typography className="quote" variant="h6">
+              "Drawing never sounded so good"
+            </Typography>
           </div>
         </div>
       )

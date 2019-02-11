@@ -297,3 +297,8 @@ form div {
 .titleFont {
   font-size: 3em;
 }
+
+.quote {
+  font-style: italic;
+  font-size: 3em;
+}
